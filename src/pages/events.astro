@@ -1,0 +1,298 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+    title="Glamping Wedding Villages & Event Bell Tents Scotland | The Cosy Canvas Co."
+    description="Bespoke canvas villages, glamping accommodations, and luxury bridal bell tents for Scottish estate weddings, corporate retreats, and private celebrations."
+>
+    <!-- Page Header Banner -->
+    <div
+        class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30"
+    >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span
+                class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold"
+                >BOUTIQUE ACCOMMODATION VILLAGES</span
+            >
+            <h1 class="font-display text-3xl md:text-5xl font-black text-white">
+                Events, Retreats & Weddings
+            </h1>
+            <p
+                class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed"
+            >
+                Transform Scottish estates and festival grounds with bespoke
+                canvas accommodation villages and luxury honeymoon suites.
+            </p>
+        </div>
+    </div>
+
+    <!-- Events Inquiry Form Section -->
+    <section class="py-16 border-b border-stone-200/80 relative z-20">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+            <div
+                style="background-color: #ffffff;"
+                class="rounded-3xl p-8 sm:p-10 flex flex-col justify-between border border-stone-200 shadow-xl"
+            >
+                <div>
+                    <!-- Header Title Block -->
+                    <div
+                        class="flex items-center justify-between mb-8 pb-6 border-b border-stone-100"
+                    >
+                        <div class="flex items-center gap-4">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-[#7D6E23]/10 text-[#7D6E23] flex items-center justify-center text-xl shadow-xs"
+                            >
+                                <i class="fa-solid fa-champagne-glasses"></i>
+                            </div>
+                            <div>
+                                <h2
+                                    class="font-display font-black text-2xl text-[#111111]"
+                                >
+                                    Events & Wedding Bell Tents
+                                </h2>
+                                <p
+                                    class="text-xs sm:text-sm text-stone-500 font-medium"
+                                >
+                                    Bespoke canvas villages across Scotland
+                                </p>
+                            </div>
+                        </div>
+                        <span
+                            class="text-xs font-mono bg-stone-100 text-stone-700 px-3.5 py-1.5 rounded-full font-bold uppercase shrink-0"
+                            >Instant Inquiry</span
+                        >
+                    </div>
+
+                    <form id="eventsEnquiryForm" class="space-y-6">
+                        <!-- Event Type -->
+                        <div class="space-y-2">
+                            <label
+                                class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                for="evt-type"
+                            >
+                                Event Type:
+                            </label>
+                            <select
+                                id="evt-type"
+                                class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 font-medium focus:border-[#F7BA1E] focus:outline-none"
+                            >
+                                <option value="Wedding Guest Village"
+                                    >Wedding Guest Village & Honeymoon Suite</option
+                                >
+                                <option value="Milestone Birthday"
+                                    >Milestone Birthday / Anniversary</option
+                                >
+                                <option value="Corporate Retreat"
+                                    >Corporate Festival / Retreat</option
+                                >
+                                <option value="Private Celebration"
+                                    >Private Scottish Celebration</option
+                                >
+                            </select>
+                        </div>
+
+                        <!-- Guests & Nights Row -->
+                        <div
+                            style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;"
+                        >
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                    for="evt-guests"
+                                >
+                                    Number of Guests:
+                                </label>
+                                <input
+                                    type="number"
+                                    id="evt-guests"
+                                    min="5"
+                                    max="150"
+                                    value="20"
+                                    class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm font-bold text-[#111111] focus:border-[#F7BA1E] focus:outline-none"
+                                />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                    for="evt-nights"
+                                >
+                                    Number of Nights:
+                                </label>
+                                <input
+                                    type="number"
+                                    id="evt-nights"
+                                    min="1"
+                                    max="14"
+                                    value="2"
+                                    class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm font-bold text-[#111111] focus:border-[#F7BA1E] focus:outline-none"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Date & Venue Row -->
+                        <div
+                            style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;"
+                        >
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                    for="evt-date"
+                                >
+                                    Event Date:
+                                </label>
+                                <input
+                                    type="date"
+                                    id="evt-date"
+                                    required
+                                    class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 focus:border-[#F7BA1E] focus:outline-none font-medium"
+                                />
+                            </div>
+
+                            <div class="space-y-2">
+                                <label
+                                    class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                    for="evt-venue"
+                                >
+                                    Venue / Region:
+                                </label>
+                                <input
+                                    type="text"
+                                    id="evt-venue"
+                                    placeholder="e.g. Loch Lomond Estate"
+                                    required
+                                    class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 focus:border-[#F7BA1E] focus:outline-none font-medium"
+                                />
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label
+                                class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide"
+                                for="evt-email"
+                            >
+                                Contact Email:
+                            </label>
+                            <input
+                                type="email"
+                                id="evt-email"
+                                placeholder="your@email.com"
+                                required
+                                class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 focus:border-[#F7BA1E] focus:outline-none font-medium"
+                            />
+                        </div>
+
+                        <!-- Rule Banner -->
+                        <div
+                            class="bg-amber-50/70 p-5 rounded-2xl border border-[#F7BA1E]/30 text-xs text-stone-600 space-y-1"
+                        >
+                            <div
+                                class="font-bold text-[#111111] flex items-center gap-2 text-xs sm:text-sm"
+                            >
+                                <i class="fa-solid fa-crown text-[#D4A51E]"></i>
+                                <span
+                                    >Bespoke Event & Wedding Village Rules</span
+                                >
+                            </div>
+                            <p class="font-medium text-stone-500">
+                                Minimum 5 tents required for event village setup
+                                • All inquiries are flagged for manual review &
+                                custom quote.
+                            </p>
+                        </div>
+
+                        <!-- Estimate Bar -->
+                        <div
+                            class="p-5 rounded-2xl border border-stone-200 flex items-center justify-between bg-[#FAF7EE]"
+                        >
+                            <div>
+                                <span
+                                    class="text-xs text-stone-500 font-medium block"
+                                    >Estimated Village Size:</span
+                                >
+                                <span
+                                    id="evt-tents-estimate"
+                                    class="text-xs sm:text-sm font-bold text-[#7D6E23]"
+                                    >5 Bell Tents (Min. 5 Tents)</span
+                                >
+                            </div>
+                            <div class="text-right">
+                                <span
+                                    class="text-[10px] text-stone-400 block uppercase font-bold"
+                                    >Pricing Model</span
+                                >
+                                <span
+                                    id="evt-est-price"
+                                    class="text-sm sm:text-base font-display font-extrabold text-[#111111]"
+                                    >Quote on Request</span
+                                >
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full bg-[#111111] hover:bg-stone-800 text-white font-display font-bold text-xs sm:text-sm uppercase tracking-wider py-4 sm:py-5 rounded-full transition-all flex items-center justify-center gap-2 shadow-md"
+                        >
+                            <i class="fa-solid fa-paper-plane text-[#F7BA1E]"
+                            ></i> Request Bespoke Event Quote
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</Layout>
+
+<script is:inline>
+    function calcEventEstimate() {
+        const guests =
+            parseInt(document.getElementById("evt-guests")?.value || "20") ||
+            20;
+        const tentsNeeded = Math.max(5, Math.ceil(guests / 4));
+        const estimateEl = document.getElementById("evt-tents-estimate");
+        if (estimateEl) {
+            estimateEl.innerText = `${tentsNeeded} Bell Tents (Min. 5 Tents)`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Inputs calculation listener
+        document
+            .getElementById("evt-guests")
+            ?.addEventListener("input", calcEventEstimate);
+
+        // Set default date
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 30);
+        const dateInput = document.getElementById("evt-date");
+        if (dateInput) {
+            dateInput.value = tomorrow.toISOString().split("T")[0];
+        }
+
+        // Form submit listener
+        document
+            .getElementById("eventsEnquiryForm")
+            ?.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const email = document.getElementById("evt-email")?.value;
+                const venue = document.getElementById("evt-venue")?.value;
+                alert(
+                    `Bespoke event village inquiry received for ${venue}! A detailed quote has been queued for ${email}.`,
+                );
+            });
+
+        calcEventEstimate();
+    });
+</script>
+
+<style is:global>
+    .os-grid-badge {
+        font-family: "Courier New", Courier, monospace !important;
+        letter-spacing: 0.08em !important;
+        background: rgba(125, 110, 35, 0.08) !important;
+        border: 1px dashed #7d6e23 !important;
+        color: #4f571a !important;
+    }
+</style>

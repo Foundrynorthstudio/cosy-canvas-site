@@ -1,0 +1,1773 @@
+---
+import Layout from "../layouts/Layout.astro";
+const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
+---
+
+<Layout
+    title="Configure Your Stay & Book Online | The Cosy Canvas Co."
+    description="Instantly configure your Scottish bell tent stay. Select guest capacity, rental dates, bedding tiers, and camp add-ons with real-time pricing."
+>
+    <!-- Header Banner -->
+    <div
+        class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30"
+    >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span
+                class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold"
+                >INSTANT ONLINE CONFIGURATOR</span
+            >
+            <h1 class="font-display text-3xl md:text-5xl font-black text-white">
+                Configure Your Stay & Book
+            </h1>
+            <p
+                class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed"
+            >
+                Select your guests, rental dates, bedding, and camp extras below
+                for instant pricing and date reservation.
+            </p>
+        </div>
+    </div>
+
+    <!-- Configurator Section -->
+    <section class="py-12 md:py-20 border-b border-stone-200/80 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Side-by-Side Flex Wrapper -->
+            <div
+                style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start;"
+            >
+                <!-- Left Configurator Steps (58% Width on Desktop) -->
+                <div
+                    style="flex: 1 1 500px; min-width: 320px;"
+                    class="space-y-8"
+                >
+                    <!-- STEP 1: Guests & Dates -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-md border border-stone-200"
+                    >
+                        <div
+                            class="flex items-center justify-between mb-6 border-b border-stone-100 pb-4"
+                        >
+                            <h2
+                                class="text-xl md:text-2xl font-display font-black text-[#111111] flex items-center"
+                            >
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[#F7BA1E] text-[#111111] text-sm flex items-center justify-center font-display font-black mr-3 shadow-xs"
+                                    >1</span
+                                >
+                                Guests & Rental Dates
+                            </h2>
+                            <span
+                                id="nights-badge"
+                                class="bg-[#111111] text-[#F7BA1E] text-xs font-display font-bold px-3.5 py-1 rounded-full uppercase tracking-wider"
+                            >
+                                2 Nights Stay
+                            </span>
+                        </div>
+
+                        <!-- 2027 Early Bird Offer Banner -->
+                        <div
+                            class="mb-5 bg-emerald-50 border border-[#7D6E23]/20 rounded-2xl p-3.5 text-xs text-[#4F571A] flex items-center justify-between gap-2"
+                        >
+                            <div class="flex items-center gap-2">
+                                <i
+                                    class="fa-solid fa-circle-check text-[#7D6E23] text-sm"
+                                ></i>
+                                <span
+                                    ><strong>2027 Season Early Bird:</strong> Select
+                                    any 2027 date for <strong>15% Off</strong> package
+                                    rates!</span
+                                >
+                            </div>
+                            <span
+                                class="os-grid-badge text-[10px] px-2 py-0.5 rounded font-bold uppercase shrink-0"
+                                >15% Off 2027</span
+                            >
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <!-- Guest Selector -->
+                            <div class="flex flex-col justify-between">
+                                <div>
+                                    <label
+                                        class="block text-xs font-display font-black uppercase tracking-wider mb-2 text-stone-700"
+                                    >
+                                        Number of Guests
+                                    </label>
+                                    <div
+                                        class="flex items-center border-2 border-stone-200 rounded-2xl p-1.5 bg-stone-50"
+                                    >
+                                        <button
+                                            type="button"
+                                            id="btn-guest-minus"
+                                            class="w-10 h-10 rounded-xl bg-white hover:bg-[#F7BA1E] transition font-bold text-stone-800 flex items-center justify-center text-base shadow-xs"
+                                        >
+                                            <i class="fa-solid fa-minus text-xs"
+                                            ></i>
+                                        </button>
+                                        <div
+                                            class="flex-1 text-center font-display font-black text-xl text-[#111111]"
+                                            id="guest-count-display"
+                                        >
+                                            2 Guests
+                                        </div>
+                                        <button
+                                            type="button"
+                                            id="btn-guest-plus"
+                                            class="w-10 h-10 rounded-xl bg-white hover:bg-[#F7BA1E] transition font-bold text-stone-800 flex items-center justify-center text-base shadow-xs"
+                                        >
+                                            <i class="fa-solid fa-plus text-xs"
+                                            ></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <p
+                                    class="text-[11px] text-stone-500 mt-3 flex items-center gap-1.5 font-medium"
+                                >
+                                    <i
+                                        class="fa-solid fa-circle-info text-[#7D6E23]"
+                                    ></i> 1–3: 4M (£50/n) | 4–6: 5M (£75/n) | 7–8:
+                                    6M (£100/n)
+                                </p>
+                            </div>
+
+                            <!-- Date Picker -->
+                            <div>
+                                <label
+                                    class="block text-xs font-display font-black uppercase tracking-wider mb-2 text-stone-700"
+                                >
+                                    Rental Dates <span
+                                        class="text-stone-400 font-normal"
+                                        >(Min 2 Nights)</span
+                                    >
+                                </label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <span
+                                            class="text-[10px] uppercase font-bold text-stone-400 block mb-1"
+                                            >Check-In</span
+                                        >
+                                        <input
+                                            type="date"
+                                            id="checkin-date"
+                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 focus:border-[#F7BA1E] focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <span
+                                            class="text-[10px] uppercase font-bold text-stone-400 block mb-1"
+                                            >Check-Out</span
+                                        >
+                                        <input
+                                            type="date"
+                                            id="checkout-date"
+                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 focus:border-[#F7BA1E] focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    id="discount-banner"
+                                    class="mt-2.5 text-[11px] font-bold text-[#7D6E23] flex items-center gap-1"
+                                >
+                                    <i class="fa-solid fa-tag"></i>
+                                    <span id="discount-banner-text"
+                                        >Standard 2-Night Rate (0% Discount)</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Tent Allocation -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-md border border-stone-200"
+                    >
+                        <div
+                            class="flex items-center justify-between mb-6 border-b border-stone-100 pb-4"
+                        >
+                            <h2
+                                class="text-xl md:text-2xl font-display font-black text-[#111111] flex items-center"
+                            >
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[#F7BA1E] text-[#111111] text-sm flex items-center justify-center font-display font-black mr-3 shadow-xs"
+                                    >2</span
+                                >
+                                Tent Allocation
+                            </h2>
+                            <span
+                                class="text-xs text-[#7D6E23] font-display font-bold uppercase tracking-wider bg-[#7D6E23]/10 px-3 py-1 rounded-full"
+                            >
+                                Auto-selected for capacity
+                            </span>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div
+                                id="tent-card-4m"
+                                class="p-5 rounded-2xl border-2 border-stone-200 bg-white transition relative"
+                            >
+                                <div
+                                    class="flex justify-between items-start mb-2"
+                                >
+                                    <div>
+                                        <h3
+                                            class="text-lg font-display font-bold text-[#111111]"
+                                        >
+                                            4M Bell Tent
+                                        </h3>
+                                        <span
+                                            class="text-[11px] font-display font-bold uppercase tracking-wider text-[#7D6E23] block mt-0.5"
+                                            >1 to 3 Guests</span
+                                        >
+                                    </div>
+                                    <span
+                                        class="font-display font-black text-xl text-[#111111]"
+                                        >£50 <span
+                                            class="text-xs text-stone-500 font-sans font-medium"
+                                            >/n</span
+                                        ></span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-stone-500 leading-relaxed mb-3"
+                                >
+                                    Compact & cozy waterproof canvas.
+                                </p>
+                                <div
+                                    class="flex justify-between items-center pt-2 border-t border-stone-100"
+                                >
+                                    <span
+                                        class="text-[11px] text-stone-400 font-medium"
+                                        >Subtotal:</span
+                                    >
+                                    <span
+                                        id="price-tent-4m-calc"
+                                        class="font-display font-bold text-xs text-[#111111]"
+                                        >£100</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                id="tent-card-5m"
+                                class="p-5 rounded-2xl border-2 border-stone-200 bg-white transition relative"
+                            >
+                                <div
+                                    class="flex justify-between items-start mb-2"
+                                >
+                                    <div>
+                                        <h3
+                                            class="text-lg font-display font-bold text-[#111111]"
+                                        >
+                                            5M Bell Tent
+                                        </h3>
+                                        <span
+                                            class="text-[11px] font-display font-bold uppercase tracking-wider text-[#7D6E23] block mt-0.5"
+                                            >4 to 6 Guests</span
+                                        >
+                                    </div>
+                                    <span
+                                        class="font-display font-black text-xl text-[#111111]"
+                                        >£75 <span
+                                            class="text-xs text-stone-500 font-sans font-medium"
+                                            >/n</span
+                                        ></span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-stone-500 leading-relaxed mb-3"
+                                >
+                                    Mid-sized glamping layout.
+                                </p>
+                                <div
+                                    class="flex justify-between items-center pt-2 border-t border-stone-100"
+                                >
+                                    <span
+                                        class="text-[11px] text-stone-400 font-medium"
+                                        >Subtotal:</span
+                                    >
+                                    <span
+                                        id="price-tent-5m-calc"
+                                        class="font-display font-bold text-xs text-[#111111]"
+                                        >£150</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                id="tent-card-6m"
+                                class="p-5 rounded-2xl border-2 border-stone-200 bg-white transition relative"
+                            >
+                                <div
+                                    class="flex justify-between items-start mb-2"
+                                >
+                                    <div>
+                                        <h3
+                                            class="text-lg font-display font-bold text-[#111111]"
+                                        >
+                                            6M Cathedral
+                                        </h3>
+                                        <span
+                                            class="text-[11px] font-display font-bold uppercase tracking-wider text-[#7D6E23] block mt-0.5"
+                                            >7 to 8 Guests</span
+                                        >
+                                    </div>
+                                    <span
+                                        class="font-display font-black text-xl text-[#111111]"
+                                        >£100 <span
+                                            class="text-xs text-stone-500 font-sans font-medium"
+                                            >/n</span
+                                        ></span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-stone-500 leading-relaxed mb-3"
+                                >
+                                    Ultra-spacious canvas palace.
+                                </p>
+                                <div
+                                    class="flex justify-between items-center pt-2 border-t border-stone-100"
+                                >
+                                    <span
+                                        class="text-[11px] text-stone-400 font-medium"
+                                        >Subtotal:</span
+                                    >
+                                    <span
+                                        id="price-tent-6m-calc"
+                                        class="font-display font-bold text-xs text-[#111111]"
+                                        >£200</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Bedding Options -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-md border border-stone-200"
+                    >
+                        <div
+                            class="flex items-center justify-between mb-6 border-b border-stone-100 pb-4"
+                        >
+                            <h2
+                                class="text-xl md:text-2xl font-display font-black text-[#111111] flex items-center"
+                            >
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[#F7BA1E] text-[#111111] text-sm flex items-center justify-center font-display font-black mr-3 shadow-xs"
+                                    >3</span
+                                >
+                                Bedding & Comfort Setup
+                            </h2>
+                            <span
+                                class="text-xs text-stone-500 font-display font-bold uppercase tracking-wider"
+                                >Flat Fee Per Guest</span
+                            >
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div
+                                data-bedding="none"
+                                id="bedding-none"
+                                class="bedding-card cursor-pointer p-5 rounded-2xl border-2 border-stone-200 bg-stone-50 hover:border-[#F7BA1E] transition text-left flex flex-col justify-between"
+                            >
+                                <div>
+                                    <span
+                                        class="block text-xs font-display font-extrabold uppercase text-stone-400 mb-1"
+                                        >DIY Sleeping</span
+                                    >
+                                    <h3
+                                        class="text-base font-display font-bold text-[#111111] mb-2"
+                                    >
+                                        No Bedding
+                                    </h3>
+                                    <p
+                                        class="text-xs text-stone-500 leading-relaxed"
+                                    >
+                                        Bring your own sleeping bags & mats.
+                                    </p>
+                                </div>
+                                <div
+                                    class="mt-4 pt-3 border-t border-stone-200/60 flex justify-between items-center"
+                                >
+                                    <span
+                                        class="font-display font-extrabold text-[#111111]"
+                                        >Free</span
+                                    >
+                                    <span
+                                        class="text-[10px] text-stone-400 uppercase font-bold"
+                                        >£0</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                data-bedding="essentials"
+                                id="bedding-essentials"
+                                class="bedding-card cursor-pointer p-5 rounded-2xl border-2 border-stone-200 bg-stone-50 hover:border-[#F7BA1E] transition text-left flex flex-col justify-between"
+                            >
+                                <div>
+                                    <span
+                                        class="block text-xs font-display font-extrabold uppercase text-[#7D6E23] mb-1"
+                                        >Comfort Starter</span
+                                    >
+                                    <h3
+                                        class="text-base font-display font-bold text-[#111111] mb-2"
+                                    >
+                                        Essentials
+                                    </h3>
+                                    <p
+                                        class="text-xs text-stone-500 leading-relaxed"
+                                    >
+                                        Raised air frame mattresses.
+                                    </p>
+                                </div>
+                                <div
+                                    class="mt-4 pt-3 border-t border-stone-200/60 flex justify-between items-center"
+                                >
+                                    <span
+                                        class="font-display font-extrabold text-[#111111]"
+                                        >£25 <span
+                                            class="text-[10px] font-sans font-normal text-stone-500"
+                                            >/guest</span
+                                        ></span
+                                    >
+                                    <span
+                                        id="calc-bedding-essentials"
+                                        class="text-xs font-display font-bold text-[#7D6E23]"
+                                        >£50 Total</span
+                                    >
+                                </div>
+                            </div>
+
+                            <div
+                                data-bedding="cosy"
+                                id="bedding-cosy"
+                                class="bedding-card cursor-pointer p-5 rounded-2xl border-2 border-[#F7BA1E] bg-amber-50/50 hover:border-[#F7BA1E] transition text-left flex flex-col justify-between"
+                            >
+                                <div>
+                                    <span
+                                        class="block text-xs font-display font-extrabold uppercase text-[#7D6E23] mb-1"
+                                        >Full Luxury</span
+                                    >
+                                    <h3
+                                        class="text-base font-display font-bold text-[#111111] mb-2"
+                                    >
+                                        Cosy Camping
+                                    </h3>
+                                    <p
+                                        class="text-xs text-stone-500 leading-relaxed"
+                                    >
+                                        Air frames + hotel duvets & fresh
+                                        linens.
+                                    </p>
+                                </div>
+                                <div
+                                    class="mt-4 pt-3 border-t border-stone-200/60 flex justify-between items-center"
+                                >
+                                    <span
+                                        class="font-display font-extrabold text-[#111111]"
+                                        >£35 <span
+                                            class="text-[10px] font-sans font-normal text-stone-500"
+                                            >/guest</span
+                                        ></span
+                                    >
+                                    <span
+                                        id="calc-bedding-cosy"
+                                        class="text-xs font-display font-bold text-[#7D6E23]"
+                                        >£70 Total</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: All 8 Camp Add-ons -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-md border border-stone-200"
+                    >
+                        <div
+                            class="flex items-center justify-between mb-6 border-b border-stone-100 pb-4"
+                        >
+                            <h2
+                                class="text-xl md:text-2xl font-display font-black text-[#111111] flex items-center"
+                            >
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[#F7BA1E] text-[#111111] text-sm flex items-center justify-center font-display font-black mr-3 shadow-xs"
+                                    >4</span
+                                >
+                                Camp Add-ons & Gear
+                            </h2>
+                            <span
+                                class="text-xs text-stone-500 font-display font-bold uppercase tracking-wider"
+                                >Select Extras</span
+                            >
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <label
+                                id="addon-label-kitchen"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-kitchen"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Cosy Kitchen Setup</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£40 + £5/g</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Gas stove, cookware, kettle, tableware &
+                                        coolbox for <span
+                                            class="guest-label font-bold text-stone-700"
+                                            >2</span
+                                        > guests.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-living"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-living"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Cosy Living Lounge</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£65 flat</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Power system, cinema projector,
+                                        Bluetooth speaker, LED & fairy lights.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-woodburner"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-woodburner"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Indoor Wood Burner</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£40 flat</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Wood-burning tent stove with chimney
+                                        flue, hearth mat & starter basket.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-awning"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-awning"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Outdoor Awning Porch</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£30 flat</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Sheltered entrance awning for boots,
+                                        gear & rain-protected lounging.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-chairs"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-chairs"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Indoor & Outdoor Chairs</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£10 / guest</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Cozy indoor floor lounge cushions and
+                                        campfire folding chairs per guest.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-firecooking"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-firecooking"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Fire Cooking Equipment</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£25 flat</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Dutch oven, tripod fire grate, skewers &
+                                        heat-resistant gloves.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-starlink"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-starlink"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Starlink Satellite Wi-Fi</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£10 / night</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        High-speed satellite broadband for
+                                        remote wilderness sites.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <label
+                                id="addon-label-beachtoys"
+                                class="addon-box flex items-start p-4 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition"
+                            >
+                                <input
+                                    type="checkbox"
+                                    id="addon-beachtoys"
+                                    class="mt-1 w-5 h-5 accent-[#F7BA1E] rounded"
+                                />
+                                <div class="ml-3 flex-1">
+                                    <div
+                                        class="flex justify-between items-center mb-1"
+                                    >
+                                        <span
+                                            class="font-display font-bold text-sm text-[#111111]"
+                                            >Beach & Adventure Kit</span
+                                        >
+                                        <span
+                                            class="text-xs font-display font-extrabold text-[#7D6E23]"
+                                            >£20 flat</span
+                                        >
+                                    </div>
+                                    <p class="text-xs text-stone-500">
+                                        Boogie boards, beach games, buckets,
+                                        spade kit & waterproof tote.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- STEP 5: Fulfillment Method -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-md border border-stone-200"
+                    >
+                        <div
+                            class="flex items-center justify-between mb-6 border-b border-stone-100 pb-4"
+                        >
+                            <h2
+                                class="text-xl md:text-2xl font-display font-black text-[#111111] flex items-center"
+                            >
+                                <span
+                                    class="w-8 h-8 rounded-full bg-[#F7BA1E] text-[#111111] text-sm flex items-center justify-center font-display font-black mr-3 shadow-xs"
+                                    >5</span
+                                >
+                                Fulfillment Method
+                            </h2>
+                            <span
+                                class="text-xs text-stone-500 font-display font-bold uppercase tracking-wider"
+                                >Scotland-Wide Service</span
+                            >
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div
+                                data-fulfillment="diy"
+                                id="fulfillment-diy"
+                                class="fulfillment-card cursor-pointer p-6 rounded-2xl border-2 border-stone-200 bg-stone-50 hover:border-[#F7BA1E] transition text-left"
+                            >
+                                <div
+                                    class="flex justify-between items-center mb-2"
+                                >
+                                    <h3
+                                        class="font-display font-bold text-[#111111] text-lg"
+                                    >
+                                        DIY Pickup
+                                    </h3>
+                                    <span
+                                        class="text-xs font-display font-extrabold bg-stone-200 text-stone-800 px-3 py-1 rounded-full"
+                                        >Free</span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-stone-500 leading-relaxed"
+                                >
+                                    Collect directly from our Polmont base
+                                    depot.
+                                </p>
+                            </div>
+
+                            <div
+                                data-fulfillment="deluxe"
+                                id="fulfillment-deluxe"
+                                class="fulfillment-card cursor-pointer p-6 rounded-2xl border-2 border-[#F7BA1E] bg-amber-50/50 hover:border-[#F7BA1E] transition text-left"
+                            >
+                                <div
+                                    class="flex justify-between items-center mb-2"
+                                >
+                                    <h3
+                                        class="font-display font-bold text-[#111111] text-lg"
+                                    >
+                                        Cosy Camping Deluxe
+                                    </h3>
+                                    <span
+                                        class="text-xs font-display font-extrabold bg-[#F7BA1E]/20 text-[#4F571A] px-3 py-1 rounded-full border border-[#F7BA1E]/40"
+                                        >Flat £225</span
+                                    >
+                                </div>
+                                <p
+                                    class="text-xs text-stone-500 leading-relaxed"
+                                >
+                                    We pitch, furnish, and pack down your entire
+                                    campsite.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Sticky Summary Column (42% Width on Desktop) -->
+                <div
+                    style="flex: 1 1 380px; min-width: 300px; position: sticky; top: 6rem;"
+                    class="space-y-4"
+                >
+                    <!-- Main Price Summary Box -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-6 md:p-8 rounded-3xl shadow-xl border-t-8 border-t-[#F7BA1E] border-x border-b border-stone-200"
+                    >
+                        <div class="flex justify-between items-center mb-6">
+                            <h3
+                                class="text-2xl font-display font-black text-[#111111]"
+                            >
+                                Booking Summary
+                            </h3>
+                            <span
+                                class="text-xs bg-[#111111] text-[#F7BA1E] font-display font-extrabold px-3 py-1 rounded-full uppercase tracking-wider"
+                                id="summary-stay-badge">2 Nights</span
+                            >
+                        </div>
+
+                        <div
+                            class="space-y-3 text-xs mb-4 max-h-80 overflow-y-auto pr-2 border-b border-stone-100 pb-3"
+                        >
+                            <!-- Tent Row -->
+                            <div
+                                class="flex justify-between items-center py-2 border-b border-stone-100"
+                            >
+                                <div>
+                                    <span
+                                        class="font-display font-bold text-[#111111] block"
+                                        id="summary-tent-title"
+                                        >4M Bell Tent</span
+                                    >
+                                    <span
+                                        class="text-stone-400"
+                                        id="summary-guest-detail"
+                                        >2 Guests × 2 Nights (£50/n)</span
+                                    >
+                                </div>
+                                <span
+                                    class="font-display font-extrabold text-[#111111]"
+                                    id="summary-tent-price">£100</span
+                                >
+                            </div>
+
+                            <!-- Bedding Row -->
+                            <div
+                                class="flex justify-between items-center py-2 border-b border-stone-100"
+                            >
+                                <div>
+                                    <span
+                                        class="font-display font-bold text-[#111111] block"
+                                        id="summary-bedding-title"
+                                        >Bedding: Cosy Camping</span
+                                    >
+                                    <span
+                                        class="text-stone-400"
+                                        id="summary-bedding-detail"
+                                        >2 Guests × £35 flat</span
+                                    >
+                                </div>
+                                <span
+                                    class="font-display font-extrabold text-[#111111]"
+                                    id="summary-bedding-price">£70</span
+                                >
+                            </div>
+
+                            <!-- Discount Row -->
+                            <div
+                                id="summary-discount-row"
+                                class="hidden flex justify-between items-center py-2 border-b border-stone-100 text-[#7D6E23] font-bold"
+                            >
+                                <div>
+                                    <span
+                                        class="font-display font-bold block text-xs"
+                                        id="summary-discount-title"
+                                        >Package Discount</span
+                                    >
+                                    <span
+                                        class="text-[10px] text-[#4F571A] font-normal"
+                                        id="summary-discount-subtext"
+                                        >Applied to stay</span
+                                    >
+                                </div>
+                                <span
+                                    class="font-display font-black text-xs"
+                                    id="summary-discount-amount">-£0.00</span
+                                >
+                            </div>
+
+                            <!-- Add-ons Container -->
+                            <div
+                                id="summary-addons-list"
+                                class="space-y-2 py-1"
+                            >
+                                <div
+                                    class="text-[11px] font-display font-bold text-stone-400 uppercase tracking-wider"
+                                >
+                                    Camp Add-ons:
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fulfillment Row -->
+                        <div
+                            class="mb-4 bg-amber-50/60 p-3.5 rounded-2xl border border-[#F7BA1E]/30 flex justify-between items-center text-xs"
+                        >
+                            <div>
+                                <span
+                                    class="font-display font-bold text-[#111111] block text-xs"
+                                    id="summary-fulfillment-title"
+                                    >Cosy Camping Deluxe Setup</span
+                                >
+                                <span
+                                    class="text-stone-500 text-[10px] block mt-0.5"
+                                    id="summary-fulfillment-detail"
+                                    >Flat £225.00 fee for entire stay</span
+                                >
+                            </div>
+                            <span
+                                class="font-display font-black text-sm text-[#111111] ml-3 shrink-0"
+                                id="summary-fulfillment-price">£225</span
+                            >
+                        </div>
+
+                        <!-- Total & Deposit Breakdown Box -->
+                        <div class="py-4 mb-5 border-y border-stone-200 bg-[#FAF7EE] px-4 rounded-2xl border border-stone-200 space-y-3">
+                            <!-- Total Stay Package Value -->
+                            <div class="flex justify-between items-center text-xs pb-2 border-b border-stone-200/80">
+                                <span class="text-stone-600 font-medium">Total Stay Package:</span>
+                                <span id="summary-grand-total" class="font-display font-bold text-sm text-[#111111]">£395.00</span>
+                            </div>
+
+                            <!-- Deposit Row -->
+                            <div class="flex justify-between items-center text-xs">
+                                <div>
+                                    <span class="font-display font-bold text-[#111111] block" id="summary-deposit-label">Booking Deposit (50%)</span>
+                                    <span id="summary-deposit-badge" class="text-[10px] font-bold text-[#7D6E23]">Booking &gt;28 days in advance</span>
+                                </div>
+                                <span id="summary-deposit-amount" class="font-display font-black text-sm text-[#111111]">£197.50</span>
+                            </div>
+
+                            <!-- Security Deposit Row -->
+                            <div class="flex justify-between items-center text-xs pt-1">
+                                <div>
+                                    <span class="font-display font-bold text-[#111111] block">Refundable Security Deposit</span>
+                                    <span class="text-[10px] text-stone-500">Released 48h post-stay</span>
+                                </div>
+                                <span class="font-display font-black text-sm text-[#111111]">£200.00</span>
+                            </div>
+
+                            <!-- Grand Total Due Today -->
+                            <div class="pt-2 border-t border-stone-300 flex justify-between items-center">
+                                <div class="flex flex-col">
+                                    <span class="font-display font-black text-xs text-[#111111] uppercase tracking-wider">Total Due Today</span>
+                                    <span id="summary-per-person" class="text-[11px] font-bold text-[#7D6E23] mt-0.5">Just £198.75/guest today</span>
+                                </div>
+                                <span id="summary-total-due-today" class="text-2xl sm:text-3xl font-display font-black tracking-tight text-[#111111]">£397.50</span>
+                            </div>
+
+                            <!-- Remaining Balance Notice -->
+                            <div id="summary-remaining-box" class="text-[11px] text-[#4F571A] bg-white p-2.5 rounded-xl border border-[#F7BA1E]/40 font-medium leading-snug">
+                                <i class="fa-solid fa-clock text-[#D4A51E] mr-1"></i>
+                                <span id="summary-remaining-text">Remaining 50% balance (£197.50) due 28 days prior to check-in.</span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="btn-book-now"
+                            class="w-full bg-[#111111] text-[#F7BA1E] py-4 rounded-2xl font-display font-extrabold hover:bg-stone-800 transition uppercase tracking-wider text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                        >
+                            <span>Book now</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+
+                    <!-- Security Hold Info Card -->
+                    <div
+                        style="background-color: #ffffff;"
+                        class="p-5 rounded-2xl shadow-sm border border-stone-200 text-xs space-y-3"
+                    >
+                        <div class="flex items-center gap-2 text-[#111111] font-display font-bold text-sm border-b border-stone-100 pb-2">
+                            <i class="fa-solid fa-shield-halved text-[#7D6E23]"></i>
+                            <span>How Payment & Holds Work</span>
+                        </div>
+                        <div class="space-y-2.5 text-stone-600 leading-relaxed text-[11px]">
+                            <div class="flex items-start gap-2">
+                                <i class="fa-solid fa-credit-card text-[#D4A51E] mt-0.5 shrink-0"></i>
+                                <div>
+                                    <strong class="text-[#111111]">50% Deposit Option:</strong> Pay 50% today if booking &gt;28 days in advance. Remaining balance due 28 days prior to check-in.
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fa-solid fa-piggy-bank text-[#7D6E23] mt-0.5 shrink-0"></i>
+                                <div>
+                                    <strong class="text-[#111111]">£200 Security Hold:</strong> Placed during checkout and automatically refunded within 48h of post-stay inspection.
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <i class="fa-solid fa-cloud-sun-rain text-[#D4A51E] mt-0.5 shrink-0"></i>
+                                <div>
+                                    <strong class="text-[#111111]">Weather Guarantee:</strong> Named storm warnings qualify for free date switches or 100% full refund.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Modal (Customer Details + Stripe Embedded Checkout) -->
+    <div
+        id="checkout-modal"
+        class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/75 backdrop-blur-xs"
+        data-stripe-pk={publishableKey}
+    >
+        <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-8 transform transition-all">
+            <!-- Modal Header -->
+            <div class="bg-[#111111] text-white p-6 border-b border-stone-800 flex justify-between items-center">
+                <div>
+                    <span class="text-[#F7BA1E] font-mono text-[10px] uppercase tracking-widest font-bold block">The Cosy Canvas Co.</span>
+                    <h3 id="modal-heading" class="text-xl font-display font-black text-white">Guest & Campsite Details</h3>
+                </div>
+                <button
+                    type="button"
+                    id="btn-close-modal"
+                    class="w-9 h-9 rounded-full bg-stone-800 hover:bg-stone-700 text-stone-300 hover:text-white flex items-center justify-center transition cursor-pointer"
+                    aria-label="Close modal"
+                >
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Sticky Quick Trip Summary Strip -->
+            <div class="bg-[#FAF7EE] border-b border-stone-200 px-6 py-3.5 text-xs flex flex-wrap justify-between items-center gap-2">
+                <div class="flex items-center gap-2 text-stone-800">
+                    <i class="fa-solid fa-campground text-[#7D6E23]"></i>
+                    <span id="modal-trip-summary" class="font-bold">4M Bell Tent | 2 Nights | 2 Guests</span>
+                </div>
+                <div class="text-[#111111] font-display font-bold">
+                    Total Due Today: <span id="modal-due-summary" class="text-[#7D6E23] font-black text-sm">£397.50</span>
+                </div>
+            </div>
+
+            <!-- STEP 1: Guest Information Form -->
+            <div id="modal-step-details" class="p-6 md:p-8 space-y-5">
+                <p class="text-xs text-stone-600 leading-relaxed">
+                    Please provide your contact information and campsite destination for pitching logistics and booking confirmation.
+                </p>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="cust-name" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                            Lead Guest Full Name <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="cust-name"
+                            required
+                            placeholder="e.g. Fiona MacLeod"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label for="cust-email" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                            Email Address <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="email"
+                            id="cust-email"
+                            required
+                            placeholder="fiona@example.com"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        />
+                    </div>
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="cust-phone" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                            Phone Number <span class="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="tel"
+                            id="cust-phone"
+                            required
+                            placeholder="e.g. +44 7700 900123"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label for="cust-address" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                            Billing / Home Address
+                        </label>
+                        <input
+                            type="text"
+                            id="cust-address"
+                            placeholder="Street, City, Postcode"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        />
+                    </div>
+                </div>
+
+                <div>
+                    <label for="cust-campsite" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                        Destination Campsite & Pitch Location <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="cust-campsite"
+                        required
+                        placeholder="e.g. Loch Lomond Holiday Park (Pitch 14) or OS Grid Ref"
+                        class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                    />
+                    <p class="text-[11px] text-stone-500 mt-1">If selecting DIY Depot Pickup, enter 'Polmont Base Depot'.</p>
+                </div>
+
+                <div>
+                    <label for="cust-requests" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                        Special Requests / Arrival Notes <span class="text-stone-400 font-normal">(Optional)</span>
+                    </label>
+                    <textarea
+                        id="cust-requests"
+                        rows="2"
+                        placeholder="Estimated arrival time, bedding layout preferences, or specific pitch access notes..."
+                        class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-medium text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                    ></textarea>
+                </div>
+
+                <div id="modal-error-banner" class="hidden bg-red-50 border border-red-200 text-red-700 p-3.5 rounded-xl text-xs font-medium"></div>
+
+                <div class="pt-2">
+                    <button
+                        type="button"
+                        id="btn-proceed-to-payment"
+                        class="w-full bg-[#111111] text-[#F7BA1E] py-4 rounded-2xl font-display font-extrabold hover:bg-stone-800 transition uppercase tracking-wider text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
+                    >
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span>Proceed to Secure Payment</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: Stripe Embedded Checkout -->
+            <div id="modal-step-payment" class="hidden p-6 md:p-8 space-y-4">
+                <div class="flex justify-between items-center pb-3 border-b border-stone-100">
+                    <button
+                        type="button"
+                        id="btn-back-to-details"
+                        class="text-xs font-display font-bold text-stone-600 hover:text-stone-900 flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                        <i class="fa-solid fa-arrow-left"></i> Edit Guest Details
+                    </button>
+                    <div class="flex items-center gap-1.5 text-xs text-emerald-700 font-bold bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                        <i class="fa-solid fa-shield-halved"></i> 256-Bit Encrypted
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="stripe-loading" class="py-12 text-center space-y-3">
+                    <i class="fa-solid fa-spinner fa-spin text-3xl text-[#F7BA1E]"></i>
+                    <p class="text-xs font-bold text-stone-700">Connecting to Stripe Secure Gateway...</p>
+                </div>
+
+                <!-- Stripe Checkout Mount Point -->
+                <div id="stripe-embedded-checkout" class="min-h-[350px]"></div>
+
+                <!-- Development / Fallback Notice -->
+                <div id="stripe-placeholder-notice" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-5 text-xs text-[#7D6E23] space-y-3">
+                    <div class="flex items-center gap-2 font-display font-bold text-sm text-[#111111]">
+                        <i class="fa-solid fa-circle-info text-[#F7BA1E]"></i>
+                        <span>Stripe Setup Ready</span>
+                    </div>
+                    <p class="text-stone-700 leading-relaxed">
+                        Your booking and deposit calculations are verified! To accept live or test card payments, add your <code>STRIPE_SECRET_KEY</code> and <code>PUBLIC_STRIPE_PUBLISHABLE_KEY</code> to your <code>.env</code> file.
+                    </p>
+                    <div class="pt-2">
+                        <a
+                            id="btn-test-success"
+                            href="/booking/success"
+                            class="inline-block bg-[#111111] text-[#F7BA1E] px-5 py-3 rounded-xl font-display font-bold text-xs uppercase tracking-wider hover:bg-stone-800 transition"
+                        >
+                            Preview Booking Confirmation Page <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<!-- Load Stripe.js for Embedded Checkout -->
+<script is:inline src="https://js.stripe.com/v3/"></script>
+
+<script is:inline>
+    let bookingState = {
+        guests: 2,
+        nights: 2,
+        checkin: "",
+        checkout: "",
+        tentType: "4M",
+        tentPricePerNight: 50,
+        bedding: "cosy",
+        addons: {
+            kitchen: false,
+            living: false,
+            woodburner: false,
+            awning: false,
+            chairs: false,
+            firecooking: false,
+            starlink: false,
+            beachtoys: false,
+        },
+        fulfillment: "deluxe",
+        depositPercent: 50,
+        depositAmount: 0,
+        securityDeposit: 200,
+        totalRentalPrice: 0,
+        totalDueToday: 0,
+        remainingBalance: 0,
+        balanceDueDate: "",
+    };
+
+    let stripeEmbeddedCheckoutInstance = null;
+
+    function changeGuests(delta) {
+        let newCount = bookingState.guests + delta;
+        if (newCount < 1) newCount = 1;
+        if (newCount > 8) newCount = 8;
+        bookingState.guests = newCount;
+
+        document.getElementById("guest-count-display").innerText =
+            `${newCount} ${newCount === 1 ? "Guest" : "Guests"}`;
+        document
+            .querySelectorAll(".guest-label")
+            .forEach((el) => (el.innerText = newCount));
+
+        if (newCount <= 3) {
+            bookingState.tentType = "4M";
+            bookingState.tentPricePerNight = 50;
+        } else if (newCount <= 6) {
+            bookingState.tentType = "5M";
+            bookingState.tentPricePerNight = 75;
+        } else {
+            bookingState.tentType = "6M";
+            bookingState.tentPricePerNight = 100;
+        }
+
+        updateTentCards();
+        calcTotal();
+    }
+
+    function updateTentCards() {
+        ["4m", "5m", "6m"].forEach((t) => {
+            const card = document.getElementById(`tent-card-${t}`);
+            if (card) {
+                card.style.border = "2px solid #e5e7eb";
+                card.style.backgroundColor = "#ffffff";
+            }
+        });
+        const active = document.getElementById(
+            `tent-card-${bookingState.tentType.toLowerCase()}`,
+        );
+        if (active) {
+            active.style.border = "2px solid #F7BA1E";
+            active.style.backgroundColor = "rgba(254, 243, 199, 0.4)";
+        }
+    }
+
+    function updateDates() {
+        const checkinVal = document.getElementById("checkin-date").value;
+        const checkoutVal = document.getElementById("checkout-date").value;
+
+        if (checkinVal && checkoutVal) {
+            const d1 = new Date(checkinVal);
+            const d2 = new Date(checkoutVal);
+            let diffDays = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 2) {
+                diffDays = 2;
+                const newCheckout = new Date(d1);
+                newCheckout.setDate(newCheckout.getDate() + 2);
+                document.getElementById("checkout-date").value = newCheckout
+                    .toISOString()
+                    .split("T")[0];
+            }
+
+            bookingState.nights = diffDays;
+            bookingState.checkin = checkinVal;
+            bookingState.checkout =
+                document.getElementById("checkout-date").value;
+
+            document.getElementById("nights-badge").innerText =
+                `${diffDays} Nights Stay`;
+            calcTotal();
+        }
+    }
+
+    function selectBedding(tier) {
+        bookingState.bedding = tier;
+        document.querySelectorAll(".bedding-card").forEach((c) => {
+            c.style.border = "2px solid #e5e7eb";
+            c.style.backgroundColor = "#f9fafb";
+        });
+        const active = document.getElementById(`bedding-${tier}`);
+        if (active) {
+            active.style.border = "2px solid #F7BA1E";
+            active.style.backgroundColor = "rgba(254, 243, 199, 0.5)";
+        }
+        calcTotal();
+    }
+
+    function selectFulfillment(method) {
+        bookingState.fulfillment = method;
+        document.querySelectorAll(".fulfillment-card").forEach((c) => {
+            c.style.border = "2px solid #e5e7eb";
+            c.style.backgroundColor = "#f9fafb";
+        });
+        const active = document.getElementById(`fulfillment-${method}`);
+        if (active) {
+            active.style.border = "2px solid #F7BA1E";
+            active.style.backgroundColor = "rgba(254, 243, 199, 0.5)";
+        }
+        calcTotal();
+    }
+
+    function toggleAddon(key) {
+        const cb = document.getElementById(`addon-${key}`);
+        const label = document.getElementById(`addon-label-${key}`);
+        if (cb && label) {
+            bookingState.addons[key] = cb.checked;
+            if (cb.checked) {
+                label.style.border = "2px solid #F7BA1E";
+                label.style.backgroundColor = "rgba(254, 243, 199, 0.4)";
+            } else {
+                label.style.border = "1px solid #e5e7eb";
+                label.style.backgroundColor = "#f9fafb";
+            }
+            calcTotal();
+        }
+    }
+
+    function calcTotal() {
+        const nights = bookingState.nights;
+        const guests = bookingState.guests;
+
+        let baseTentPrice = bookingState.tentPricePerNight * nights;
+        document.getElementById("summary-tent-title").innerText =
+            `${bookingState.tentType} Bell Tent`;
+        document.getElementById("summary-guest-detail").innerText =
+            `${guests} Guests × ${nights} Nights (£${bookingState.tentPricePerNight}/n)`;
+        document.getElementById("summary-tent-price").innerText =
+            `£${baseTentPrice}`;
+
+        let discountRate = 0;
+        if (nights === 3) discountRate = 0.05;
+        else if (nights === 4) discountRate = 0.1;
+        else if (nights === 5) discountRate = 0.15;
+        else if (nights >= 6) discountRate = 0.25;
+
+        const checkinVal = document.getElementById("checkin-date").value;
+        if (checkinVal && checkinVal.startsWith("2027")) {
+            if (discountRate < 0.15) discountRate = 0.15;
+        }
+
+        let discountAmount = baseTentPrice * discountRate;
+        let discountedTentPrice = baseTentPrice - discountAmount;
+
+        const discRow = document.getElementById("summary-discount-row");
+        if (discountRate > 0) {
+            discRow.classList.remove("hidden");
+            document.getElementById("summary-discount-amount").innerText =
+                `-£${discountAmount.toFixed(2)}`;
+            document.getElementById("discount-banner-text").innerText =
+                `${discountRate * 100}% Discount Applied!`;
+        } else {
+            discRow.classList.add("hidden");
+            document.getElementById("discount-banner-text").innerText =
+                `Standard ${nights}-Night Rate (0% Discount)`;
+        }
+
+        let beddingTotal = 0;
+        let beddingTitle = "DIY Sleeping (Free)";
+        if (bookingState.bedding === "essentials") {
+            beddingTotal = 25 * guests;
+            beddingTitle = "Bedding: Essentials (£25/g)";
+        } else if (bookingState.bedding === "cosy") {
+            beddingTotal = 35 * guests;
+            beddingTitle = "Bedding: Cosy Camping (£35/g)";
+        }
+        document.getElementById("summary-bedding-title").innerText =
+            beddingTitle;
+        document.getElementById("summary-bedding-detail").innerText =
+            `${guests} Guests × flat fee`;
+        document.getElementById("summary-bedding-price").innerText =
+            `£${beddingTotal}`;
+
+        let addonsTotal = 0;
+        const addonsContainer = document.getElementById("summary-addons-list");
+        addonsContainer.innerHTML =
+            '<div class="text-[11px] font-display font-bold text-stone-400 uppercase tracking-wider">Camp Add-ons:</div>';
+
+        const addonPrices = {
+            kitchen: 40 + 5 * guests,
+            living: 65,
+            woodburner: 40,
+            awning: 30,
+            chairs: 10 * guests,
+            firecooking: 25,
+            starlink: 10 * nights,
+            beachtoys: 20,
+        };
+
+        const addonTitles = {
+            kitchen: "Cosy Kitchen Setup",
+            living: "Cosy Living Lounge",
+            woodburner: "Indoor Wood Burner",
+            awning: "Outdoor Awning Porch",
+            chairs: "Indoor & Outdoor Chairs",
+            firecooking: "Fire Cooking Gear",
+            starlink: "Starlink Wi-Fi",
+            beachtoys: "Beach & Adventure Kit",
+        };
+
+        let hasAddons = false;
+        for (let k in bookingState.addons) {
+            if (bookingState.addons[k]) {
+                hasAddons = true;
+                let price = addonPrices[k];
+                addonsTotal += price;
+                addonsContainer.innerHTML += `
+          <div class="flex justify-between items-center py-1">
+            <span class="text-stone-700 font-medium">${addonTitles[k]}</span>
+            <span class="font-bold text-stone-900">£${price}</span>
+          </div>
+        `;
+            }
+        }
+        if (!hasAddons) {
+            addonsContainer.innerHTML +=
+                '<div class="text-stone-400 italic">No add-ons selected</div>';
+        }
+
+        let fulfillmentPrice = bookingState.fulfillment === "deluxe" ? 225 : 0;
+        document.getElementById("summary-fulfillment-title").innerText =
+            bookingState.fulfillment === "deluxe"
+                ? "Cosy Camping Deluxe Setup"
+                : "DIY Pickup (Polmont Base)";
+        document.getElementById("summary-fulfillment-detail").innerText =
+            bookingState.fulfillment === "deluxe"
+                ? "Flat £225.00 fee for entire stay"
+                : "Free depot pickup & return";
+        document.getElementById("summary-fulfillment-price").innerText =
+            `£${fulfillmentPrice}`;
+
+        let totalRentalPrice =
+            discountedTentPrice + beddingTotal + addonsTotal + fulfillmentPrice;
+        bookingState.totalRentalPrice = totalRentalPrice;
+        document.getElementById("summary-grand-total").innerText =
+            `£${totalRentalPrice.toFixed(2)}`;
+
+        // Calculate Deposit (50% if check-in >= 28 days away, 100% if < 28 days)
+        const checkinDate = new Date(document.getElementById("checkin-date").value);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const daysUntilCheckin = Math.ceil((checkinDate - today) / (1000 * 60 * 60 * 24));
+
+        const isFiftyPercent = daysUntilCheckin >= 28;
+        bookingState.depositPercent = isFiftyPercent ? 50 : 100;
+        const depositAmount = isFiftyPercent ? (totalRentalPrice * 0.5) : totalRentalPrice;
+        bookingState.depositAmount = depositAmount;
+
+        const securityDeposit = 200;
+        bookingState.securityDeposit = securityDeposit;
+
+        const totalDueToday = depositAmount + securityDeposit;
+        bookingState.totalDueToday = totalDueToday;
+
+        const remainingBalance = isFiftyPercent ? (totalRentalPrice - depositAmount) : 0;
+        bookingState.remainingBalance = remainingBalance;
+
+        // Due date format
+        if (isFiftyPercent) {
+            const dueDate = new Date(checkinDate);
+            dueDate.setDate(dueDate.getDate() - 28);
+            bookingState.balanceDueDate = dueDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+        } else {
+            bookingState.balanceDueDate = "";
+        }
+
+        // Update UI
+        document.getElementById("summary-deposit-label").innerText = `Booking Deposit (${bookingState.depositPercent}%)`;
+        document.getElementById("summary-deposit-badge").innerText = isFiftyPercent ? `Booking ≥28 days in advance` : `Booking <28 days to arrival`;
+        document.getElementById("summary-deposit-amount").innerText = `£${depositAmount.toFixed(2)}`;
+        document.getElementById("summary-total-due-today").innerText = `£${totalDueToday.toFixed(2)}`;
+
+        let perPersonToday = totalDueToday / guests;
+        document.getElementById("summary-per-person").innerText = `Just £${perPersonToday.toFixed(2)}/guest today`;
+
+        const remainingBox = document.getElementById("summary-remaining-box");
+        const remainingText = document.getElementById("summary-remaining-text");
+        if (isFiftyPercent && remainingBalance > 0) {
+            remainingBox.classList.remove("hidden");
+            remainingText.innerText = `Remaining 50% balance (£${remainingBalance.toFixed(2)}) due 28 days prior to check-in (${bookingState.balanceDueDate}).`;
+        } else {
+            remainingBox.classList.add("hidden");
+        }
+
+        document.getElementById("calc-bedding-essentials").innerText =
+            `£${25 * guests} Total`;
+        document.getElementById("calc-bedding-cosy").innerText =
+            `£${35 * guests} Total`;
+        document.getElementById("summary-stay-badge").innerText =
+            `${nights} Nights`;
+    }
+
+    // Modal and Stripe Checkout Logic
+    function openCheckoutModal() {
+        const modal = document.getElementById("checkout-modal");
+        const checkin = document.getElementById("checkin-date").value;
+        const checkout = document.getElementById("checkout-date").value;
+
+        document.getElementById("modal-trip-summary").innerText =
+            `${bookingState.tentType} Bell Tent | ${bookingState.nights} Nights (${checkin} to ${checkout}) | ${bookingState.guests} Guests`;
+        document.getElementById("modal-due-summary").innerText =
+            `£${bookingState.totalDueToday.toFixed(2)}`;
+
+        // Reset steps
+        document.getElementById("modal-step-details").classList.remove("hidden");
+        document.getElementById("modal-step-payment").classList.add("hidden");
+        document.getElementById("modal-error-banner").classList.add("hidden");
+        document.getElementById("modal-heading").innerText = "Guest & Campsite Details";
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeCheckoutModal() {
+        const modal = document.getElementById("checkout-modal");
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "auto";
+    }
+
+    async function handleProceedToPayment() {
+        const errorBanner = document.getElementById("modal-error-banner");
+        errorBanner.classList.add("hidden");
+
+        const name = document.getElementById("cust-name").value.trim();
+        const email = document.getElementById("cust-email").value.trim();
+        const phone = document.getElementById("cust-phone").value.trim();
+        const address = document.getElementById("cust-address").value.trim();
+        const campsite = document.getElementById("cust-campsite").value.trim();
+        const requests = document.getElementById("cust-requests").value.trim();
+
+        if (!name || !email || !phone || !campsite) {
+            errorBanner.innerText = "Please fill in all required fields (Name, Email, Phone, and Destination Campsite).";
+            errorBanner.classList.remove("hidden");
+            return;
+        }
+
+        const proceedBtn = document.getElementById("btn-proceed-to-payment");
+        proceedBtn.disabled = true;
+        proceedBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Initializing Payment...`;
+
+        try {
+            const payload = {
+                checkinDate: document.getElementById("checkin-date").value,
+                checkoutDate: document.getElementById("checkout-date").value,
+                guests: bookingState.guests,
+                bedding: bookingState.bedding,
+                fulfillment: bookingState.fulfillment,
+                addons: bookingState.addons,
+                customerName: name,
+                customerEmail: email,
+                customerPhone: phone,
+                customerAddress: address,
+                campsiteLocation: campsite,
+                specialRequests: requests,
+            };
+
+            const response = await fetch("/api/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.clientSecret) {
+                if (data.isPlaceholderKey) {
+                    // Show developer helper banner
+                    document.getElementById("modal-step-details").classList.add("hidden");
+                    document.getElementById("modal-step-payment").classList.remove("hidden");
+                    document.getElementById("stripe-loading").classList.add("hidden");
+                    document.getElementById("stripe-placeholder-notice").classList.remove("hidden");
+                    document.getElementById("modal-heading").innerText = "Stripe Payment Preview";
+                    return;
+                }
+                throw new Error(data.error || "Failed to initialize payment session.");
+            }
+
+            // Step 2: Mount Stripe Embedded Checkout
+            document.getElementById("modal-step-details").classList.add("hidden");
+            document.getElementById("modal-step-payment").classList.remove("hidden");
+            document.getElementById("modal-heading").innerText = "Secure Payment";
+            document.getElementById("stripe-loading").classList.remove("hidden");
+
+            const modalEl = document.getElementById("checkout-modal");
+            const pk = modalEl.getAttribute("data-stripe-pk") || "";
+
+            if (typeof window.Stripe === "function" && pk && !pk.startsWith("pk_test_placeholder")) {
+                const stripe = window.Stripe(pk);
+                const checkout = await stripe.initEmbeddedCheckout({
+                    clientSecret: data.clientSecret,
+                });
+                document.getElementById("stripe-loading").classList.add("hidden");
+                checkout.mount("#stripe-embedded-checkout");
+                stripeEmbeddedCheckoutInstance = checkout;
+            } else {
+                document.getElementById("stripe-loading").classList.add("hidden");
+                document.getElementById("stripe-placeholder-notice").classList.remove("hidden");
+            }
+        } catch (err) {
+            console.error(err);
+            errorBanner.innerText = err.message || "An unexpected error occurred. Please try again.";
+            errorBanner.classList.remove("hidden");
+        } finally {
+            proceedBtn.disabled = false;
+            proceedBtn.innerHTML = `<i class="fa-solid fa-lock text-xs mr-1"></i> Proceed to Secure Payment <i class="fa-solid fa-arrow-right ml-1"></i>`;
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // Guest buttons
+        document
+            .getElementById("btn-guest-minus")
+            ?.addEventListener("click", () => changeGuests(-1));
+        document
+            .getElementById("btn-guest-plus")
+            ?.addEventListener("click", () => changeGuests(1));
+
+        // Date inputs
+        document
+            .getElementById("checkin-date")
+            ?.addEventListener("change", updateDates);
+        document
+            .getElementById("checkout-date")
+            ?.addEventListener("change", updateDates);
+
+        // Bedding cards
+        document.querySelectorAll(".bedding-card").forEach((card) => {
+            card.addEventListener("click", () => {
+                const tier = card.getAttribute("data-bedding");
+                if (tier) selectBedding(tier);
+            });
+        });
+
+        // Fulfillment cards
+        document.querySelectorAll(".fulfillment-card").forEach((card) => {
+            card.addEventListener("click", () => {
+                const method = card.getAttribute("data-fulfillment");
+                if (method) selectFulfillment(method);
+            });
+        });
+
+        // Addon checkboxes
+        [
+            "kitchen",
+            "living",
+            "woodburner",
+            "awning",
+            "chairs",
+            "firecooking",
+            "starlink",
+            "beachtoys",
+        ].forEach((key) => {
+            document
+                .getElementById(`addon-${key}`)
+                ?.addEventListener("change", () => toggleAddon(key));
+        });
+
+        // Book button -> Opens customer details modal
+        document
+            .getElementById("btn-book-now")
+            ?.addEventListener("click", openCheckoutModal);
+
+        // Modal close button & background click
+        document
+            .getElementById("btn-close-modal")
+            ?.addEventListener("click", closeCheckoutModal);
+
+        document
+            .getElementById("checkout-modal")
+            ?.addEventListener("click", (e) => {
+                if (e.target.id === "checkout-modal") closeCheckoutModal();
+            });
+
+        // Proceed to Payment button inside modal
+        document
+            .getElementById("btn-proceed-to-payment")
+            ?.addEventListener("click", handleProceedToPayment);
+
+        // Back to details button inside modal
+        document
+            .getElementById("btn-back-to-details")
+            ?.addEventListener("click", () => {
+                document.getElementById("modal-step-payment").classList.add("hidden");
+                document.getElementById("modal-step-details").classList.remove("hidden");
+                document.getElementById("modal-heading").innerText = "Guest & Campsite Details";
+            });
+
+        // Initialize default dates
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const checkout = new Date(tomorrow);
+        checkout.setDate(checkout.getDate() + 2);
+
+        const checkinEl = document.getElementById("checkin-date");
+        const checkoutEl = document.getElementById("checkout-date");
+        if (checkinEl && checkoutEl) {
+            checkinEl.value = tomorrow.toISOString().split("T")[0];
+            checkoutEl.value = checkout.toISOString().split("T")[0];
+        }
+
+        updateDates();
+        selectBedding("cosy");
+        selectFulfillment("deluxe");
+    });
+</script>
+
+<style is:global>
+    .os-grid-badge {
+        font-family: "Courier New", Courier, monospace !important;
+        letter-spacing: 0.08em !important;
+        background: rgba(125, 110, 35, 0.08) !important;
+        border: 1px dashed #7d6e23 !important;
+        color: #4f571a !important;
+    }
+</style>
+

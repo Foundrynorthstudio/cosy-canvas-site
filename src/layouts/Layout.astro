@@ -1,23 +1,305 @@
-<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  type?: 'website' | 'article';
+  keywords?: string;
+  canonicalUrl?: string;
+  structuredData?: Record<string, any> | Record<string, any>[];
+}
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+const {
+  title,
+  description,
+  image = "/cosy_canvas_hero_coastal_pitch.jpg",
+  type = "website",
+  keywords = "bell tent hire scotland, glamping hire scotland, luxury camping scotland, bell tent rental edinburgh, bell tent rental glasgow, loch lomond glamping, nc500 bell tent hire, camping gear rental scotland, event bell tents scotland, wedding glamping village",
+  canonicalUrl = Astro.url.href,
+  structuredData,
+} = Astro.props;
+
+import '../styles/global.css';
+import CookieConsent from '../components/CookieConsent.astro';
+
+const siteUrl = Astro.site ? Astro.site.origin : "https://cosycanvas.co.uk";
+const fullImageUrl = image.startsWith("http") ? image : `${siteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
+const cleanCanonical = canonicalUrl.split("?")[0]; // ensure canonical is clean without tracking params
+
+// Default Organization & LocalBusiness JSON-LD Schema
+const defaultLocalBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "Campground", "TravelAgency"],
+  "name": "The Cosy Canvas Co.",
+  "alternateName": "The Cosy Canvas Company",
+  "url": siteUrl,
+  "logo": `${siteUrl}/TCCC%20Horizontal%20Logo.png`,
+  "image": fullImageUrl,
+  "description": "Hassle-free luxury bell tent hire, glamping setups, and camping gear rental delivered and pitched across Scotland.",
+  "telephone": "+44 7700 900123",
+  "email": "hello@cosycanvasco.com",
+  "priceRange": "££",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Polmont Depot (OS Grid: NS 931 785)",
+    "addressLocality": "Polmont",
+    "addressRegion": "Stirlingshire",
+    "postalCode": "FK2",
+    "addressCountry": "GB"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 55.9922,
+    "longitude": -3.7123
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "opens": "08:00",
+    "closes": "20:00"
+  },
+  "areaServed": [
+    { "@type": "AdministrativeArea", "name": "Scotland" },
+    { "@type": "Place", "name": "Loch Lomond and The Trossachs National Park" },
+    { "@type": "Place", "name": "Cairngorms National Park" },
+    { "@type": "AdministrativeArea", "name": "Stirlingshire" },
+    { "@type": "AdministrativeArea", "name": "East Lothian" },
+    { "@type": "AdministrativeArea", "name": "Fife" },
+    { "@type": "AdministrativeArea", "name": "Perthshire" },
+    { "@type": "AdministrativeArea", "name": "Scottish Highlands" },
+    { "@type": "Place", "name": "North Coast 500" }
+  ],
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=61574022630011",
+    "https://www.instagram.com/thecosycanvasco",
+    "https://www.tiktok.com/@thecosycanvasco"
+  ],
+  "currenciesAccepted": "GBP",
+  "paymentAccepted": "Credit Card, Apple Pay, Google Pay, Stripe, Debit Card"
+};
+
+// BreadcrumbList Schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": siteUrl
+    },
+    ...(Astro.url.pathname !== "/" ? [{
+      "@type": "ListItem",
+      "position": 2,
+      "name": title.split("|")[0].trim(),
+      "item": cleanCanonical
+    }] : [])
+  ]
+};
+---
+
+<!DOCTYPE html>
+<html lang="en-GB" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Primary Meta Tags -->
+  <title>{title}</title>
+  <meta name="title" content={title} />
+  <meta name="description" content={description} />
+  <meta name="keywords" content={keywords} />
+  <meta name="author" content="The Cosy Canvas Co." />
+  <link rel="canonical" href={cleanCanonical} />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+  <!-- Google Search Console Site Verification -->
+  <meta name="google-site-verification" content="H0sYGrnXG4TZuZjwpMr9uy-2JWKcXEP-qdxE3MzIUJc" />
+
+  <!-- Local Scotland & UK SEO Geo-Tags -->
+  <meta name="geo.region" content="GB-STG" />
+  <meta name="geo.placename" content="Polmont, Stirlingshire, Scotland" />
+  <meta name="geo.position" content="55.9922;-3.7123" />
+  <meta name="ICBM" content="55.9922, -3.7123" />
+
+  <!-- Open Graph / Facebook / WhatsApp / iMessage -->
+  <meta property="og:type" content={type} />
+  <meta property="og:url" content={cleanCanonical} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={fullImageUrl} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland" />
+  <meta property="og:site_name" content="The Cosy Canvas Co." />
+  <meta property="og:locale" content="en_GB" />
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content={cleanCanonical} />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={fullImageUrl} />
+  <meta name="twitter:site" content="@thecosycanvasco" />
+  <meta name="twitter:creator" content="@thecosycanvasco" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+  <!-- JSON-LD Structured Data for Google Rich Snippets -->
+  <script type="application/ld+json" set:html={JSON.stringify(defaultLocalBusinessSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  {structuredData && (
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  )}
+
+  <!-- Google Fonts & FontAwesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#FDFBF7] text-[#111111] font-sans antialiased flex flex-col min-h-screen relative">
+
+  <!-- Fixed Contour Lines Background Layer -->
+  <div 
+    class="fixed inset-0 pointer-events-none z-0 opacity-25"
+    style="background-image: url('/cosy_canvas_contour_bg.png'); background-size: 750px 750px; background-repeat: repeat;"
+  ></div>
+
+  <!-- Content Layer (z-10 Keeps Everything Above Background) -->
+  <div class="relative z-10 flex flex-col min-h-screen">
+
+    <!-- Seasonal Promotional Banner -->
+    <div class="bg-[#7D6E23] text-white text-xs md:text-sm py-2.5 px-4 text-center font-medium flex items-center justify-center gap-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-[#F7BA1E] animate-pulse"></span>
+      <span>2026/2027 Scottish Camping Season • 🌿 15% Early Bird Offer for 2027 (Book by 31 Oct 2026) • 4M, 5M & 6M Tents from £50/n</span>
+      <a href="/booking" class="underline font-semibold hover:text-[#F7BA1E] ml-2 hidden md:inline">Begin your booking &rarr;</a>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+          <a href="/" class="flex items-center" aria-label="The Cosy Canvas Co. Homepage">
+            <img src="/TCCC Horizontal Logo.png" alt="The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland" class="h-10 md:h-12 w-auto object-contain" onerror="this.src='https://placehold.co/200x60/FAF7EE/7D6E23?text=The+Cosy+Canvas+Co.'">
+          </a>
+          <nav class="hidden lg:flex items-center space-x-7 text-sm font-medium text-stone-700" aria-label="Main Navigation">
+            <a href="/camping-hire" class="hover:text-[#7D6E23] transition-colors">Camping Hire</a>
+            <a href="/campsites" class="hover:text-[#7D6E23] transition-colors">Campsites</a>
+            <a href="/parties" class="hover:text-[#7D6E23] transition-colors">Parties & Sleepovers</a>
+            <a href="/events" class="hover:text-[#7D6E23] transition-colors">Events & Weddings</a>
+            <a href="/journal" class="hover:text-[#7D6E23] transition-colors">Journal</a>
+            <a href="/faqs" class="hover:text-[#7D6E23] transition-colors">FAQs</a>
+            <a href="/about" class="hover:text-[#7D6E23] transition-colors">About Us</a>
+          </nav>
+          <a href="/booking" class="bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-bold text-xs uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md transition-all flex items-center gap-2">
+            <i class="fa-solid fa-tent"></i> Book Now
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Dynamic Content Slot -->
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- 4-Column Footer -->
+    <footer class="bg-stone-900 text-stone-400 pt-16 pb-12 border-t border-stone-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-stone-800">
+          <div>
+            <div class="flex items-center gap-3 mb-4">
+              <img src="/TCCC Horizontal Logo.png" alt="The Cosy Canvas Co." class="h-10 w-auto object-contain bg-white/95 px-3 py-1.5 rounded-lg" onerror="this.src='https://placehold.co/180x50/FFFFFF/111111?text=Cosy+Canvas+Co.'">
+            </div>
+            <p class="text-xs text-stone-400 leading-relaxed mb-4">
+              Done-for-you luxury bell tent hire and camping stays delivered and pitched across Scotland.
+            </p>
+            <div class="os-grid-badge text-[#F7BA1E] text-[11px] px-2.5 py-1 rounded inline-block bg-stone-800 border-[#F7BA1E]/40 font-mono">
+              POLMONT BASE: OS NS 931 785
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-display font-bold text-white text-xs uppercase tracking-widest mb-4">Site Pages</h4>
+            <ul class="space-y-2 text-xs">
+              <li><a href="/" class="hover:text-[#F7BA1E] transition-colors">Home</a></li>
+              <li><a href="/camping-hire" class="hover:text-[#F7BA1E] transition-colors">Camping Hire</a></li>
+              <li><a href="/campsites" class="hover:text-[#F7BA1E] transition-colors">Scottish Campsites Guide</a></li>
+              <li><a href="/parties" class="hover:text-[#F7BA1E] transition-colors">Parties & Sleepovers</a></li>
+              <li><a href="/events" class="hover:text-[#F7BA1E] transition-colors">Events & Weddings</a></li>
+              <li><a href="/journal" class="hover:text-[#F7BA1E] transition-colors">The Cosy Journal</a></li>
+              <li><a href="/faqs" class="hover:text-[#F7BA1E] transition-colors">FAQs & Policies</a></li>
+              <li><a href="/about" class="hover:text-[#F7BA1E] transition-colors">About Us & Base</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-display font-bold text-white text-xs uppercase tracking-widest mb-4">Get In Touch</h4>
+            <ul class="space-y-3 text-xs">
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-envelope text-[#F7BA1E]"></i>
+                <a href="mailto:hello@cosycanvasco.com" class="hover:text-white">hello@cosycanvasco.com</a>
+              </li>
+              <li class="flex items-center gap-2">
+                <i class="fa-solid fa-location-dot text-[#7D6E23]"></i>
+                <span>Polmont, Stirlingshire, Scotland</span>
+              </li>
+              <li class="flex items-center gap-2 pt-2">
+                <a href="https://www.facebook.com/profile.php?id=61574022630011" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center transition" aria-label="Facebook">
+                  <i class="fa-brands fa-facebook-f text-xs"></i>
+                </a>
+                <a href="https://www.instagram.com/thecosycanvasco" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center transition" aria-label="Instagram">
+                  <i class="fa-brands fa-instagram text-xs"></i>
+                </a>
+                <a href="https://www.tiktok.com/@thecosycanvasco" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center transition" aria-label="TikTok">
+                  <i class="fa-brands fa-tiktok text-xs"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-display font-bold text-white text-xs uppercase tracking-widest mb-4">Quality Guarantee</h4>
+            <p class="text-xs text-stone-400 leading-relaxed mb-4">
+              Every stay is covered by our Fix-It-Fast Support & Full Refund Weather Guarantee.
+            </p>
+            <div class="text-[11px] text-stone-500 space-x-2">
+              <a href="/terms" class="hover:text-stone-300">Terms</a>
+              <span>•</span>
+              <a href="/privacy" class="hover:text-stone-300">Privacy</a>
+              <span>•</span>
+              <button type="button" class="open-cookie-settings-btn hover:text-[#F7BA1E] underline cursor-pointer">Cookie Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
+          <div>© 2026 The Cosy Canvas Company. All rights reserved.</div>
+          <div class="flex items-center gap-4">
+            <a href="/sitemap-index.xml" class="hover:text-stone-400">Sitemap</a>
+            <span>•</span>
+            <span>Registered in Scotland</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- GDPR Cookie Consent Manager -->
+  <CookieConsent />
+
+</body>
+</html>

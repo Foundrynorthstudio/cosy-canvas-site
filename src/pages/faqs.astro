@@ -1,0 +1,112 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const faqs = [
+  {
+    q: "What areas of Scotland do you deliver and pitch bell tents to?",
+    a: "We deliver, pitch, and collect across all of Scotland! Popular destinations include Loch Lomond & The Trossachs National Park, Cairngorms National Park, East Lothian coastline, Fife, Stirlingshire, Perthshire, and the North Coast 500 (NC500). Customers can also collect gear directly from our Polmont base depot (OS Grid: NS 931 785) with our free DIY Pickup option."
+  },
+  {
+    q: "What size bell tent do I need for my group?",
+    a: "We offer three heavy-duty breathable cotton canvas bell tent sizes: 4M Bell Tent (ideal for couples or 1–3 guests), 5M Bell Tent (perfect for families of 4–6 guests), and 6M Cathedral Tent (ultra-spacious canvas palace for 7–8 guests or luxury bridal suites)."
+  },
+  {
+    q: "How does the payment and deposit system work?",
+    a: "If you book 28 days or more in advance of your check-in date, you only pay a 50% booking deposit today, with the remaining balance due 28 days before arrival. For bookings made within 28 days of check-in, the full stay amount is paid at checkout. A refundable £200 security deposit is taken at checkout and automatically released within 48 hours following post-stay inspection."
+  },
+  {
+    q: "What is your Weather Guarantee?",
+    a: "Our heavy-duty 320gsm treated canvas tents are 100% waterproof and tested against Scottish rain and wind. However, if the Met Office issues a named amber or red storm warning for your booked dates and location, you qualify for free date rescheduling or a 100% full refund."
+  },
+  {
+    q: "Do I need to book a campsite pitch separately?",
+    a: "Yes. Customers should reserve their pitch directly with their chosen campsite or land manager. When configuring your booking with us, simply enter your campsite name or pitch number in the booking notes so our pitching crew can coordinate delivery and setup."
+  },
+  {
+    q: "What is included in the bedding packages?",
+    a: "We offer three bedding tiers: 'DIY Sleeping' (free, bring your own sleeping bags), 'Essentials' (£25/guest, elevated comfort air frame mattresses), and 'Cosy Camping Luxury' (£35/guest, elevated air beds, hotel-quality duvets, fresh cotton linens, pillows, and extra cosy throws)."
+  },
+  {
+    q: "Are campfires and indoor wood burners safe?",
+    a: "Yes! Our optional indoor wood-burning tent stoves include certified chimney flues, heatproof silicone flashing kits, fire-retardant hearth mats, and starter fuel baskets. All our canvas bell tents are fire-retardant treated to British safety standards (BS 7837)."
+  }
+];
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(item => ({
+    "@type": "Question",
+    "name": item.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.a
+    }
+  }))
+};
+---
+
+<Layout
+  title="Frequently Asked Questions & Policies | The Cosy Canvas Co."
+  description="Got questions about hiring a bell tent in Scotland? Learn about delivery areas, tent sizing, bedding packages, 50% deposit rules, and our Scottish weather guarantee."
+  keywords="bell tent hire faqs scotland, glamping hire questions, loch lomond camping rules, bell tent delivery scotland, polmont base depot, tent hire deposit policy"
+  structuredData={faqSchema}
+>
+  <!-- Header Banner -->
+  <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">
+        HELP & BOOKING POLICIES
+      </span>
+      <h1 class="font-display text-3xl md:text-5xl font-black text-white mb-3">
+        Frequently Asked Questions
+      </h1>
+      <p class="text-stone-300 text-sm md:text-base font-light max-w-xl mx-auto leading-relaxed">
+        Everything you need to know about our luxury bell tent rentals, Scotland delivery, bedding packages, and deposit policies.
+      </p>
+    </div>
+  </div>
+
+  <!-- FAQ Accordion Section -->
+  <section class="py-16 md:py-20 bg-stone-50/60 relative z-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      {faqs.map((faq, index) => (
+        <details class="group bg-white rounded-2xl border border-stone-200 shadow-sm p-6 [&_summary::-webkit-details-marker]:hidden transition-all open:ring-2 open:ring-[#F7BA1E]/50">
+          <summary class="flex items-center justify-between cursor-pointer list-none text-left">
+            <h2 class="text-base sm:text-lg font-display font-bold text-[#111111] pr-4">
+              {faq.q}
+            </h2>
+            <span class="w-8 h-8 rounded-full bg-stone-100 group-open:bg-[#F7BA1E] text-stone-700 group-open:text-[#111111] flex items-center justify-center shrink-0 transition-transform group-open:rotate-180">
+              <i class="fa-solid fa-chevron-down text-xs"></i>
+            </span>
+          </summary>
+          <p class="text-xs sm:text-sm text-stone-600 leading-relaxed mt-4 pt-4 border-t border-stone-100">
+            {faq.a}
+          </p>
+        </details>
+      ))}
+
+      <!-- Still Have Questions CTA -->
+      <div class="bg-[#111111] text-white p-8 md:p-10 rounded-3xl mt-12 text-center space-y-4 shadow-xl">
+        <h3 class="font-display text-2xl font-bold text-white">Have a specific question about your Scotland trip?</h3>
+        <p class="text-stone-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed font-light">
+          Our team is happy to help with bespoke pitch coordination, campsite recommendations, or event planning across Scotland.
+        </p>
+        <div class="pt-2 flex flex-wrap justify-center gap-4">
+          <a
+            href="mailto:hello@cosycanvasco.com"
+            class="bg-[#F7BA1E] text-[#111111] font-display font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full hover:bg-[#D4A51E] transition inline-flex items-center gap-2"
+          >
+            <i class="fa-solid fa-envelope"></i> Email Our Team
+          </a>
+          <a
+            href="/booking"
+            class="bg-stone-800 text-white font-display font-bold text-xs uppercase tracking-wider px-6 py-3 rounded-full hover:bg-stone-700 transition inline-flex items-center gap-2"
+          >
+            <i class="fa-solid fa-tent"></i> Configure Your Stay
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

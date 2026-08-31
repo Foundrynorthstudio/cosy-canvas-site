@@ -1,0 +1,275 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Kids Bell Tent Parties & Garden Sleepovers Scotland | The Cosy Canvas Co." 
+  description="Unforgettable kids bell tent sleepover parties delivered and pitched in your garden across Falkirk, Stirlingshire, Edinburgh, and Glasgow. Instant online pricing."
+>
+  <!-- Page Header Banner -->
+  <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">GARDEN SLEEPOVERS & CELEBRATIONS</span>
+      <h1 class="font-display text-3xl md:text-5xl font-black text-white">Kids Bell Tent Parties & Sleepovers</h1>
+      <p class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed">
+        A magical bell tent sleepover delivered and pitched right in your garden. No stress, no indoor mess, completely done-for-you.
+      </p>
+    </div>
+  </div>
+
+  <!-- Parties Configurator Section -->
+  <section class="py-16 border-b border-stone-200/80 relative z-20">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6">
+      <div style="background-color: #ffffff;" class="rounded-3xl p-8 sm:p-10 flex flex-col justify-between border-2 border-[#F7BA1E]/40 shadow-xl">
+        <div>
+          <!-- Header Title Block -->
+          <div class="flex items-center justify-between mb-10 pb-6 border-b border-stone-100">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-[#F7BA1E]/20 text-[#D4A51E] flex items-center justify-center text-xl shadow-xs">
+                <i class="fa-solid fa-cake-candles"></i>
+              </div>
+              <div>
+                <h2 class="font-display font-black text-2xl text-[#111111]">Kids Bell Tent Parties Configurator</h2>
+                <p class="text-xs sm:text-sm text-stone-500 font-medium">Delivered & pitched in your garden</p>
+              </div>
+            </div>
+            <span class="text-xs font-mono bg-[#7D6E23]/10 text-[#7D6E23] px-3.5 py-1.5 rounded-full font-bold uppercase shrink-0">Instant Pricing</span>
+          </div>
+
+          <!-- Step 1: Select Party Package -->
+          <div class="space-y-4 mb-10">
+            <label class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide">1. Select Party Package:</label>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem;">
+              <button type="button" data-pkg="daytime" id="kids-pkg-daytime" class="pkg-btn p-4 sm:p-5 rounded-2xl border border-stone-200 text-center hover:border-[#F7BA1E] transition bg-stone-50 flex flex-col items-center justify-center">
+                <div class="font-bold text-[#111111] text-xs sm:text-sm">Daytime (4h)</div>
+                <div class="text-xs text-stone-500 font-medium mt-1">From £200</div>
+              </button>
+              <button type="button" data-pkg="sleepover" id="kids-pkg-sleepover" class="pkg-btn p-4 sm:p-5 rounded-2xl border-2 border-[#F7BA1E] text-center transition bg-amber-50/50 flex flex-col items-center justify-center">
+                <div class="font-bold text-[#111111] text-xs sm:text-sm">Sleepover (1n)</div>
+                <div class="text-xs text-stone-500 font-medium mt-1">From £300</div>
+              </button>
+              <button type="button" data-pkg="weekend" id="kids-pkg-weekend" class="pkg-btn p-4 sm:p-5 rounded-2xl border border-stone-200 text-center hover:border-[#F7BA1E] transition bg-stone-50 flex flex-col items-center justify-center">
+                <div class="font-bold text-[#111111] text-xs sm:text-sm">Weekend (2n)</div>
+                <div class="text-xs text-stone-500 font-medium mt-1">From £450</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Select Tent Capacity -->
+          <div class="space-y-4 mb-10">
+            <label class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide">2. Select Tent Capacity:</label>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;">
+              <button type="button" data-tent="4M" id="kids-tent-4M" class="tent-btn p-5 rounded-2xl border-2 border-[#F7BA1E] bg-amber-50/50 text-center transition flex flex-col items-center justify-center relative shadow-xs">
+                <div>
+                  <div class="font-extrabold text-sm sm:text-base text-[#111111]">4M Bell Tent</div>
+                  <div class="text-xs text-stone-500 font-medium mt-0.5" id="kids-4m-capacity">Up to 8 Kids Sleepover</div>
+                </div>
+                <i class="fa-solid fa-circle-check text-[#F7BA1E] text-xl icon-indicator absolute right-4 top-1/2 -translate-y-1/2"></i>
+              </button>
+              <button type="button" data-tent="6M" id="kids-tent-6M" class="tent-btn p-5 rounded-2xl border border-stone-200 bg-white text-center transition flex flex-col items-center justify-center relative hover:border-[#F7BA1E]">
+                <div>
+                  <div class="font-extrabold text-sm sm:text-base text-[#111111]">6M Bell Tent</div>
+                  <div class="text-xs text-stone-500 font-medium mt-0.5" id="kids-6m-capacity">Up to 12 Kids Sleepover</div>
+                </div>
+                <i class="fa-regular fa-circle text-stone-300 text-xl icon-indicator absolute right-4 top-1/2 -translate-y-1/2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Optional Party Upgrades (Matching Yellow Circle Checkmark) -->
+          <div class="space-y-4 mb-10">
+            <label class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide">3. Optional Party Upgrades:</label>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem;">
+              
+              <label id="label-movie" class="addon-card flex items-center justify-center p-5 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition text-center relative">
+                <input type="checkbox" id="kids-addon-movie" style="display: none;">
+                <div>
+                  <div class="font-extrabold text-[#111111] text-xs sm:text-sm">Movie Night (+£80)</div>
+                  <div class="text-xs text-stone-500 font-medium">Projector, Screen & Speaker</div>
+                </div>
+                <i id="check-icon-movie" class="fa-regular fa-circle text-stone-300 text-xl absolute right-4 top-1/2 -translate-y-1/2"></i>
+              </label>
+
+              <label id="label-gaming" class="addon-card flex items-center justify-center p-5 rounded-2xl border border-stone-200 bg-stone-50 hover:bg-white cursor-pointer transition text-center relative">
+                <input type="checkbox" id="kids-addon-gaming" style="display: none;">
+                <div>
+                  <div class="font-extrabold text-[#111111] text-xs sm:text-sm">Gaming Setup (+£100)</div>
+                  <div class="text-xs text-stone-500 font-medium">Console & Gaming Chairs</div>
+                </div>
+                <i id="check-icon-gaming" class="fa-regular fa-circle text-stone-300 text-xl absolute right-4 top-1/2 -translate-y-1/2"></i>
+              </label>
+
+            </div>
+          </div>
+
+          <!-- Step 4: Party Location -->
+          <div class="space-y-3 mb-10">
+            <label class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide" for="kids-town">4. Party Location (Town / Postcode):</label>
+            <input type="text" id="kids-town" placeholder="e.g. Falkirk, FK1 1AA" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 focus:border-[#F7BA1E] focus:outline-none font-medium">
+          </div>
+
+          <!-- Step 5: Party Date -->
+          <div class="space-y-3 mb-10">
+            <label class="block text-xs sm:text-sm font-display font-black uppercase text-stone-800 tracking-wide" for="kids-date">5. Party Date:</label>
+            <input type="date" id="kids-date" required class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-4 text-xs sm:text-sm text-stone-800 focus:border-[#F7BA1E] focus:outline-none font-medium">
+          </div>
+
+          <!-- Service Note -->
+          <div class="bg-stone-50 p-5 rounded-2xl border border-stone-200 text-xs text-stone-600 space-y-1.5 mb-10">
+            <div class="font-bold text-[#111111] flex items-center gap-2 text-xs sm:text-sm">
+              <i class="fa-solid fa-truck-ramp-box text-[#7D6E23]"></i>
+              <span>Includes Delivery, Setup & Collection</span>
+            </div>
+            <p class="font-medium text-stone-500">Free within 200 miles of Polmont Base • Paid in full upon booking.</p>
+          </div>
+        </div>
+
+        <!-- Total Price Summary Box & Book Button -->
+        <div class="pt-6 border-t border-stone-200">
+          <div class="flex items-center justify-between mb-5 bg-[#FAF7EE] p-5 sm:p-6 rounded-2xl border border-stone-200/80">
+            <div>
+              <span class="text-xs sm:text-sm text-stone-500 font-medium block">Kids Party Package Total:</span>
+              <span id="kids-summary-desc" class="text-xs sm:text-sm font-extrabold text-[#7D6E23]">SLEEPOVER Party (4M Bell Tent)</span>
+            </div>
+            <span id="kids-total-price" class="text-3xl sm:text-4xl font-display font-black text-[#111111]">£300</span>
+          </div>
+          <button type="button" id="bookPartyBtn" class="w-full bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-black text-xs sm:text-sm uppercase tracking-wider py-4 sm:py-5 rounded-full transition-all shadow-md flex items-center justify-center gap-2 hover:scale-[1.01]">
+            <i class="fa-solid fa-cake-candles"></i> Book Party
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  let kidsPartyState = {
+    package: 'sleepover',
+    tent: '4M'
+  };
+
+  function selectKidsPkg(pkg) {
+    kidsPartyState.package = pkg;
+    document.querySelectorAll('.pkg-btn').forEach(btn => {
+      btn.style.border = '1px solid #e5e7eb';
+      btn.style.backgroundColor = '#f9fafb';
+    });
+    const activeBtn = document.getElementById(`kids-pkg-${pkg}`);
+    if (activeBtn) {
+      activeBtn.style.border = '2px solid #F7BA1E';
+      activeBtn.style.backgroundColor = 'rgba(254, 243, 199, 0.5)';
+    }
+    calcKidsParty();
+  }
+
+  function selectKidsTent(tent) {
+    kidsPartyState.tent = tent;
+    document.querySelectorAll('.tent-btn').forEach(btn => {
+      btn.style.border = '1px solid #e5e7eb';
+      btn.style.backgroundColor = '#ffffff';
+      const icon = btn.querySelector('.icon-indicator');
+      if (icon) {
+        icon.className = 'fa-regular fa-circle text-stone-300 text-xl icon-indicator absolute right-4 top-1/2 -translate-y-1/2';
+      }
+    });
+    const activeBtn = document.getElementById(`kids-tent-${tent}`);
+    if (activeBtn) {
+      activeBtn.style.border = '2px solid #F7BA1E';
+      activeBtn.style.backgroundColor = 'rgba(254, 243, 199, 0.5)';
+      const icon = activeBtn.querySelector('.icon-indicator');
+      if (icon) {
+        icon.className = 'fa-solid fa-circle-check text-[#F7BA1E] text-xl icon-indicator absolute right-4 top-1/2 -translate-y-1/2';
+      }
+    }
+    calcKidsParty();
+  }
+
+  function updateAddonHighlight(id, labelId, iconId) {
+    const checkbox = document.getElementById(id);
+    const label = document.getElementById(labelId);
+    const icon = document.getElementById(iconId);
+
+    if (checkbox && label && icon) {
+      if (checkbox.checked) {
+        label.style.border = '2px solid #F7BA1E';
+        label.style.backgroundColor = 'rgba(254, 243, 199, 0.5)';
+        icon.className = 'fa-solid fa-circle-check text-[#F7BA1E] text-xl absolute right-4 top-1/2 -translate-y-1/2';
+      } else {
+        label.style.border = '1px solid #e5e7eb';
+        label.style.backgroundColor = '#f9fafb';
+        icon.className = 'fa-regular fa-circle text-stone-300 text-xl absolute right-4 top-1/2 -translate-y-1/2';
+      }
+    }
+  }
+
+  function calcKidsParty() {
+    let base = 300;
+    if (kidsPartyState.package === 'daytime') base = 200;
+    if (kidsPartyState.package === 'weekend') base = 450;
+    if (kidsPartyState.tent === '6M') base += 100;
+
+    const movieChecked = document.getElementById('kids-addon-movie')?.checked;
+    const gamingChecked = document.getElementById('kids-addon-gaming')?.checked;
+
+    updateAddonHighlight('kids-addon-movie', 'label-movie', 'check-icon-movie');
+    updateAddonHighlight('kids-addon-gaming', 'label-gaming', 'check-icon-gaming');
+
+    if (movieChecked) base += 80;
+    if (gamingChecked) base += 100;
+
+    document.getElementById('kids-total-price').innerText = `£${base}`;
+    document.getElementById('kids-summary-desc').innerText = `${kidsPartyState.package.toUpperCase()} Party (${kidsPartyState.tent} Bell Tent)`;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Package button listeners
+    document.querySelectorAll('.pkg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const pkg = btn.getAttribute('data-pkg');
+        if (pkg) selectKidsPkg(pkg);
+      });
+    });
+
+    // Tent capacity button listeners
+    document.querySelectorAll('.tent-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tent = btn.getAttribute('data-tent');
+        if (tent) selectKidsTent(tent);
+      });
+    });
+
+    // Addon checkbox listeners
+    document.getElementById('kids-addon-movie')?.addEventListener('change', calcKidsParty);
+    document.getElementById('kids-addon-gaming')?.addEventListener('change', calcKidsParty);
+
+    // Book button action
+    document.getElementById('bookPartyBtn')?.addEventListener('click', () => {
+      const town = document.getElementById('kids-town')?.value || 'your area';
+      const date = document.getElementById('kids-date')?.value || 'your selected date';
+      const price = document.getElementById('kids-total-price')?.innerText;
+      alert(`Kids party reservation request received for £${price} in ${town} on ${date}! We will confirm date availability within 24 hours.`);
+    });
+
+    // Set default tomorrow date
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dateInput = document.getElementById('kids-date');
+    if (dateInput) {
+      dateInput.value = tomorrow.toISOString().split('T')[0];
+    }
+
+    // Set default active highlights
+    selectKidsPkg('sleepover');
+    selectKidsTent('4M');
+  });
+</script>
+
+<style is:global>
+  .os-grid-badge {
+    font-family: 'Courier New', Courier, monospace !important;
+    letter-spacing: 0.08em !important;
+    background: rgba(125, 110, 35, 0.08) !important;
+    border: 1px dashed #7D6E23 !important;
+    color: #4F571A !important;
+  }
+</style>

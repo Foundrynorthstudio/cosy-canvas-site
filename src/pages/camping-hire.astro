@@ -1,0 +1,398 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+  title="Bell Tent Rental & Glamping Packages | The Cosy Canvas Co." 
+  description="Select your heavy-duty bell tent size, layer your bedding tier, and customize your stay with our bespoke camp gear. Delivered across Scotland or free pickup from our Polmont base."
+>
+  <!-- 1. SOLID DARK HEADER BANNER -->
+  <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">
+        MODULAR CAMPING PACKAGES & ADD-ONS
+      </span>
+      <h1 class="font-display text-3xl md:text-5xl font-black text-white mb-3">
+        Camping & Glamping Hire
+      </h1>
+      <p class="text-stone-400 text-xs sm:text-sm font-light leading-relaxed max-w-2xl mx-auto">
+        Select your heavy-duty bell tent size, layer your bedding tier, and customize your stay with our bespoke camp gear. Delivered across Scotland or free pickup from our Polmont base.
+      </p>
+    </div>
+  </div>
+
+  <!-- 2. CHOOSE YOUR BASE STAY (NOW OVER CONTOUR MAP) -->
+  <section class="py-16 border-b border-stone-200/80 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-[#7D6E23] font-mono text-xs uppercase tracking-widest block mb-1">CORE STAY EXPERIENCES</span>
+        <h2 class="font-display text-2xl md:text-3xl font-extrabold text-[#111111]">Choose Your Base Stay</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+        
+        <!-- Package 1: Pure Canvas Tent -->
+        <div class="bg-white rounded-2xl p-8 flex flex-col justify-between relative border border-stone-200/80 shadow-md">
+          <div>
+            <div class="flex justify-between items-start mb-4">
+              <span class="os-grid-badge text-[10px] px-3 py-1 rounded">DIY BEDDING</span>
+              <span class="text-xs font-mono text-[#7D6E23] font-bold">From £50 / night</span>
+            </div>
+            <h3 class="font-display font-bold text-2xl text-[#111111] mb-2">Pure Canvas Tent</h3>
+            <p class="text-stone-600 text-sm mb-6">Heavy-duty 100% cotton canvas bell tent. Bring your own sleeping bags and camping mats.</p>
+            
+            <div class="space-y-3 border-t border-stone-100 pt-6 text-sm text-stone-700">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold">4M Tent (1–3 Guests):</span>
+                <span class="font-bold text-[#111111]">£50 / night</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="font-semibold">5M Tent (4–6 Guests):</span>
+                <span class="font-bold text-[#111111]">£75 / night</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="font-semibold">6M Tent (7–8 Guests):</span>
+                <span class="font-bold text-[#111111]">£100 / night</span>
+              </div>
+              <div class="flex items-center gap-3 pt-2 text-[#7D6E23]">
+                <i class="fa-solid fa-check"></i>
+                <span>Multi-Night Discounts (5% to 25% Off)</span>
+              </div>
+              <div class="flex items-center gap-3 text-[#7D6E23]">
+                <i class="fa-solid fa-check"></i>
+                <span>15% Early Bird Offer for 2027 Bookings</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-stone-100">
+            <a href="/booking" class="w-full inline-block text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors">
+              Configure Pure Canvas Stay
+            </a>
+          </div>
+        </div>
+
+        <!-- Package 2: Cosy Sleep Experience (Featured) -->
+        <div class="bg-white rounded-2xl p-8 flex flex-col justify-between border-2 border-[#F7BA1E] relative shadow-xl bg-gradient-to-b from-amber-50/40 to-white">
+          <div class="absolute -top-3.5 left-1/2 transform -translate-x-1/2 bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-widest px-4 py-1 rounded-full shadow">
+            ★ MOST POPULAR EXPERIENCE
+          </div>
+          <div>
+            <div class="flex justify-between items-start mb-4">
+              <span class="os-grid-badge text-[10px] px-3 py-1 rounded bg-amber-50">TURNKEY SLEEP</span>
+              <span class="text-xs font-mono text-[#7D6E23] font-bold">Tent + £35/guest</span>
+            </div>
+            <h3 class="font-display font-bold text-2xl text-[#111111] mb-2">Cosy Sleep Experience</h3>
+            <p class="text-stone-600 text-sm mb-6">Our standard tent rate paired with our full luxury hotel duvet and bed linen package.</p>
+            
+            <div class="space-y-3 border-t border-stone-100 pt-6 text-sm text-stone-700">
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-[#D4A51E]"></i>
+                <span>4M (£50/n), 5M (£75/n) or 6M (£100/n) Bell Tent</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-[#D4A51E]"></i>
+                <span>High-Density Air Frame Mattresses</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-[#D4A51E]"></i>
+                <span>Warm Hotel Duvets, Pillows & Fresh Linens</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <i class="fa-solid fa-check text-[#D4A51E]"></i>
+                <span>Flat £35 per guest fee for the stay</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-stone-100">
+            <a href="/booking" class="w-full inline-block text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
+              Configure Cosy Sleep
+            </a>
+          </div>
+        </div>
+
+        <!-- Package 3: Deluxe Bespoke Setup -->
+        <div class="bg-white rounded-2xl p-8 flex flex-col justify-between relative border border-stone-200/80 shadow-md">
+          <div>
+            <div class="flex justify-between items-start mb-4">
+              <span class="os-grid-badge text-[10px] px-3 py-1 rounded">WHITE-GLOVE SERVICE</span>
+              <span class="text-xs font-mono text-[#7D6E23] font-bold">Flat £225 Setup</span>
+            </div>
+            <h3 class="font-display font-bold text-2xl text-[#111111] mb-2">Deluxe Bespoke Setup</h3>
+            <p class="text-stone-600 text-sm mb-6">
+              Bespoke setup of whichever package you book pitched and styled for you at your chosen Scottish location.
+            </p>
+            
+            <div class="space-y-3 border-t border-stone-100 pt-6 text-sm text-stone-700">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-[#7D6E23]"></i>
+                <span><strong>Flat £225 Fee:</strong> Full pitching, interior styling & pack-down</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-check text-[#7D6E23]"></i>
+                <span>Applies to any tent size, bedding tier & add-on choices</span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-stone-500 pt-2">
+                <i class="fa-solid fa-circle-info text-[#7D6E23]"></i>
+                <span>Locations North of Inverness or requiring island ferry travel added at cost</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-stone-100">
+            <a href="/booking" class="w-full inline-block text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors">
+              Build Deluxe Package
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. SELECT YOUR TENT SIZE (NOW WITH FULL-WIDTH OFF-WHITE BACKGROUND) -->
+  <section class="bg-[#FAF7EE] py-16 border-b border-stone-200/80 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-[#7D6E23] font-mono text-xs uppercase tracking-widest block mb-1">TENT SPECIFICATIONS & FLOORSPACE</span>
+        <h2 class="font-display text-2xl md:text-3xl font-extrabold text-[#111111]">1. Select Your Canvas Tent Size</h2>
+        <p class="text-stone-600 text-xs sm:text-sm mt-2">All tents are crafted from 100% heavy-duty, breathable cotton canvas with zipped heavy PVC groundsheets and stove flue exits.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- 4M Bell Tent -->
+        <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <span class="os-grid-badge text-xs px-2.5 py-1 rounded">DIAMETER: 4.0 METRES</span>
+            <span class="text-xs font-bold text-[#7D6E23]">£50 / night</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-[#111111] mb-2">4M Bell Tent</h3>
+          <p class="text-stone-600 text-xs leading-relaxed mb-4">
+            Compact, intimate, and easy to heat. Perfect for romantic coastal getaways, couples, or a small family with up to 3 guests.
+          </p>
+          <ul class="space-y-2 text-xs text-stone-700 border-t border-stone-100 pt-4">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-ruler-vertical text-[#F7BA1E]"></i> <span><strong>Centre Height:</strong> 2.5 metres</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-users text-[#F7BA1E]"></i> <span><strong>Capacity:</strong> 1 to 3 Guests</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-cloud-rain text-[#F7BA1E]"></i> <span><strong>Weather Protection:</strong> 100% Waterproof Cotton Canvas</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-rug text-[#F7BA1E]"></i> <span><strong>Flooring:</strong> Coir matting flooring included</span></li>
+          </ul>
+        </div>
+
+        <!-- 5M Bell Tent -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-[#F7BA1E] relative shadow-lg">
+          <div class="flex items-center justify-between mb-4">
+            <span class="os-grid-badge text-xs px-2.5 py-1 rounded bg-amber-50">DIAMETER: 5.0 METRES</span>
+            <span class="text-xs font-bold text-[#7D6E23]">£75 / night</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-[#111111] mb-2">5M Bell Tent</h3>
+          <p class="text-stone-600 text-xs leading-relaxed mb-4">
+            Our standard glamping size with generous standing height and abundant floor space. Perfect for families or friend groups of 4 to 6.
+          </p>
+          <ul class="space-y-2 text-xs text-stone-700 border-t border-stone-200/60 pt-4">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-ruler-vertical text-[#F7BA1E]"></i> <span><strong>Centre Height:</strong> 3.0 metres</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-users text-[#F7BA1E]"></i> <span><strong>Capacity:</strong> 4 to 6 Guests</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-couch text-[#F7BA1E]"></i> <span><strong>Space:</strong> Accommodates full double beds + lounge seating</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-rug text-[#F7BA1E]"></i> <span><strong>Flooring:</strong> Coir matting flooring & entryway rug</span></li>
+          </ul>
+        </div>
+
+        <!-- 6M Bell Tent -->
+        <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-md">
+          <div class="flex items-center justify-between mb-4">
+            <span class="os-grid-badge text-xs px-2.5 py-1 rounded">DIAMETER: 6.0 METRES</span>
+            <span class="text-xs font-bold text-[#7D6E23]">£100 / night</span>
+          </div>
+          <h3 class="font-display font-bold text-xl text-[#111111] mb-2">6M Cathedral Tent</h3>
+          <p class="text-stone-600 text-xs leading-relaxed mb-4">
+            An ultra-spacious canvas palace featuring dual entrance doors and massive headroom. Ideal for large groups, sleepover parties, or honeymoon suites.
+          </p>
+          <ul class="space-y-2 text-xs text-stone-700 border-t border-stone-100 pt-4">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-ruler-vertical text-[#F7BA1E]"></i> <span><strong>Centre Height:</strong> 3.5 metres</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-users text-[#F7BA1E]"></i> <span><strong>Capacity:</strong> 7 to 8 Guests</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-door-open text-[#F7BA1E]"></i> <span><strong>Features:</strong> Dual doors for panoramic wilderness views</span></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-rug text-[#F7BA1E]"></i> <span><strong>Flooring:</strong> Full-coverage coir matting & woven carpets</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TAILOR YOUR CAMP ADD-ONS (OVER CONTOUR MAP) -->
+  <section class="py-16 border-b border-stone-200/80 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-[#7D6E23] font-mono text-xs uppercase tracking-widest block mb-1">BESPOKE CAMP GEAR & UPGRADES</span>
+        <h2 class="font-display text-2xl md:text-3xl font-extrabold text-[#111111]">2. Tailor Your Camp Add-ons</h2>
+        <p class="text-stone-600 text-xs sm:text-sm mt-2">Elevate your stay with our curated range of outdoor luxury equipment and entertainment setups.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#F7BA1E]/20 text-[#D4A51E] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-kitchen-set"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Cosy Kitchen Setup</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£40 + £5/g</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Gas stove, cookware, kettle, tableware, cutlery, washing station & coolbox.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#7D6E23]/10 text-[#7D6E23] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-tv"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Cosy Living Lounge</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£65 flat</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Power bank station, movie projector & screen, Bluetooth speaker & starry ambient lighting.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#F7BA1E]/20 text-[#D4A51E] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-fire-burner"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Indoor Wood Burner</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£40 flat</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Heavy-duty wood stove with flue chimney, heat hearth mat & starter log basket.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#7D6E23]/10 text-[#7D6E23] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-umbrella-beach"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Outdoor Awning Porch</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£30 flat</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Extended canvas porch shelter for boots, gear, and rain-protected outdoor seating.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#F7BA1E]/20 text-[#D4A51E] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-chair"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Indoor & Outdoor Chairs</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£10 / guest</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Pair of cozy indoor floor lounge cushions and robust outdoor campfire folding chairs per guest.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#7D6E23]/10 text-[#7D6E23] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-fire"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Fire Cooking Gear</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£25 flat</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Cast iron Dutch oven, tripod fire grill, marshmallow skewers & heat-resistant gloves.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#F7BA1E]/20 text-[#D4A51E] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-wifi"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Starlink Wi-Fi</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£10 / night</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              High-speed satellite broadband internet kit for off-grid coastal and highland stays.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 flex flex-col justify-between border border-stone-200/80 shadow-md">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-[#7D6E23]/10 text-[#7D6E23] flex items-center justify-center text-lg mb-4">
+              <i class="fa-solid fa-water"></i>
+            </div>
+            <div class="flex items-center justify-between mb-1">
+              <h3 class="font-display font-bold text-base text-[#111111]">Beach & Adventure Kit</h3>
+              <span class="text-[11px] font-bold text-[#7D6E23] font-mono">£20 flat</span>
+            </div>
+            <p class="text-stone-600 text-xs leading-relaxed mt-2">
+              Boogie boards, beach blankets, outdoor games, buckets, spade kit & waterproof tote.
+            </p>
+          </div>
+          <a href="/booking" class="mt-4 text-xs font-bold text-[#7D6E23] hover:text-[#111111] flex items-center gap-1">
+            Add to Booking &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. SOLID DARK BOTTOM CTA BANNER -->
+  <section class="bg-[#111111] text-white py-16 border-b border-stone-800 relative z-30">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+      <span class="os-grid-badge text-[#F7BA1E] text-xs px-3 py-1 rounded inline-block bg-stone-800 border-[#F7BA1E]/40 font-mono">
+        READY TO PLAN YOUR SCOTTISH STAY?
+      </span>
+      <h2 class="font-display font-black text-3xl sm:text-4xl text-white">
+        Configure Your Canvas Stay in Minutes
+      </h2>
+      <p class="text-stone-400 text-xs sm:text-sm max-w-xl mx-auto font-light leading-relaxed">
+        Choose your guests, tent size, bedding tier, and camp add-ons in our real-time price estimator.
+      </p>
+      <div class="pt-2">
+        <a href="/booking" class="bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-black text-xs uppercase tracking-wider py-4 px-8 rounded-full transition-all shadow-lg inline-flex items-center gap-2">
+          <i class="fa-solid fa-compass"></i>
+          <span>LAUNCH BOOKING ESTIMATOR</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

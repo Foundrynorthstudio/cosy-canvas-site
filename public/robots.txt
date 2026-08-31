@@ -1,0 +1,8 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /booking/success
+
+# Sitemaps
+Sitemap: https://cosycanvas.co.uk/sitemap-index.xml

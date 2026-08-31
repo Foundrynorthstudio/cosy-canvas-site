@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-sans {
+    font-family: 'Outfit', sans-serif;
+  }
+  .font-display {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .font-serif {
+    font-family: 'Playfair Display', serif;
+  }
+}
+
+/* Force Contour Lines Background Pattern */
+.contour-lines-bg-light {
+  background-color: #FDFBF7 !important;
+  background-image: linear-gradient(rgba(253, 251, 247, 0.78), rgba(253, 251, 247, 0.78)), url("/cosy_canvas_contour_bg.png") !important;
+  background-size: auto, 750px 750px !important;
+  background-repeat: repeat !important;
+  background-attachment: fixed !important;
+}
+
+.os-grid-badge {
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.08em;
+  background: rgba(125, 110, 35, 0.08);
+  border: 1px dashed #7D6E23;
+  color: #4F571A;
+}
+
+.light-card {
+  background: #FFFFFF;
+  border: 1px solid rgba(125, 110, 35, 0.12);
+  box-shadow: 0 4px 20px -2px rgba(17, 17, 17, 0.04);
+}
+
+.light-card-interactive {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.light-card-interactive:hover {
+  transform: translateY(-4px);
+  border-color: rgba(247, 186, 30, 0.6);
+  box-shadow: 0 12px 30px -4px rgba(125, 110, 35, 0.12);
+}

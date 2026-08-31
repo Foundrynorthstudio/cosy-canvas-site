@@ -1,0 +1,388 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const articles = [
+    {
+        id: "top-10-campsites-scotland",
+        title: "Top 10 Hidden Gem Campsites in Scotland for 2026/2027",
+        category: "guides",
+        categoryName: "Glamping Guides",
+        date: "August 12, 2026",
+        readTime: "6 min read",
+        image: "/campsite_cobleland.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=Scottish+Campsites",
+        excerpt:
+            "Discover our handpicked selection of breathtaking Scottish pitch locations, from coastal headlands in Mull to sheltered oak woodlands beside Loch Lomond.",
+        featured: true,
+    },
+    {
+        id: "outdoor-wedding-village-guide",
+        title: "How to Plan a Luxury Bell Tent Wedding Village on Private Land",
+        category: "weddings",
+        categoryName: "Wedding Spotlights",
+        date: "July 28, 2026",
+        readTime: "8 min read",
+        image: "/campsite_durness_wild.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=Wedding+Village",
+        excerpt:
+            "Everything you need to know about estate power requirements, guest check-in logistics, bridal suites, and spatial planning for outdoor wedding accommodation.",
+        featured: false,
+    },
+    {
+        id: "kids-sleepover-party-ideas",
+        title: "Creating the Ultimate Garden Sleepover Party for Kids",
+        category: "tips",
+        categoryName: "Camping Tips",
+        date: "July 15, 2026",
+        readTime: "5 min read",
+        image: "/campsite_glen_Luss.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=Kids+Parties",
+        excerpt:
+            "Transform your garden into a magical wonderland with cinema projectors, outdoor gaming lounger setups, fairy lighting, and cozy hotel-grade bedding.",
+        featured: false,
+    },
+    {
+        id: "essential-packing-glamping-scotland",
+        title: "What to Pack for a Scottish Canvas Camping Adventure",
+        category: "tips",
+        categoryName: "Camping Tips",
+        date: "June 30, 2026",
+        readTime: "4 min read",
+        image: "/campsite_loch_chon.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=Packing+List",
+        excerpt:
+            "From thermal layers to midgie protection and campfire cooking gear, here is our definitive packing checklist for hassle-free Scottish glamping.",
+        featured: false,
+    },
+    {
+        id: "autumn-glamping-scotland",
+        title: "Cozy Autumn Canvas Stays: Woodburners & Stargazing",
+        category: "seasonal",
+        categoryName: "Seasonal",
+        date: "May 19, 2026",
+        readTime: "5 min read",
+        image: "/campsite_sallochy.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=Autumn+Camping",
+        excerpt:
+            "Why late season camping in Scotland offers the best stargazing, crisp morning loch views, and warm indoor woodburner evenings.",
+        featured: false,
+    },
+    {
+        id: "nc500-wild-camping-route",
+        title: "The Ultimate NC500 Glamping & Camping Pitch Guide",
+        category: "guides",
+        categoryName: "Glamping Guides",
+        date: "April 04, 2026",
+        readTime: "7 min read",
+        image: "/campsite_fidden_farm.jpg",
+        fallbackImg:
+            "https://placehold.co/800x500/FAF7EE/7D6E23?text=NC500+Guide",
+        excerpt:
+            "Navigate the North Coast 500 with confidence. Learn about Scottish Outdoor Access Code rules, coastal headlands, and route driving times from our base.",
+        featured: false,
+    },
+];
+
+const featuredArticle = articles.find((a) => a.featured) || articles[0];
+const regularArticles = articles.filter((a) => a.id !== featuredArticle.id);
+---
+
+<Layout
+    title="The Cosy Journal | Scottish Camping, Event Guides & Stories | The Cosy Canvas Co."
+    description="Explore expert guides on Scottish campsites, garden sleepovers, wedding village planning, and outdoor camping tips from The Cosy Canvas Co."
+>
+    <!-- Page Header Banner -->
+    <div
+        class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30"
+    >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <span
+                class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold"
+                >STORIES, GUIDES & INSIGHTS</span
+            >
+            <h1 class="font-display text-3xl md:text-5xl font-black text-white">
+                The Cosy Journal
+            </h1>
+            <p
+                class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed"
+            >
+                Inspiration, campsite showcases, outdoor event planning advice,
+                and glamping guides for exploring Scotland in style.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Journal Section -->
+    <section class="py-12 md:py-16 border-b border-stone-200/80 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Category Filter Tabs -->
+            <div class="flex flex-wrap items-center gap-3 mb-12">
+                <button
+                    type="button"
+                    data-filter="all"
+                    class="journal-filter-btn px-4 py-2.5 rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs transition-all shadow-sm"
+                >
+                    All Articles
+                </button>
+                <button
+                    type="button"
+                    data-filter="guides"
+                    class="journal-filter-btn px-4 py-2.5 rounded-full bg-white text-stone-700 border border-stone-200 hover:bg-stone-50 font-bold text-xs transition-all shadow-xs"
+                >
+                    Glamping Guides
+                </button>
+                <button
+                    type="button"
+                    data-filter="weddings"
+                    class="journal-filter-btn px-4 py-2.5 rounded-full bg-white text-stone-700 border border-stone-200 hover:bg-stone-50 font-bold text-xs transition-all shadow-xs"
+                >
+                    Wedding Spotlights
+                </button>
+                <button
+                    type="button"
+                    data-filter="tips"
+                    class="journal-filter-btn px-4 py-2.5 rounded-full bg-white text-stone-700 border border-stone-200 hover:bg-stone-50 font-bold text-xs transition-all shadow-xs"
+                >
+                    Camping Tips
+                </button>
+                <button
+                    type="button"
+                    data-filter="seasonal"
+                    class="journal-filter-btn px-4 py-2.5 rounded-full bg-white text-stone-700 border border-stone-200 hover:bg-stone-50 font-bold text-xs transition-all shadow-xs"
+                >
+                    Seasonal
+                </button>
+            </div>
+
+            <!-- Featured Article Hero Card (Solid White Container) -->
+            <div
+                id="featured-article-card"
+                class="article-card mb-12 rounded-3xl overflow-hidden shadow-xl border border-stone-200 bg-white"
+                data-category={featuredArticle.category}
+            >
+                <div class="grid md:grid-cols-12 items-center">
+                    <div
+                        class="md:col-span-7 h-72 md:h-96 relative overflow-hidden bg-stone-100"
+                    >
+                        <img
+                            src={featuredArticle.image}
+                            alt={featuredArticle.title}
+                            class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                            onerror={`this.src='${featuredArticle.fallbackImg}'`}
+                        />
+                        <span
+                            class="absolute top-4 left-4 bg-[#111111] text-[#F7BA1E] text-[10px] font-mono font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md"
+                        >
+                            FEATURED STORY
+                        </span>
+                    </div>
+                    <div
+                        class="md:col-span-5 p-6 sm:p-8 md:p-10 flex flex-col justify-between h-full bg-white"
+                    >
+                        <div>
+                            <div
+                                class="flex items-center gap-3 text-xs text-stone-500 font-medium mb-3"
+                            >
+                                <span
+                                    class="text-[#7D6E23] font-bold uppercase tracking-wider text-[11px] bg-[#7D6E23]/10 px-2.5 py-0.5 rounded-full"
+                                    >{featuredArticle.categoryName}</span
+                                >
+                                <span>•</span>
+                                <span>{featuredArticle.date}</span>
+                                <span>•</span>
+                                <span>{featuredArticle.readTime}</span>
+                            </div>
+                            <h2
+                                class="font-display font-black text-2xl sm:text-3xl text-[#111111] mb-4 leading-tight"
+                            >
+                                {featuredArticle.title}
+                            </h2>
+                            <p
+                                class="text-stone-600 text-xs sm:text-sm leading-relaxed mb-6"
+                            >
+                                {featuredArticle.excerpt}
+                            </p>
+                        </div>
+                        <div>
+                            <button
+                                type="button"
+                                class="read-article-btn inline-flex items-center gap-2 text-xs font-display font-extrabold uppercase tracking-wider text-[#111111] hover:text-[#7D6E23] transition-colors"
+                                data-title={featuredArticle.title}
+                            >
+                                <span>Read Full Story</span>
+                                <i
+                                    class="fa-solid fa-arrow-right text-[#F7BA1E]"
+                                ></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Articles Grid (Solid White Cards) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {
+                    regularArticles.map((article) => (
+                        <article
+                            style="background-color: #ffffff;"
+                            class="article-card rounded-2xl overflow-hidden border border-stone-200 shadow-md flex flex-col justify-between transition-all hover:shadow-xl hover:-translate-y-1"
+                            data-category={article.category}
+                        >
+                            <div>
+                                <div class="relative h-52 overflow-hidden bg-stone-100">
+                                    <img
+                                        src={article.image}
+                                        alt={article.title}
+                                        class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                        onerror={`this.src='${article.fallbackImg}'`}
+                                    />
+                                    <span class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[#7D6E23] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-xs border border-stone-200">
+                                        {article.categoryName}
+                                    </span>
+                                </div>
+                                <div class="p-6 bg-white">
+                                    <div class="flex items-center gap-2 text-[11px] text-stone-400 font-medium mb-2">
+                                        <span>{article.date}</span>
+                                        <span>•</span>
+                                        <span>{article.readTime}</span>
+                                    </div>
+                                    <h3 class="font-display font-extrabold text-[#111111] text-lg mb-3 leading-snug hover:text-[#7D6E23] transition-colors">
+                                        {article.title}
+                                    </h3>
+                                    <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                                        {article.excerpt}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="px-6 pb-6 pt-2 border-t border-stone-100 bg-white flex items-center justify-between">
+                                <span class="text-[11px] font-bold text-stone-400 uppercase tracking-wider">
+                                    The Cosy Journal
+                                </span>
+                                <button
+                                    type="button"
+                                    class="read-article-btn text-xs font-display font-extrabold text-[#7D6E23] hover:text-[#111111] transition-colors flex items-center gap-1.5"
+                                    data-title={article.title}
+                                >
+                                    <span>Read Story</span>
+                                    <i class="fa-solid fa-arrow-right text-[10px]" />
+                                </button>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup Block -->
+    <section
+        class="py-12 bg-[#111111] text-white border-t border-stone-800 relative z-20"
+    >
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <div
+                class="w-12 h-12 rounded-2xl bg-[#F7BA1E]/20 text-[#F7BA1E] flex items-center justify-center text-xl mx-auto mb-4"
+            >
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <h2 class="font-display font-black text-2xl sm:text-3xl mb-2">
+                Subscribe to The Cosy Journal
+            </h2>
+            <p class="text-stone-400 text-xs sm:text-sm max-w-lg mx-auto mb-6">
+                Receive seasonal campsite recommendations, early bird booking
+                access for Scottish festival dates, and glamping guides directly
+                to your inbox.
+            </p>
+            <form
+                id="newsletterForm"
+                class="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto"
+            >
+                <input
+                    type="email"
+                    id="newsletter-email"
+                    placeholder="Enter your email address"
+                    required
+                    class="w-full bg-stone-900 border border-stone-700 rounded-full px-5 py-3.5 text-xs text-white placeholder-stone-500 focus:border-[#F7BA1E] focus:outline-none"
+                />
+                <button
+                    type="submit"
+                    class="w-full sm:w-auto shrink-0 bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3.5 rounded-full transition-all shadow-md"
+                >
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+</Layout>
+
+<script is:inline>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Category filter button logic
+        const filterButtons = document.querySelectorAll(".journal-filter-btn");
+        const articleCards = document.querySelectorAll(".article-card");
+
+        filterButtons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const filter = btn.getAttribute("data-filter");
+
+                // Reset button styles
+                filterButtons.forEach((b) => {
+                    b.className =
+                        "journal-filter-btn px-4 py-2.5 rounded-full bg-white text-stone-700 border border-stone-200 hover:bg-stone-50 font-bold text-xs transition-all shadow-xs";
+                });
+
+                // Highlight active button
+                btn.className =
+                    "journal-filter-btn px-4 py-2.5 rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs transition-all shadow-sm";
+
+                // Filter cards
+                articleCards.forEach((card) => {
+                    const category = card.getAttribute("data-category");
+                    if (filter === "all" || category === filter) {
+                        card.style.display =
+                            card.id === "featured-article-card"
+                                ? "block"
+                                : "flex";
+                    } else {
+                        card.style.display = "none";
+                    }
+                });
+            });
+        });
+
+        // Read article click handler
+        document.querySelectorAll(".read-article-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const title = btn.getAttribute("data-title") || "Article";
+                alert(`Opening "${title}". Full editorial reader mode active!`);
+            });
+        });
+
+        // Newsletter subscription form handler
+        document
+            .getElementById("newsletterForm")
+            ?.addEventListener("submit", (e) => {
+                e.preventDefault();
+                const email =
+                    document.getElementById("newsletter-email")?.value;
+                alert(
+                    `Thank you for subscribing! A welcome email with our 2026/2027 Scottish Glamping Guide has been sent to ${email}.`,
+                );
+                e.target.reset();
+            });
+    });
+</script>
+
+<style is:global>
+    .os-grid-badge {
+        font-family: "Courier New", Courier, monospace !important;
+        letter-spacing: 0.08em !important;
+        background: rgba(125, 110, 35, 0.08) !important;
+        border: 1px dashed #7d6e23 !important;
+        color: #4f571a !important;
+    }
+</style>
