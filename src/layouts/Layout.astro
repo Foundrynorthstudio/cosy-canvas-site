@@ -3,9 +3,14 @@ interface Props {
   title: string;
   description: string;
   image?: string;
+  imageAlt?: string;
   type?: 'website' | 'article';
   keywords?: string;
   canonicalUrl?: string;
+  robots?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  breadcrumbItems?: { name: string; url: string }[];
   structuredData?: Record<string, any> | Record<string, any>[];
 }
 
@@ -13,9 +18,14 @@ const {
   title,
   description,
   image = "/cosy_canvas_hero_coastal_pitch.jpg",
+  imageAlt = "The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland",
   type = "website",
   keywords = "bell tent hire scotland, glamping hire scotland, luxury camping scotland, bell tent rental edinburgh, bell tent rental glasgow, loch lomond glamping, nc500 bell tent hire, camping gear rental scotland, event bell tents scotland, wedding glamping village",
   canonicalUrl = Astro.url.href,
+  robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  publishedTime,
+  modifiedTime,
+  breadcrumbItems,
   structuredData,
 } = Astro.props;
 
@@ -87,23 +97,22 @@ const defaultLocalBusinessSchema = {
 };
 
 // BreadcrumbList Schema
+const crumbTrail = breadcrumbItems ?? [
+  { name: "Home", url: siteUrl },
+  ...(Astro.url.pathname !== "/"
+    ? [{ name: title.split("|")[0].trim(), url: cleanCanonical }]
+    : []),
+];
+
 const breadcrumbSchema = {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": siteUrl
-    },
-    ...(Astro.url.pathname !== "/" ? [{
-      "@type": "ListItem",
-      "position": 2,
-      "name": title.split("|")[0].trim(),
-      "item": cleanCanonical
-    }] : [])
-  ]
+  "itemListElement": crumbTrail.map((item, index) => ({
+    "@type": "ListItem",
+    "position": index + 1,
+    "name": item.name,
+    "item": item.url
+  }))
 };
 ---
 
@@ -120,7 +129,10 @@ const breadcrumbSchema = {
   <meta name="keywords" content={keywords} />
   <meta name="author" content="The Cosy Canvas Co." />
   <link rel="canonical" href={cleanCanonical} />
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  {Astro.url.pathname.startsWith('/journal') && (
+    <link rel="alternate" type="application/rss+xml" title="The Cosy Journal RSS" href={`${siteUrl}/journal/rss.xml`} />
+  )}
+  <meta name="robots" content={robots} />
 
   <!-- Google Search Console Site Verification -->
   <meta name="google-site-verification" content="H0sYGrnXG4TZuZjwpMr9uy-2JWKcXEP-qdxE3MzIUJc" />
@@ -139,9 +151,18 @@ const breadcrumbSchema = {
   <meta property="og:image" content={fullImageUrl} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland" />
+  <meta property="og:image:alt" content={imageAlt} />
   <meta property="og:site_name" content="The Cosy Canvas Co." />
   <meta property="og:locale" content="en_GB" />
+  {type === "article" && publishedTime && (
+    <meta property="article:published_time" content={publishedTime} />
+  )}
+  {type === "article" && modifiedTime && (
+    <meta property="article:modified_time" content={modifiedTime} />
+  )}
+  {type === "article" && (
+    <meta property="article:publisher" content="The Cosy Canvas Co." />
+  )}
 
   <!-- Twitter / X Cards -->
   <meta name="twitter:card" content="summary_large_image" />

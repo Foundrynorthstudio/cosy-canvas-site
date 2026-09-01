@@ -1,0 +1,272 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { wordCount } from '../../lib/journal';
+import { extractHeadings, renderJournalMarkdown } from '../../lib/journal-markdown';
+import { getPostBySlug, getRelatedPosts } from '../../lib/journal-store';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const post = slug ? await getPostBySlug(slug) : undefined;
+
+if (!post) {
+  Astro.response.status = 404;
+}
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
+let html = '';
+try {
+  html = post ? await renderJournalMarkdown(post.content) : '';
+} catch (error) {
+  console.error('Journal markdown render failed', error);
+  html = `<p>${post?.excerpt ?? ''}</p>`;
+}
+const headings = post ? extractHeadings(post.content) : [];
+const related = post ? await getRelatedPosts(post) : [];
+const articleUrl = post ? `${siteUrl}/journal/${post.slug}` : `${siteUrl}/journal`;
+const imageUrl = post
+  ? post.image.startsWith('http')
+    ? post.image
+    : `${siteUrl}${post.image}`
+  : '';
+const shareText = encodeURIComponent(post?.title ?? '');
+const shareUrl = encodeURIComponent(articleUrl);
+
+const articleSchema = post
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.seoTitle || post.title,
+      description: post.seoDescription || post.excerpt,
+      image: [imageUrl],
+      datePublished: post.isoDate,
+      dateModified: post.updatedIso || post.isoDate,
+      wordCount: wordCount(post.content),
+      keywords: post.keywords,
+      inLanguage: 'en-GB',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': articleUrl,
+      },
+      author: {
+        '@type': 'Person',
+        name: post.author.name,
+        jobTitle: post.author.role,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'The Cosy Canvas Co.',
+        logo: {
+          '@type': 'ImageObject',
+          url: `${siteUrl}/TCCC%20Horizontal%20Logo.png`,
+        },
+      },
+    }
+  : undefined;
+---
+
+{
+  !post ? (
+    <Layout
+      title="Story not found | The Cosy Journal"
+      description="That journal story could not be found."
+      robots="noindex, follow"
+    >
+      <section class="py-24 text-center relative z-20">
+        <h1 class="font-serif text-4xl font-bold mb-4">This story has packed up</h1>
+        <p class="text-stone-500 mb-8">It may have been unpublished or the link is out of date.</p>
+        <a href="/journal" class="inline-flex rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3">
+          Back to the journal
+        </a>
+      </section>
+    </Layout>
+  ) : (
+<>
+<Layout
+  title={`${post.seoTitle} | The Cosy Journal`}
+  description={post.seoDescription}
+  keywords={post.keywords}
+  image={post.image}
+  imageAlt={post.imageAlt}
+  type="article"
+  publishedTime={post.isoDate}
+  modifiedTime={post.updatedIso || post.isoDate}
+  structuredData={articleSchema}
+  breadcrumbItems={[
+    { name: 'Home', url: siteUrl },
+    { name: 'The Cosy Journal', url: `${siteUrl}/journal` },
+    { name: post.title, url: articleUrl },
+  ]}
+>
+  <article class="relative z-20">
+    <header class="relative min-h-[70vh] flex items-end text-white">
+      <img
+        src={post.image}
+        alt={post.imageAlt}
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/15"></div>
+      <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 pt-32 w-full">
+        <a href="/journal" class="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-[#F7BA1E] font-bold mb-6">
+          <i class="fa-solid fa-arrow-left"></i>
+          The Cosy Journal
+        </a>
+        <span class="inline-block text-[#F7BA1E] bg-black/40 border border-[#F7BA1E]/30 rounded-full px-3 py-1 text-[10px] font-mono uppercase tracking-widest mb-4">
+          {post.categoryName}
+        </span>
+        <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] max-w-4xl">
+          {post.title}
+        </h1>
+        <p class="mt-5 text-stone-200 text-lg font-light max-w-2xl leading-relaxed">
+          {post.excerpt}
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          {
+            post.author.avatar && (
+              <img src={post.author.avatar} alt={post.author.name} class="w-12 h-12 rounded-full object-cover border-2 border-white/30" />
+            )
+          }
+          <div>
+            <p class="text-sm font-semibold">{post.author.name}</p>
+            <p class="text-xs text-stone-300">{post.author.role}</p>
+          </div>
+          <span class="hidden sm:inline text-stone-500">·</span>
+          <time datetime={post.isoDate} class="text-sm text-stone-300">{post.date}</time>
+          <span class="text-stone-500">·</span>
+          <span class="text-sm text-stone-300">{post.readTime}</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="bg-[#FDFBF7]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 grid lg:grid-cols-12 gap-10">
+        <aside class="lg:col-span-3 order-2 lg:order-1">
+          <div class="lg:sticky lg:top-28 space-y-8">
+            {
+              headings.length > 0 && (
+                <nav class="rounded-2xl bg-white border border-stone-200 p-5 shadow-sm" aria-label="On this page">
+                  <p class="text-[11px] uppercase tracking-widest font-bold text-[#7D6E23] mb-3">On this page</p>
+                  <ol class="space-y-2">
+                    {headings.map((heading) => (
+                      <li>
+                        <a href={`#${heading.id}`} class="text-sm text-stone-600 hover:text-[#7D6E23] leading-snug">
+                          {heading.text}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              )
+            }
+            <div class="rounded-2xl bg-[#111111] text-white p-5">
+              <p class="text-[11px] uppercase tracking-widest font-bold text-[#F7BA1E] mb-3">Share this story</p>
+              <div class="flex gap-2">
+                <a class="w-10 h-10 rounded-full bg-white/10 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook">
+                  <i class="fa-brands fa-facebook-f text-sm"></i>
+                </a>
+                <a class="w-10 h-10 rounded-full bg-white/10 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center" href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`} target="_blank" rel="noopener noreferrer" aria-label="Share on X">
+                  <i class="fa-brands fa-x-twitter text-sm"></i>
+                </a>
+                <a class="w-10 h-10 rounded-full bg-white/10 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center" href={`mailto:?subject=${shareText}&body=${shareUrl}`} aria-label="Share by email">
+                  <i class="fa-solid fa-envelope text-sm"></i>
+                </a>
+              </div>
+            </div>
+            <a href="/booking" class="block rounded-2xl bg-[#7D6E23] text-white p-5 hover:bg-[#5f541b] transition">
+              <p class="font-display font-extrabold text-sm uppercase tracking-wider">Stay under canvas</p>
+              <p class="text-xs text-white/80 mt-2 leading-relaxed">Delivered, pitched and collected across Scotland. From £50 a night.</p>
+            </a>
+          </div>
+        </aside>
+
+        <div class="lg:col-span-9 order-1 lg:order-2">
+          <div class="journal-prose bg-white rounded-[2rem] border border-stone-200 shadow-sm p-6 sm:p-10 md:p-14" set:html={html} />
+        </div>
+      </div>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="py-16 border-t border-stone-200 relative z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 class="font-serif text-3xl font-bold mb-8">More from the journal</h2>
+          <div class="grid md:grid-cols-3 gap-6">
+            {related.map((item) => (
+              <a href={`/journal/${item.slug}`} class="group rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm hover:shadow-lg transition">
+                <div class="h-44 overflow-hidden">
+                  <img src={item.image} alt={item.imageAlt} class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                </div>
+                <div class="p-5">
+                  <p class="text-[10px] uppercase tracking-widest text-[#7D6E23] font-bold mb-2">{item.categoryName}</p>
+                  <h3 class="font-serif font-bold text-lg leading-snug">{item.title}</h3>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+</Layout>
+</>
+  )
+}
+
+<style>
+  .journal-prose {
+    color: #3f3a32;
+    font-size: 1.0625rem;
+    line-height: 1.85;
+  }
+  .journal-prose :global(h2) {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    color: #111111;
+    margin: 2.4rem 0 1rem;
+    letter-spacing: -0.02em;
+  }
+  .journal-prose :global(h3) {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #111111;
+    margin: 2rem 0 0.75rem;
+  }
+  .journal-prose :global(p) {
+    margin-bottom: 1.15rem;
+  }
+  .journal-prose :global(a) {
+    color: #7d6e23;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .journal-prose :global(ul),
+  .journal-prose :global(ol) {
+    margin: 0 0 1.25rem 1.25rem;
+  }
+  .journal-prose :global(li) {
+    margin-bottom: 0.4rem;
+  }
+  .journal-prose :global(blockquote) {
+    border-left: 3px solid #f7ba1e;
+    background: #faf7ee;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: #4f571a;
+    border-radius: 0 1rem 1rem 0;
+  }
+  .journal-prose :global(strong) {
+    color: #111111;
+  }
+  .journal-prose :global(hr) {
+    border: 0;
+    border-top: 1px solid #e7e5e4;
+    margin: 2.5rem 0;
+  }
+  .journal-prose :global(img) {
+    border-radius: 1.25rem;
+    margin: 1.5rem 0;
+  }
+</style>

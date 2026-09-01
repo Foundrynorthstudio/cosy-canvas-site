@@ -17,8 +17,14 @@ pnpm-debug.log*
 .env
 .env.production
 
+# local journal store (Netlify Blobs used in production)
+.data/
+
 # macOS-specific files
 .DS_Store
 
 # jetbrains setting folder
 .idea/
+
+# Local Netlify folder
+.netlify

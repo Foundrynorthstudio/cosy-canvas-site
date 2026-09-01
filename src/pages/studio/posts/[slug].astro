@@ -1,0 +1,13 @@
+---
+import StudioEditor from '../../../components/StudioEditor.astro';
+import { getPostBySlug } from '../../../lib/journal-store';
+
+const { slug } = Astro.params;
+const post = slug ? await getPostBySlug(slug, true) : undefined;
+
+if (!post) {
+  return Astro.redirect('/studio');
+}
+---
+
+<StudioEditor post={post} />

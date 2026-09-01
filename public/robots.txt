@@ -2,7 +2,10 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /studio
+Disallow: /studio/
 Disallow: /booking/success
 
 # Sitemaps
 Sitemap: https://cosycanvas.co.uk/sitemap-index.xml
+Sitemap: https://cosycanvas.co.uk/sitemap-journal.xml
