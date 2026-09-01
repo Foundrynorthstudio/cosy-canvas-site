@@ -1,15 +1,9 @@
 @import "tailwindcss";
 
-@layer utilities {
-  .font-sans {
-    font-family: 'Outfit', sans-serif;
-  }
-  .font-display {
-    font-family: 'Montserrat', sans-serif;
-  }
-  .font-serif {
-    font-family: 'Playfair Display', serif;
-  }
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
 }
 
 /* Force Contour Lines Background Pattern */

@@ -73,7 +73,7 @@ const articleSchema = post
       robots="noindex, follow"
     >
       <section class="py-24 text-center relative z-20">
-        <h1 class="font-serif text-4xl font-bold mb-4">This story has packed up</h1>
+        <h1 class="font-display text-4xl font-black mb-4">This story has packed up</h1>
         <p class="text-stone-500 mb-8">It may have been unpublished or the link is out of date.</p>
         <a href="/journal" class="inline-flex rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3">
           Back to the journal
@@ -114,7 +114,7 @@ const articleSchema = post
         <span class="inline-block text-[#F7BA1E] bg-black/40 border border-[#F7BA1E]/30 rounded-full px-3 py-1 text-[10px] font-mono uppercase tracking-widest mb-4">
           {post.categoryName}
         </span>
-        <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.1] max-w-4xl">
+        <h1 class="font-display text-4xl sm:text-5xl md:text-6xl font-black leading-[1.1] max-w-4xl">
           {post.title}
         </h1>
         <p class="mt-5 text-stone-200 text-lg font-light max-w-2xl leading-relaxed">
@@ -190,7 +190,7 @@ const articleSchema = post
     related.length > 0 && (
       <section class="py-16 border-t border-stone-200 relative z-20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="font-serif text-3xl font-bold mb-8">More from the journal</h2>
+          <h2 class="font-display text-3xl font-black mb-8">More from the journal</h2>
           <div class="grid md:grid-cols-3 gap-6">
             {related.map((item) => (
               <a href={`/journal/${item.slug}`} class="group rounded-2xl overflow-hidden bg-white border border-stone-200 shadow-sm hover:shadow-lg transition">
@@ -199,7 +199,7 @@ const articleSchema = post
                 </div>
                 <div class="p-5">
                   <p class="text-[10px] uppercase tracking-widest text-[#7D6E23] font-bold mb-2">{item.categoryName}</p>
-                  <h3 class="font-serif font-bold text-lg leading-snug">{item.title}</h3>
+                  <h3 class="font-display font-black text-lg leading-snug">{item.title}</h3>
                 </div>
               </a>
             ))}
@@ -220,7 +220,7 @@ const articleSchema = post
     line-height: 1.85;
   }
   .journal-prose :global(h2) {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 1.85rem;
     color: #111111;
     margin: 2.4rem 0 1rem;
