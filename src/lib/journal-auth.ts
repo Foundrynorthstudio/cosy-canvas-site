@@ -3,16 +3,22 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 export const STUDIO_COOKIE = 'cc_studio';
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7;
 
+function readEnv(name: string): string {
+  const fromProcess = process.env[name];
+  const fromMeta = (import.meta.env as Record<string, string | undefined>)[name];
+  return (fromProcess || fromMeta || '').trim();
+}
+
+function adminPassword(): string {
+  return readEnv('JOURNAL_ADMIN_PASSWORD');
+}
+
 function secret(): string {
-  return (
-    import.meta.env.JOURNAL_SESSION_SECRET ||
-    import.meta.env.JOURNAL_ADMIN_PASSWORD ||
-    ''
-  );
+  return readEnv('JOURNAL_SESSION_SECRET') || adminPassword();
 }
 
 export function studioPasswordConfigured(): boolean {
-  return Boolean(import.meta.env.JOURNAL_ADMIN_PASSWORD);
+  return Boolean(adminPassword());
 }
 
 function hmac(value: string): string {
@@ -27,7 +33,7 @@ function safeEqual(a: string, b: string): boolean {
 }
 
 export function verifyStudioPassword(password: string): boolean {
-  const expected = import.meta.env.JOURNAL_ADMIN_PASSWORD as string | undefined;
+  const expected = adminPassword();
   if (!expected || !password) return false;
   return safeEqual(password, expected);
 }
