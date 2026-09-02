@@ -60,23 +60,31 @@ async function writeBlobs(bookings: BookingRecord[]): Promise<boolean> {
   }
 }
 
+function withMissingDemos(existing: BookingRecord[]): { bookings: BookingRecord[]; added: boolean } {
+  const refs = new Set(existing.map((booking) => booking.bookingRef));
+  const missing = DEMO_BOOKINGS.filter((demo) => !refs.has(demo.bookingRef));
+  if (missing.length === 0) return { bookings: existing, added: false };
+  return { bookings: [...existing, ...structuredClone(missing)], added: true };
+}
+
 async function loadBookings(): Promise<BookingRecord[]> {
+  let loaded: BookingRecord[] = [];
   try {
     const fromBlobs = await readBlobs();
-    if (fromBlobs && fromBlobs.length > 0) return sortBookings(fromBlobs);
-    const fromDisk = await readLocalFile();
-    if (fromDisk && fromDisk.length > 0) return sortBookings(fromDisk);
+    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
+    else {
+      const fromDisk = await readLocalFile();
+      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
+    }
   } catch (error) {
     console.error('Booking store read failed.', error);
   }
 
-  if (import.meta.env.DEV) {
-    const demos = structuredClone(DEMO_BOOKINGS);
-    await persist(demos);
-    return sortBookings(demos);
+  const next = withMissingDemos(loaded);
+  if (next.added || loaded.length === 0) {
+    await persist(next.bookings);
   }
-
-  return [];
+  return sortBookings(next.bookings);
 }
 
 async function persist(bookings: BookingRecord[]): Promise<void> {
