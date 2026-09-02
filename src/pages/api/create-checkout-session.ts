@@ -206,6 +206,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         totalPaidToday: String(totalDueToday.toFixed(2)),
         remainingBalance: String(remainingBalance.toFixed(2)),
         balanceDueDate,
+        type: 'deposit',
       },
     });
 

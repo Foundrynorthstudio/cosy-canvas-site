@@ -3,7 +3,7 @@ import StudioLayout from '../../layouts/StudioLayout.astro';
 import { studioPasswordConfigured } from '../../lib/journal-auth';
 
 const error = Astro.url.searchParams.get('error');
-const nextPath = Astro.url.searchParams.get('next') || '/studio';
+const nextPath = Astro.url.searchParams.get('next') || '/studio/bookings';
 const configured = studioPasswordConfigured();
 ---
 
@@ -12,8 +12,8 @@ const configured = studioPasswordConfigured();
     <div class="w-full max-w-md">
       <div class="mb-8 text-center">
         <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em] mb-3">The Cosy Canvas Co.</p>
-        <h1 class="font-display text-3xl font-black">Journal Studio</h1>
-        <p class="text-stone-400 text-sm mt-2">Sign in to write and publish stories.</p>
+        <h1 class="font-display text-3xl font-black">Studio</h1>
+        <p class="text-stone-400 text-sm mt-2">Sign in to manage bookings and the journal.</p>
       </div>
       <form method="POST" action="/api/studio/login" class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
         <input type="hidden" name="next" value={nextPath} />

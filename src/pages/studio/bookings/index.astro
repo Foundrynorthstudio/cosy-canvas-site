@@ -1,0 +1,100 @@
+---
+import StudioLayout from '../../../layouts/StudioLayout.astro';
+import StudioNav from '../../../components/StudioNav.astro';
+import { deriveBookingStatus, statusLabel } from '../../../lib/booking';
+import { getAllBookings } from '../../../lib/booking-store';
+
+const bookings = await getAllBookings();
+const dueCount = bookings.filter((b) => b.remainingBalance > 0).length;
+---
+
+<StudioLayout title="Bookings · Cosy Studio">
+  <StudioNav active="bookings" />
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div>
+        <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
+        <h1 class="font-display text-3xl font-black mt-1">Bookings</h1>
+        <p class="text-stone-400 text-sm mt-2">{bookings.length} stays · {dueCount} with a balance due</p>
+      </div>
+      <button id="remind-all" class="rounded-full border border-[#F7BA1E]/40 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+        Run scheduled emails
+      </button>
+    </div>
+
+    {
+      bookings.length === 0 ? (
+        <div class="rounded-3xl border border-dashed border-white/15 p-12 text-center text-stone-400">
+          <p class="font-display text-xl font-black text-white mb-2">No bookings yet</p>
+          <p class="text-sm">Paid checkouts appear here automatically, with confirmation, welcome pack, and DIY guide emails.</p>
+        </div>
+      ) : (
+        <div class="rounded-3xl border border-white/10 overflow-x-auto bg-white/[0.03]">
+          <table class="w-full text-left text-sm min-w-[720px]">
+            <thead class="text-[11px] uppercase tracking-widest text-stone-500 border-b border-white/10">
+              <tr>
+                <th class="px-5 py-4">Guest</th>
+                <th class="px-5 py-4">Stay</th>
+                <th class="px-5 py-4 hidden lg:table-cell">Load</th>
+                <th class="px-5 py-4">Location</th>
+                <th class="px-5 py-4">Status</th>
+                <th class="px-5 py-4"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => {
+                const status = deriveBookingStatus(booking);
+                const extras = booking.addons.map((addon) => addon.title);
+                const load = [booking.tentType, booking.beddingTier, ...extras].filter(Boolean);
+                return (
+                  <tr class="border-b border-white/5 hover:bg-white/[0.04]">
+                    <td class="px-5 py-4">
+                      <p class="font-semibold text-white">{booking.customerName}</p>
+                      <p class="text-stone-500 text-xs mt-1">{booking.bookingRef} · {booking.customerEmail}</p>
+                    </td>
+                    <td class="px-5 py-4 text-stone-300">
+                      {booking.checkinDate} → {booking.checkoutDate}
+                      <div class="text-xs text-stone-500">{booking.tentType} · {booking.guests} guests</div>
+                    </td>
+                    <td class="px-5 py-4 hidden lg:table-cell text-[11px] text-stone-400 max-w-[16rem]">
+                      {load.join(' · ')}
+                    </td>
+                    <td class="px-5 py-4 text-stone-400 max-w-[14rem] truncate">{booking.campsiteLocation}</td>
+                    <td class="px-5 py-4">
+                      <span class:list={[
+                        'text-[10px] uppercase tracking-wider font-bold px-2 py-1 rounded-full',
+                        status === 'paid_in_full' && 'bg-emerald-500/15 text-emerald-300',
+                        status === 'balance_due' && 'bg-amber-500/15 text-amber-300',
+                        status === 'refunded' && 'bg-red-500/15 text-red-300',
+                        status === 'confirmed' && 'bg-white/10 text-stone-200',
+                      ]}>
+                        {statusLabel(status)}
+                      </span>
+                      {booking.remainingBalance > 0 && (
+                        <div class="text-[11px] text-amber-300 mt-1">£{booking.remainingBalance.toFixed(2)} due</div>
+                      )}
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                      <a href={`/studio/bookings/${booking.bookingRef}`} class="text-[#F7BA1E] text-xs font-bold uppercase tracking-wider">Open</a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )
+    }
+    <p id="status" class="text-xs text-stone-500 mt-4"></p>
+  </div>
+</StudioLayout>
+
+<script>
+  document.getElementById('remind-all')?.addEventListener('click', async () => {
+    const status = document.getElementById('status');
+    if (status) status.textContent = 'Sending…';
+    const res = await fetch('/api/studio/bookings/reminders', { method: 'POST' });
+    const json = await res.json();
+    if (status) status.textContent = res.ok ? `Sent ${json.sent} scheduled email${json.sent === 1 ? '' : 's'}.` : (json.error || 'Failed');
+  });
+</script>

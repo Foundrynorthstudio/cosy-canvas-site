@@ -1,0 +1,264 @@
+---
+import StudioLayout from '../../../layouts/StudioLayout.astro';
+import StudioNav from '../../../components/StudioNav.astro';
+import { deriveBookingStatus, isDiyFulfillment, statusLabel } from '../../../lib/booking';
+import { buildKitManifest } from '../../../lib/booking-kit';
+import { buildBookingLineItems, formatGbp } from '../../../lib/booking-lines';
+import { MAIL_META, MAIL_TYPES, ruleSummary, sentAt } from '../../../lib/booking-mail';
+import { getMailSettings } from '../../../lib/booking-mail-settings';
+import { getBookingByRef } from '../../../lib/booking-store';
+
+const { ref } = Astro.params;
+const booking = ref ? await getBookingByRef(ref) : undefined;
+
+if (!booking) {
+  return Astro.redirect('/studio/bookings');
+}
+
+const status = deriveBookingStatus(booking);
+const kit = buildKitManifest(booking);
+const lineItems = buildBookingLineItems(booking);
+const selectedAddons = lineItems.filter((item) => item.kind === 'addon');
+const mailSettings = await getMailSettings();
+---
+
+<StudioLayout title={`${booking.bookingRef} · Bookings`}>
+  <StudioNav active="bookings" />
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <a href="/studio/bookings" class="text-xs text-stone-400 hover:text-[#F7BA1E]">← All bookings</a>
+    <div class="flex flex-wrap items-end justify-between gap-4 mt-3 mb-8">
+      <div>
+        <p class="font-mono text-[#F7BA1E] text-sm">{booking.bookingRef}</p>
+        <h1 class="font-display text-3xl font-black">{booking.customerName}</h1>
+        <p class="text-stone-400 text-sm mt-1">{booking.checkinDate} → {booking.checkoutDate} · {booking.campsiteLocation}</p>
+      </div>
+      <span class="text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full bg-white/10">{statusLabel(status)}</span>
+    </div>
+
+    <section class="rounded-3xl border border-white/10 bg-white/[0.03] p-6 mb-6">
+      <div class="mb-5">
+        <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Booking summary</p>
+        <h2 class="font-display text-2xl font-black">What they booked</h2>
+        <p class="text-stone-400 text-sm mt-1">{booking.guests} guests · {booking.nights} nights · {booking.campsiteLocation}</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {
+          lineItems.filter((item) => item.kind !== 'addon').map((item) => (
+            <article class="rounded-2xl border border-white/10 bg-[#111111] p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                  <span class="w-9 h-9 rounded-xl bg-[#F7BA1E]/15 text-[#F7BA1E] flex items-center justify-center shrink-0">
+                    <i class={`fa-solid ${item.icon} text-sm`} />
+                  </span>
+                  <div>
+                    <p class="text-[10px] uppercase tracking-wider text-stone-500 font-bold">
+                      {item.kind === 'tent' ? 'Tent' : item.kind === 'bedding' ? 'Bedding' : 'Setup'}
+                    </p>
+                    <h3 class="font-display font-black text-sm leading-snug">{item.title}</h3>
+                    <p class="text-[11px] text-stone-500 mt-1">{item.detail}</p>
+                  </div>
+                </div>
+                <p class="font-mono text-[#F7BA1E] text-xs shrink-0">{item.price === 0 ? 'Free' : formatGbp(item.price)}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+      <div class="mt-5">
+        <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold mb-3">Camp add-ons selected</p>
+        {
+          selectedAddons.length === 0 ? (
+            <p class="text-sm text-stone-500">No extras selected on the booking page.</p>
+          ) : (
+            <div class="grid sm:grid-cols-2 gap-3">
+              {selectedAddons.map((item) => (
+                <article class="rounded-2xl border border-[#F7BA1E]/35 bg-[#F7BA1E]/10 p-4 flex items-start justify-between gap-3">
+                  <div class="flex items-start gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-[#F7BA1E] text-[#111111] flex items-center justify-center shrink-0">
+                      <i class={`fa-solid ${item.icon} text-sm`} />
+                    </span>
+                    <div>
+                      <h3 class="font-display font-black text-sm">{item.title}</h3>
+                      <p class="text-[11px] text-stone-400 mt-0.5">{item.detail}</p>
+                    </div>
+                  </div>
+                  <p class="font-mono text-[#F7BA1E] text-xs shrink-0">{formatGbp(item.price)}</p>
+                </article>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <section class="rounded-3xl border border-[#F7BA1E]/30 bg-[#F7BA1E]/5 p-6 mb-6">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-5">
+        <div>
+          <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Load sheet</p>
+          <h2 class="font-display text-2xl font-black">{kit.loadVerb}</h2>
+          <p class="text-stone-400 text-sm mt-1">Only the tent, bedding and extras they added at booking.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a
+            href={`/api/studio/bookings/${booking.bookingRef}/pack-list.pdf`}
+            class="rounded-full border border-[#F7BA1E]/50 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+          >
+            Download PDF
+          </a>
+          <a
+            href={`/studio/bookings/${booking.bookingRef}/pack-list?print=1`}
+            target="_blank"
+            rel="noreferrer"
+            class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+          >
+            Print pack list
+          </a>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {
+          kit.groups.map((group) => (
+            <article class="rounded-2xl bg-[#111111] border border-white/10 p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-8 h-8 rounded-lg bg-[#F7BA1E]/20 text-[#F7BA1E] flex items-center justify-center">
+                  <i class={`fa-solid ${group.icon} text-sm`} />
+                </span>
+                <h3 class="font-display font-black text-sm">{group.title}</h3>
+              </div>
+              <ul class="space-y-2">
+                {group.lines.map((line) => (
+                  <li class="flex items-start justify-between gap-3 text-sm border-b border-white/5 pb-2">
+                    <span>
+                      {line.label}
+                      {line.detail && <span class="block text-[11px] text-stone-500">{line.detail}</span>}
+                    </span>
+                    <span class="font-mono text-[#F7BA1E] text-xs shrink-0">{line.qty}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+      <form id="edit-form" class="lg:col-span-2 space-y-4 rounded-3xl border border-white/10 p-6 bg-white/[0.03]">
+        <h2 class="font-display font-black text-lg">Customer & stay</h2>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <label class="text-xs text-stone-400">Name<input name="customerName" value={booking.customerName} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Email<input name="customerEmail" value={booking.customerEmail} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Phone<input name="customerPhone" value={booking.customerPhone} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Guests<input name="guests" type="number" value={booking.guests} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Check-in<input name="checkinDate" value={booking.checkinDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Check-out<input name="checkoutDate" value={booking.checkoutDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400 sm:col-span-2">Address<input name="customerAddress" value={booking.customerAddress} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400 sm:col-span-2">Campsite / pitch<input name="campsiteLocation" value={booking.campsiteLocation} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Tent<input name="tentType" value={booking.tentType} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Nights<input name="nights" type="number" value={booking.nights} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Bedding<input name="beddingTier" value={booking.beddingTier} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Fulfillment<input name="fulfillment" value={booking.fulfillment} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Balance remaining (£)<input name="remainingBalance" type="number" step="0.01" value={booking.remainingBalance} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400">Balance due date<input name="balanceDueDate" value={booking.balanceDueDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
+          <label class="text-xs text-stone-400 sm:col-span-2">Guest notes<textarea name="specialRequests" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{booking.specialRequests}</textarea></label>
+          <label class="text-xs text-stone-400 sm:col-span-2">Internal notes<textarea name="internalNotes" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{booking.internalNotes}</textarea></label>
+        </div>
+        <button class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">Save changes</button>
+        <p id="save-status" class="text-xs text-stone-400"></p>
+      </form>
+
+      <div class="space-y-4">
+        <div class="rounded-3xl border border-white/10 p-5 bg-white/[0.03] text-sm">
+          <h2 class="font-display font-black mb-3">Money</h2>
+          <ul class="space-y-2 mb-4">
+            {
+              lineItems.map((item) => (
+                <li class="flex items-start justify-between gap-3 border-b border-white/5 pb-2">
+                  <span>
+                    <span class="block text-stone-200">{item.title}</span>
+                    <span class="block text-[11px] text-stone-500">{item.detail}</span>
+                  </span>
+                  <span class="font-mono text-xs text-[#F7BA1E] shrink-0">{item.price === 0 ? 'Free' : formatGbp(item.price)}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="font-semibold">Stay total <span class="float-right">{formatGbp(booking.totalRentalPrice)}</span></p>
+          <p class="clear-both pt-2">Paid so far <span class="float-right">{formatGbp(booking.totalPaidToday)}</span></p>
+          <p>Security hold <span class="float-right">{formatGbp(booking.securityDeposit)}</span></p>
+          <p class="text-amber-300">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
+          <p class="text-stone-500">Refunded <span class="float-right">{formatGbp(booking.amountRefunded)}</span></p>
+          <form id="refund-form" class="mt-4 flex gap-2">
+            <input name="amount" type="number" step="0.01" placeholder="Refund £" class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm" />
+            <button class="rounded-full bg-white/10 px-4 text-xs font-bold uppercase tracking-wider">Refund</button>
+          </form>
+          <p class="text-[11px] text-stone-500 mt-2">Refunds go back through Stripe to the original card.</p>
+        </div>
+
+        <div class="rounded-3xl border border-white/10 p-5 bg-white/[0.03] space-y-3">
+          <div class="flex items-center justify-between gap-3">
+            <h2 class="font-display font-black">Emails</h2>
+            <a href="/studio/emails" class="text-[10px] uppercase tracking-wider text-stone-500 hover:text-[#F7BA1E]">Rules</a>
+          </div>
+          {
+            MAIL_TYPES.map((type) => {
+              const sent = sentAt(booking, type);
+              const hidden = mailSettings.rules[type].onlyDiy && !isDiyFulfillment(booking.fulfillment);
+              return (
+                <a
+                  href={`/studio/bookings/${booking.bookingRef}/mail/${type}`}
+                  class:list={[
+                    'block rounded-xl border px-3 py-3 hover:border-[#F7BA1E] transition',
+                    hidden ? 'border-white/5 opacity-50' : 'border-white/10',
+                  ]}
+                >
+                  <span class="flex items-center justify-between gap-2">
+                    <span class="text-sm font-semibold text-white">{MAIL_META[type].label}</span>
+                    <span class="text-[10px] uppercase tracking-wider text-stone-500">{sent ? 'Sent' : 'Draft'}</span>
+                  </span>
+                  <span class="block text-[11px] text-stone-500 mt-1">{ruleSummary(mailSettings.rules[type])}</span>
+                  {sent && (
+                    <span class="block text-[11px] text-[#F7BA1E] mt-1">
+                      Last sent {new Date(sent).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  )}
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</StudioLayout>
+
+<script define:vars={{ ref: booking.bookingRef }}>
+  const saveStatus = document.getElementById('save-status');
+
+  document.getElementById('edit-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget));
+    if (saveStatus) saveStatus.textContent = 'Saving…';
+    const res = await fetch(`/api/studio/bookings/${ref}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (saveStatus) saveStatus.textContent = res.ok ? 'Saved.' : json.error || 'Could not save.';
+  });
+
+  document.getElementById('refund-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!confirm('Issue this Stripe refund?')) return;
+    const amount = Number(new FormData(event.currentTarget).get('amount'));
+    const res = await fetch(`/api/studio/bookings/${ref}/refund`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount }),
+    });
+    const json = await res.json();
+    if (!res.ok) alert(json.error || 'Refund failed');
+    else window.location.reload();
+  });
+</script>

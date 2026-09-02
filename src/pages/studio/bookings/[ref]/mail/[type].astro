@@ -1,0 +1,124 @@
+---
+import StudioLayout from '../../../../../layouts/StudioLayout.astro';
+import StudioNav from '../../../../../components/StudioNav.astro';
+import { MAIL_META, isMailType, ruleSummary, sentAt } from '../../../../../lib/booking-mail';
+import { composeBookingMail } from '../../../../../lib/booking-mail-send';
+import { getMailSettings } from '../../../../../lib/booking-mail-settings';
+import { getBookingByRef } from '../../../../../lib/booking-store';
+
+const { ref, type } = Astro.params;
+const booking = ref ? await getBookingByRef(ref) : undefined;
+
+if (!booking || !type || !isMailType(type)) {
+  return Astro.redirect('/studio/bookings');
+}
+
+const settings = await getMailSettings();
+const composed = await composeBookingMail(booking, type);
+const meta = MAIL_META[type];
+const lastSent = sentAt(booking, type);
+const sentLabel = lastSent
+  ? new Date(lastSent).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+  : 'Not sent yet';
+---
+
+<StudioLayout title={`${meta.label} · ${booking.bookingRef}`}>
+  <StudioNav active="emails" />
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <a href={`/studio/bookings/${booking.bookingRef}`} class="text-xs text-stone-400 hover:text-[#F7BA1E]">← {booking.bookingRef}</a>
+    <div class="flex flex-wrap items-end justify-between gap-4 mt-3 mb-8">
+      <div>
+        <p class="font-mono text-[#F7BA1E] text-sm">{meta.label}</p>
+        <h1 class="font-display text-3xl font-black">To {booking.customerName}</h1>
+        <p class="text-stone-400 text-sm mt-1">{composed.to} · {ruleSummary(settings.rules[type])} · {sentLabel}</p>
+      </div>
+      <a href="/studio/emails" class="text-xs uppercase tracking-wider font-bold text-stone-400 hover:text-white">Edit master template</a>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+      <form id="mail-form" class="space-y-3 rounded-3xl border border-white/10 p-6 bg-white/[0.03]">
+        <label class="text-xs text-stone-400 block">
+          Header title
+          <input name="headline" value={composed.headline} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+        </label>
+        <label class="text-xs text-stone-400 block">
+          Subject
+          <input name="subject" value={composed.subject} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+        </label>
+        <label class="text-xs text-stone-400 block">
+          Body
+          <textarea name="body" rows="18" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white font-mono leading-relaxed">{composed.body}</textarea>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          <button class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">Send to guest</button>
+          <button type="button" id="reset" class="rounded-full border border-white/15 text-xs uppercase tracking-wider font-bold px-5 py-3">Reset to template</button>
+        </div>
+        <p id="mail-status" class="text-xs text-stone-400"></p>
+      </form>
+
+      <div>
+        <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold mb-3">Preview</p>
+        <iframe id="preview" title="Email preview" class="w-full min-h-[720px] rounded-3xl bg-white border border-white/10" srcdoc={composed.html}></iframe>
+      </div>
+    </div>
+  </div>
+</StudioLayout>
+
+<script define:vars={{ ref: booking.bookingRef, type, originalBody: composed.body, originalSubject: composed.subject, originalHeadline: composed.headline }}>
+  const form = document.getElementById('mail-form');
+  const status = document.getElementById('mail-status');
+  const preview = document.getElementById('preview');
+  const headline = form?.querySelector('[name="headline"]');
+  const subject = form?.querySelector('[name="subject"]');
+  const body = form?.querySelector('[name="body"]');
+
+  function wrapHtml(title, inner) {
+    return `<!DOCTYPE html><html><body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f7f6f2;margin:0;padding:20px;">
+      <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e7e5e4;">
+        <div style="background:#111;padding:32px 24px;text-align:center;border-bottom:4px solid #f7ba1e;">
+          <p style="margin:0;color:#f7ba1e;font-size:13px;letter-spacing:1px;text-transform:uppercase;">The Cosy Canvas Co.</p>
+          <h1 style="margin:8px 0 0;color:#fff;font-size:24px;">${title}</h1>
+        </div>
+        <div style="padding:32px 24px;font-size:14px;line-height:1.65;color:#444;">${inner}</div>
+        <div style="background:#f5f4f0;padding:24px;text-align:center;font-size:12px;color:#78716c;">The Cosy Canvas Co.</div>
+      </div></body></html>`;
+  }
+
+  function refreshPreview() {
+    if (preview && headline && body) {
+      preview.setAttribute('srcdoc', wrapHtml(headline.value, body.value));
+    }
+  }
+
+  headline?.addEventListener('input', refreshPreview);
+  body?.addEventListener('input', refreshPreview);
+
+  document.getElementById('reset')?.addEventListener('click', () => {
+    if (headline) headline.value = originalHeadline;
+    if (subject) subject.value = originalSubject;
+    if (body) body.value = originalBody;
+    refreshPreview();
+  });
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!confirm(`Send this ${type} email to the guest?`)) return;
+    if (status) status.textContent = 'Sending…';
+    const res = await fetch(`/api/studio/bookings/${ref}/email`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type,
+        headline: headline?.value,
+        subject: subject?.value,
+        body: body?.value,
+      }),
+    });
+    const json = await res.json();
+    if (status) {
+      status.textContent = res.ok
+        ? (json.mocked ? 'Marked sent (email is mocked until Resend is configured).' : 'Sent.')
+        : json.error || 'Failed';
+    }
+  });
+</script>

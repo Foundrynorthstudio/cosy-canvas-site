@@ -10,7 +10,7 @@ import {
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const form = await request.formData();
   const password = String(form.get('password') ?? '');
-  const nextPath = String(form.get('next') ?? '/studio');
+  const nextPath = String(form.get('next') ?? '/studio/bookings');
   const safeNext = nextPath.startsWith('/studio') ? nextPath : '/studio';
 
   if (!studioPasswordConfigured()) {
