@@ -169,6 +169,11 @@ That is the work. Hire kit has to be right on the hill, not almost right.
 
 Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full signal, friendly late check-in, and a picnic table that works as a desk. That is why it earns a pin on the [campsites](/campsites) page.
 
+<div class="journal-cta">
+<a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>
+<a class="journal-btn journal-btn--gold" href="/booking">Book Now</a>
+</div>
+
 ---
 
 ## Not a digital detox
@@ -222,7 +227,12 @@ The actual dream logistics vehicle is a **LWB Caddy Maxi**. Probably white — t
 
 I love driving the Highland roads in Scotland. That is a huge part of why I am doing this. The canvas is the product. The A82 is the reason it does not feel like a spreadsheet company.
 
-This is tonight, from the bench. Tomorrow is Fort William.
+This is tonight, from the bench. Tomorrow is Fort William. If you want the same Glen Coe setup — a pitch at Red Squirrel and canvas delivered from Polmont — the buttons are the next step.
+
+<div class="journal-cta">
+<a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>
+<a class="journal-btn journal-btn--gold" href="/booking">Book Now</a>
+</div>
     `,
   },
   {

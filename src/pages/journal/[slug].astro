@@ -299,4 +299,40 @@ const articleSchema = post
     object-fit: cover;
     object-position: 50% 65%;
   }
+  .journal-prose :global(.journal-cta) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.75rem 0 0.5rem;
+  }
+  .journal-prose :global(.journal-btn) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    padding: 0.85rem 1.4rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    line-height: 1;
+  }
+  .journal-prose :global(.journal-btn--gold) {
+    background: #f7ba1e;
+    color: #111111;
+  }
+  .journal-prose :global(.journal-btn--gold:hover) {
+    background: #d4a51e;
+    color: #111111;
+  }
+  .journal-prose :global(.journal-btn--olive) {
+    background: #7d6e23;
+    color: #ffffff;
+  }
+  .journal-prose :global(.journal-btn--olive:hover) {
+    background: #5f541b;
+    color: #ffffff;
+  }
 </style>
