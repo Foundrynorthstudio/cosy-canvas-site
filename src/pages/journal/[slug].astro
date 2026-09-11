@@ -267,6 +267,31 @@ const articleSchema = post
   }
   .journal-prose :global(img) {
     border-radius: 1.25rem;
-    margin: 1.5rem 0;
+    margin: 0.5rem 0 0;
+    width: 100%;
+    height: auto;
+  }
+  .journal-prose :global(figure) {
+    margin: 1.75rem 0;
+  }
+  .journal-prose :global(figcaption) {
+    font-size: 0.8rem;
+    color: #78716c;
+    margin-top: 0.5rem;
+    line-height: 1.45;
+  }
+  .journal-prose :global(.photo-pair) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.75rem 0;
+  }
+  @media (min-width: 640px) {
+    .journal-prose :global(.photo-pair) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .journal-prose :global(.photo-pair figure) {
+    margin: 0;
   }
 </style>

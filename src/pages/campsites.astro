@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout 
   title="Recommended Scottish Campsites & Wild Spots | The Cosy Canvas Co." 
-  description="Explore top recommended bell tent campsites across Loch Lomond, Trossachs, Isle of Mull, and the NC500 with driving routes from our Polmont base."
+  description="Explore top recommended bell tent campsites across Loch Lomond, the Trossachs, Glencoe, Isle of Mull, and the NC500 with driving routes from our Polmont base."
 >
   <!-- Page Header Banner -->
   <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
@@ -85,7 +85,14 @@ import Layout from '../layouts/Layout.astro';
               </div>
             </button>
 
-            <!-- PIN 7: Durness Coastal Spot -->
+            <!-- PIN 7: Red Squirrel Campsite (Glencoe) -->
+            <button type="button" data-pin="redsquirrel" id="pin-redsquirrel" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 40%; top: 51%;" title="Red Squirrel Campsite (Glencoe)">
+              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
+                <i class="fa-solid fa-tent"></i>
+              </div>
+            </button>
+
+            <!-- PIN 8: Durness Coastal Spot -->
             <button type="button" data-pin="durness" id="pin-durness" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 49%; top: 19%;" title="Durness Coastal Area (NC500)">
               <div class="pin-icon w-7 h-7 rounded-full bg-[#111111] border-2 border-[#F7BA1E] flex items-center justify-center text-[#F7BA1E] text-[11px] shadow-xl">
                 <i class="fa-solid fa-compass"></i>
@@ -145,7 +152,7 @@ import Layout from '../layouts/Layout.astro';
         </button>
       </div>
 
-      <!-- Campsite Cards Grid (6 Locations) -->
+      <!-- Campsite Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         
         <!-- Campsite 1: Cobleland -->
@@ -292,7 +299,35 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </div>
 
-        <!-- Campsite 6: Durness Wild Spot -->
+        <!-- Campsite 6: Red Squirrel, Glencoe -->
+        <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="highlands">
+          <div class="relative h-48 overflow-hidden">
+            <img src="/campsite_red_squirrel.jpg" alt="Two-person tent and stove at Red Squirrel Campsite, Glen Coe" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Red+Squirrel+Glencoe'"/>
+            <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NN 105 577</span>
+            <span class="absolute top-3 right-3 bg-[#7D6E23] text-white text-[10px] font-bold px-2 py-1 rounded">ELEVATION: 50m</span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-display font-bold text-[#111111] text-lg">Red Squirrel Campsite</h3>
+                <span class="text-[#7D6E23] text-xs font-semibold">Glencoe</span>
+              </div>
+              <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                Wooded River Coe pitches under the Glencoe mountains. A belter for two, with a friendly welcome even on a busy Friday. For a 4M bell tent, arrive in daylight at the weekend so you can pick a proper clearing.
+              </p>
+            </div>
+            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
+              <a href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+              </a>
+              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="redsquirrel">
+                OS Contour & Route Map &rarr;
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campsite 7: Durness Wild Spot -->
         <div class="campsite-card bg-white rounded-xl overflow-hidden border-2 border-[#F7BA1E]/60 shadow-md flex flex-col" data-region="wild">
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_durness_wild.jpg" alt="Durness Wild Coastal Spot" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Durness+Wild'"/>
@@ -489,6 +524,22 @@ import Layout from '../layouts/Layout.astro';
       routeDesc: 'M8 west, Erskine Bridge to A82 north to Luss',
       terrain: 'Manicured level lawn pitch right near water edge.'
     },
+    'redsquirrel': {
+      tag: 'OS GRID: NN 105 577',
+      drive: '2 HRS FROM POLMONT',
+      img: '/campsite_red_squirrel.jpg',
+      elevation: '50m ELEVATION',
+      title: 'Red Squirrel Campsite',
+      destShort: 'Red Squirrel',
+      region: 'Glen Coe, Lochaber • River Coe woodland',
+      desc: 'Twenty-two acres of woodland beside the River Coe, 14 miles south of Fort William. Warm welcome, proper Highland feel. Excellent for two people. On a busy Friday the flat pitches go early — daylight arrival if you are bringing a 4M bell tent.',
+      suitability: 'Best for 4M (2 guests). Larger canvas needs a daylight arrival.',
+      website: 'https://redsquirrelcampsite.co.uk/',
+      gridRef: 'NN 105 577',
+      distance: '110 miles (about 2 hrs via the A82)',
+      routeDesc: 'M9 / A80 west, then A82 north through Crianlarich into Glen Coe',
+      terrain: 'Wooded river-valley clearings. Easy enough once you have done a lap of the site.'
+    },
     'durness': {
       tag: 'SECRET GRID: NC 40* ***',
       drive: '4.5 HRS (A9 NORTH)',
@@ -540,7 +591,7 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('modalDistance').innerText = data.distance;
     document.getElementById('modalRouteDesc').innerText = data.routeDesc;
     document.getElementById('modalTerrain').innerText = data.terrain;
-    document.getElementById('modalDestShort').innerText = data.title.split(' ')[0];
+    document.getElementById('modalDestShort').innerText = data.destShort || data.title.split(' ')[0];
 
     const modal = document.getElementById('campsiteModal');
     if (modal) {

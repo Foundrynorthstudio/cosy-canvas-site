@@ -72,6 +72,107 @@ export function wordCount(markdown: string): number {
 
 export const SEED_POSTS: JournalPost[] = [
   {
+    slug: "red-squirrel-campsite-glencoe",
+    title: "Field notes from Red Squirrel: a Friday night in Glen Coe",
+    excerpt: "After work in the Audi, a last-minute Friday check-in, a Decathlon pop-up, and a picnic-table office. Red Squirrel is a belter for two — and my base for a RatRace hire north of Fort William.",
+    category: "guides",
+    categoryName: "Glamping Guides",
+    author: {
+      name: "Jeremie",
+      role: "Notes from the pitch",
+    },
+    date: "11 September 2026",
+    isoDate: "2026-09-11T21:30:00Z",
+    readTime: "6 min read",
+    featured: false,
+    status: "published",
+    image: "/campsite_red_squirrel.jpg",
+    imageAlt: "Night pitch at Red Squirrel Campsite: two-person tent, stove, and picnic table under the Glen Coe trees",
+    seoTitle: "Red Squirrel Campsite Glencoe: Friday Field Notes",
+    seoDescription: "Friday night at Red Squirrel Campsite in Glen Coe: the A82 in an Audi A4 Quattro, a last-minute check-in, a Decathlon 2-man pop-up, and a RatRace hire to pitch north of Fort William.",
+    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, decathlon pop up tent, a82 glencoe drive",
+    content: `
+I am writing this from a picnic bench at **Red Squirrel Campsite** in Glen Coe, lamp on, stove going, laptop open. Day job: office manager at CamperKing Scotland — Barry’s number one, if you ask him. We are both camping people and both petrolheads, which is a dangerous combination and also the whole point.
+
+Tonight is a Cosy Canvas recce wrapped around a customer job. I am here a couple of nights as a base, because tomorrow I head just north of Fort William to pitch a hire for a **RatRace** weekend. One of the mattresses might have a puncture. Fort William shops, first thing.
+
+---
+
+## The drive
+
+The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. It is a dream on this road. Power when you want it, four-wheel grip when the A82 gets greasy, comfy enough after a full day in the office, punchy when a gap opens. If I am being greedy — and I am — it could do with a set of all-terrain tyres and smaller rims. We can argue about that another night.
+
+<div class="photo-pair">
+<figure>
+<img src="/glencoe-red-squirrel/drive-a82.jpg" alt="Dusk on the A82 heading into the Highlands, mountains ahead">
+<figcaption>Dusk on the A82. From the Polmont side this is about two hours if you do not hang about.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/drive-viaduct.jpg" alt="Glenfinnan railway viaduct on the hillside from the car">
+<figcaption>Glenfinnan from the windscreen. Proper Highland miles. Not a Central Belt overnighter.</figcaption>
+</figure>
+</div>
+
+---
+
+## Two minutes to spare
+
+I rolled in right on closing. The chap on the desk was brilliant — friendly, unfussed, still had time for a late Friday arrival after what was clearly a long day. I know that feeling from CamperKing when the yard is full and the phone will not sit still. Proper Highland hospitality.
+
+Then I drove the whole site. First time round. A couple of awkward five- and six-point reverses in the dark, trees where you did not want them, pitches already claimed. Found a spot in the end. Grabbed a picnic bench. That is the whole job, really: keep circling until the ground makes sense.
+
+<figure>
+<img src="/glencoe-red-squirrel/pitch-night.jpg" alt="Two-person tent, stove and picnic table lit at night in woodland at Red Squirrel Campsite">
+<figcaption>The pitch. Woodland, bench, stove, tent up. Friday-night busy, but this clearing was enough.</figcaption>
+</figure>
+
+---
+
+## The tent I actually love
+
+I put up the **Decathlon two-man pop-up**. I absolutely love this tent. Up in two minutes. No guy-line ballet, no headtorch faff. On a night like this, that is the difference between being a nuisance in the car park and sitting down with a cuppa.
+
+For Cosy Canvas guests the honest note still stands. Red Squirrel is excellent for two people. On a busy Friday I would not have got a **4M bell tent** down easily. The flat, usable clearings go first. Guy lines need room. Come up in daylight, walk the site, and take a pitch while there is still space to stake. Midweek, or a daytime deluxe run from Polmont, is how you do canvas here properly.
+
+<div class="photo-pair">
+<figure>
+<img src="/glencoe-red-squirrel/tent-and-stove.jpg" alt="Decathlon two-man pop-up tent with the door open and a stove burning">
+<figcaption>Decathlon 2-man, door open, stove lit. Two minutes from bag to bed-shaped.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/stove-close.jpg" alt="Close-up of a camping stove with a highland midge on the rim">
+<figcaption>A midge on the rim for authenticity. River woodland in September is still river woodland.</figcaption>
+</figure>
+</div>
+
+---
+
+## Tomorrow: RatRace, north of Fort William
+
+This stay is the staging post. Customer rental, RatRace experience, camp to build just north of Fort William in the morning. If that mattress is punctured I will be in town hunting a replacement before anyone is asking why their bed is a paddling pool.
+
+That is the work. Hire kit has to be right on the hill, not almost right.
+
+<figure>
+<img src="/glencoe-red-squirrel/picnic-table.jpg" alt="Picnic table, lamp and laptop beside the tent and stove at Red Squirrel">
+<figcaption>Picnic-table office. Cosy Canvas site on one tab, tomorrow’s kit list on the other.</figcaption>
+</figure>
+
+---
+
+## Why it is on our map
+
+* **Best for:** Two people, a simple tent, or a 4M bell tent if you arrive in daylight
+* **OS grid:** NN 105 577
+* **Drive:** about 2 hours / 110 miles from Polmont via the A82
+* **Book:** [redsquirrelcampsite.co.uk](https://redsquirrelcampsite.co.uk/)
+
+Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. That is why it earns a pin on the [campsites](/campsites) page.
+
+More to add in daylight. This is tonight, from the bench.
+    `,
+  },
+  {
     slug: "top-10-campsites-scotland",
     title: "Top 10 Hidden Gem Campsites in Scotland for 2026/2027",
     excerpt: "Discover our handpicked selection of breathtaking Scottish pitch locations, from coastal headlands in Mull to sheltered oak woodlands beside Loch Lomond.",

@@ -72,17 +72,45 @@ function seedPosts(): JournalPost[] {
   return sortPosts(structuredClone(SEED_POSTS));
 }
 
+function withMissingSeedPosts(existing: JournalPost[]): { posts: JournalPost[]; added: boolean } {
+  const slugs = new Set(existing.map((post) => post.slug));
+  const missing = SEED_POSTS.filter((post) => !slugs.has(post.slug));
+  if (missing.length === 0) return { posts: existing, added: false };
+  return { posts: [...existing, ...structuredClone(missing)], added: true };
+}
+
+function refreshUneditedSeedPosts(existing: JournalPost[]): { posts: JournalPost[]; changed: boolean } {
+  const seedBySlug = new Map(SEED_POSTS.map((post) => [post.slug, post]));
+  let changed = false;
+  const posts = existing.map((post) => {
+    const seed = seedBySlug.get(post.slug);
+    if (!seed || post.updatedIso) return post;
+    if (post.image === seed.image && post.content === seed.content) return post;
+    changed = true;
+    return structuredClone(seed);
+  });
+  return { posts, changed };
+}
+
 async function loadPosts(): Promise<JournalPost[]> {
+  let loaded: JournalPost[] = [];
   try {
     const fromBlobs = await readBlobs();
-    if (fromBlobs && fromBlobs.length > 0) return sortPosts(fromBlobs);
-
-    const fromDisk = await readLocalFile();
-    if (fromDisk && fromDisk.length > 0) return sortPosts(fromDisk);
+    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
+    else {
+      const fromDisk = await readLocalFile();
+      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
+    }
   } catch (error) {
     console.error('Journal store read failed; using built-in stories.', error);
   }
-  return seedPosts();
+
+  if (loaded.length === 0) return seedPosts();
+
+  const withSeeds = withMissingSeedPosts(loaded);
+  const refreshed = refreshUneditedSeedPosts(withSeeds.posts);
+  if (withSeeds.added || refreshed.changed) await persist(refreshed.posts);
+  return sortPosts(refreshed.posts);
 }
 
 async function persist(posts: JournalPost[]): Promise<void> {
