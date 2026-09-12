@@ -220,7 +220,22 @@ const breadcrumbSchema = {
             <a href="/camping-hire" class="hover:text-[#7D6E23] transition-colors">Camping Hire</a>
             <a href="/campsites" class="hover:text-[#7D6E23] transition-colors">Campsites</a>
             <a href="/parties" class="hover:text-[#7D6E23] transition-colors">Parties & Sleepovers</a>
-            <a href="/events" class="hover:text-[#7D6E23] transition-colors">Events & Weddings</a>
+            <div class="relative group">
+              <a href="/events" class="inline-flex items-center gap-1.5 hover:text-[#7D6E23] transition-colors py-6">
+                Events
+                <i class="fa-solid fa-chevron-down text-[9px] opacity-70"></i>
+              </a>
+              <div class="absolute left-0 top-full hidden group-hover:block pt-0 z-50">
+                <div class="w-72 rounded-2xl border border-stone-200 bg-white shadow-xl py-2 mt-0">
+                  <a href="/events" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-[#FAF7EE] hover:text-[#7D6E23]">Villages &amp; weddings</a>
+                  <a href="/events/rat-race" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-[#FAF7EE] hover:text-[#7D6E23]">
+                    <span class="block font-semibold">Rat Race Coast to Coast</span>
+                    <span class="block text-[11px] text-stone-500">11–12 Sep 2027 · book canvas</span>
+                  </a>
+                  <a href="/events/loch-fyne-musical-festival" class="block px-4 py-2.5 text-sm text-stone-700 hover:bg-[#FAF7EE] hover:text-[#7D6E23]">Loch Fyne Musical Festival</a>
+                </div>
+              </div>
+            </div>
             <a href="/journal" class="hover:text-[#7D6E23] transition-colors">Journal</a>
             <a href="/faqs" class="hover:text-[#7D6E23] transition-colors">FAQs</a>
             <a href="/about" class="hover:text-[#7D6E23] transition-colors">About Us</a>
@@ -261,6 +276,8 @@ const breadcrumbSchema = {
               <li><a href="/campsites" class="hover:text-[#F7BA1E] transition-colors">Scottish Campsites Guide</a></li>
               <li><a href="/parties" class="hover:text-[#F7BA1E] transition-colors">Parties & Sleepovers</a></li>
               <li><a href="/events" class="hover:text-[#F7BA1E] transition-colors">Events & Weddings</a></li>
+              <li><a href="/events/rat-race" class="hover:text-[#F7BA1E] transition-colors">Rat Race Coast to Coast 2027</a></li>
+              <li><a href="/events/loch-fyne-musical-festival" class="hover:text-[#F7BA1E] transition-colors">Loch Fyne Musical Festival</a></li>
               <li><a href="/journal" class="hover:text-[#F7BA1E] transition-colors">The Cosy Journal</a></li>
               <li><a href="/faqs" class="hover:text-[#F7BA1E] transition-colors">FAQs & Policies</a></li>
               <li><a href="/about" class="hover:text-[#F7BA1E] transition-colors">About Us & Base</a></li>

@@ -51,6 +51,8 @@ export interface BookingRecord {
   };
   logistics?: BookingLogistics;
   kitOps?: KitInspection;
+  eventSlug?: string;
+  conciergeRequested?: boolean;
 }
 
 export interface BookingLogistics {

@@ -164,6 +164,17 @@ const mailSettings = await getMailSettings();
             <input id="refund-amount" name="amount" type="number" step="0.01" placeholder="Refund £" value={charges.depositReady ? charges.depositRefund : ''} disabled={!charges.depositReady} class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm disabled:opacity-40" />
             <button id="refund-button" disabled={!charges.depositReady} class="rounded-full bg-white/10 px-4 text-xs font-bold uppercase tracking-wider disabled:opacity-40">Refund</button>
           </form>
+          {booking.conciergeRequested || booking.specialRequests?.toLowerCase().includes('morrisons') ? (
+            <form id="concierge-form" class="mt-5 pt-4 border-t border-white/10 space-y-2">
+              <p class="text-xs font-bold uppercase tracking-wider text-[#F7BA1E]">Morrisons concierge</p>
+              <p class="text-[11px] text-stone-400">Basket value. We email the guest a Stripe link for basket + 10%.</p>
+              <div class="flex gap-2">
+                <input id="concierge-basket" type="number" step="0.01" min="0.01" placeholder="Basket £" class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm" />
+                <button class="rounded-full bg-[#F7BA1E] text-[#111111] px-4 text-xs font-extrabold uppercase tracking-wider">Send link</button>
+              </div>
+              <p id="concierge-status" class="text-[11px] text-stone-500"></p>
+            </form>
+          ) : null}
           <p id="money-deposit-gate" class="text-[11px] text-stone-500 mt-2">
             {charges.depositReady
               ? `After check-in, refund the leftover security deposit. Replacement prices stay with us. Extra above £${booking.securityDeposit} is invoiced, not taken from Stripe automatically.`
@@ -691,6 +702,24 @@ const mailSettings = await getMailSettings();
     const json = await res.json();
     if (!res.ok) alert(json.error || 'Refund failed');
     else window.location.reload();
+  });
+
+  document.getElementById('concierge-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const status = document.getElementById('concierge-status');
+    const basketValue = Number(document.getElementById('concierge-basket')?.value);
+    if (status) status.textContent = 'Sending payment link…';
+    const res = await fetch(`/api/studio/bookings/${ref}/concierge-link`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ basketValue }),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      if (status) status.textContent = json.error || 'Could not send link';
+      return;
+    }
+    if (status) status.textContent = `Sent. Charge £${Number(json.charge).toFixed(2)} (basket + 10%).`;
   });
 
   syncFailUi();

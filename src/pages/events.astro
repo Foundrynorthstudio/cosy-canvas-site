@@ -22,10 +22,29 @@ import Layout from "../layouts/Layout.astro";
                 class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed"
             >
                 Transform Scottish estates and festival grounds with bespoke
-                canvas accommodation villages and luxury honeymoon suites.
+                canvas villages. Partners include <a href="/events/rat-race" class="text-[#F7BA1E] hover:underline">Rat Race</a>
+                and <a href="/events/loch-fyne-musical-festival" class="text-[#F7BA1E] hover:underline">Loch Fyne Musical Festival</a>.
             </p>
         </div>
     </div>
+
+    <section class="py-10 border-b border-stone-200/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <a href="/events/rat-race" class="grid md:grid-cols-[minmax(0,320px)_1fr] gap-0 rounded-3xl overflow-hidden border border-stone-200 bg-white shadow-sm hover:shadow-md transition">
+          <img src="/events/rat-race-c2c-tile.webp" alt="Rat Race Scotland Coast to Coast official event artwork" class="w-full h-48 md:h-full object-cover min-h-[12rem]" />
+          <div class="p-6 md:p-8 flex flex-col justify-center">
+            <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-1">Now bookable on this site</p>
+            <h2 class="font-display text-2xl font-black text-[#111111] mb-2">Rat Race Coast to Coast · 11–12 Sep 2027</h2>
+            <p class="text-sm text-stone-600 mb-4">Budget or Medium 6M tents, tent count from your headcount, pay through to confirmation. Optional Fort William Morrisons concierge after you send a list.</p>
+            <span class="text-sm font-bold text-[#7D6E23]">Open the Rat Race booking engine →</span>
+          </div>
+        </a>
+        <p class="text-xs text-stone-500 mt-3">
+          Race entry is with Rat Race:
+          <a class="underline" href="https://www.ratrace.com/events/scotland-coast-to-coast/" target="_blank" rel="noopener noreferrer">scotland-coast-to-coast</a>
+        </p>
+      </div>
+    </section>
 
     <!-- Events Inquiry Form Section -->
     <section class="py-16 border-b border-stone-200/80 relative z-20">
@@ -79,6 +98,12 @@ import Layout from "../layouts/Layout.astro";
                             >
                                 <option value="Wedding Guest Village"
                                     >Wedding Guest Village & Honeymoon Suite</option
+                                >
+                                <option value="Rat Race"
+                                    >Rat Race overnight glamping</option
+                                >
+                                <option value="Loch Fyne Musical Festival"
+                                    >Loch Fyne Musical Festival</option
                                 >
                                 <option value="Milestone Birthday"
                                     >Milestone Birthday / Anniversary</option

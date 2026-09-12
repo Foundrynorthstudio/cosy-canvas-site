@@ -1,0 +1,340 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import {
+  quoteRatRace,
+  RAT_RACE_2027,
+  RAT_RACE_EVENT_URL,
+  RAT_RACE_PACKAGE_META,
+} from '../../lib/rat-race';
+
+const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+const initialQuote = quoteRatRace({ guests: 6, packageKind: 'medium', nights: 2 });
+const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
+---
+
+<Layout
+  title="Rat Race Coast to Coast Glamping 2027 | Book Budget or Medium 6M | The Cosy Canvas Co."
+  description="Book overnight bell tents for Rat Race Scotland Coast to Coast, 11–12 September 2027. Budget up to 10 in a 6M, or Medium with kitchen, airframes, table and chairs. Morrisons Fort William concierge extra."
+  image={RAT_RACE_2027.tile}
+  keywords="rat race coast to coast camping, rat race glamping 2027, fort william bell tent hire, event camping scotland"
+  breadcrumbItems={[
+    { name: 'Home', url: siteUrl },
+    { name: 'Events', url: `${siteUrl}/events` },
+    { name: 'Rat Race', url: `${siteUrl}/events/rat-race` },
+  ]}
+>
+  <div class="bg-[#111111] text-white py-10 md:py-14 border-b border-stone-800 relative z-30 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
+      <div>
+        <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">Event partner · bookable now</span>
+        <h1 class="font-display text-3xl md:text-5xl font-black text-white leading-tight">Rat Race Coast to Coast canvas</h1>
+        <p class="text-stone-300 text-sm md:text-base mt-3 max-w-xl font-light leading-relaxed">
+          Official event: <strong class="text-white font-medium">{RAT_RACE_2027.eventDatesLabel}</strong>.
+          We pitch Friday {new Date(`${RAT_RACE_2027.checkinDate}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}.
+          Choose Budget or Medium, tell us the headcount, pay here.
+        </p>
+        <div class="flex flex-wrap gap-3 mt-6">
+          <a
+            href="#book-rat-race"
+            class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3"
+          >
+            Book this event
+          </a>
+          <a
+            href={RAT_RACE_EVENT_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full border border-white/30 text-white font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3 hover:bg-white/10"
+          >
+            Rat Race event page <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+          </a>
+        </div>
+      </div>
+      <a href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-stone-900">
+        <img
+          src={RAT_RACE_2027.tile}
+          alt="Rat Race Scotland Coast to Coast official event tile"
+          class="w-full h-full object-cover aspect-[1200/630]"
+        />
+      </a>
+    </div>
+  </div>
+
+  <section class="py-14 border-b border-stone-200/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10">
+      <article>
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">The weekend</p>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Same weekend as the course</h2>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          Rat Race’s Scotland Coast to Coast is <strong>11–12 September 2027</strong> — one day or two, same hills we pitched this year.
+          Canvas check-in is the Friday before. Two-night stays cover Saturday night; add a third night if you finish Sunday and want a slow Monday pack-up.
+        </p>
+        <p class="text-stone-600 leading-relaxed mb-4">
+          Pitch photography is being colour-graded. Until those files land, this page uses Rat Race’s own Coast to Coast tile so the event is unmistakable.
+        </p>
+        <ul class="text-sm text-stone-700 space-y-2">
+          <li class="flex gap-2"><i class="fa-solid fa-flag-checkered text-[#7D6E23] mt-0.5"></i> Enter the race on the <a class="underline font-semibold" href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer">official Rat Race page</a></li>
+          <li class="flex gap-2"><i class="fa-solid fa-tent text-[#7D6E23] mt-0.5"></i> Sleep with us: delivered, pitched, collected</li>
+          <li class="flex gap-2"><i class="fa-solid fa-basket-shopping text-[#7D6E23] mt-0.5"></i> Optional Morrisons Fort William concierge after you send a list</li>
+        </ul>
+      </article>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <article class="rounded-3xl bg-[#FAF7EE] border border-stone-200 p-6">
+          <p class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-1">Budget</p>
+          <h3 class="font-display text-xl font-black mb-2">Up to {RAT_RACE_PACKAGE_META.budget.capacity} in a 6M</h3>
+          <p class="text-sm text-stone-600">{RAT_RACE_PACKAGE_META.budget.summary}</p>
+        </article>
+        <article class="rounded-3xl bg-white border-2 border-[#F7BA1E] p-6">
+          <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">Medium</p>
+          <h3 class="font-display text-xl font-black mb-2">Kitchen camp, {RAT_RACE_PACKAGE_META.medium.capacity} per tent</h3>
+          <p class="text-sm text-stone-600">{RAT_RACE_PACKAGE_META.medium.summary}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="book-rat-race" class="py-16 bg-[#FAF7EE]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start">
+      <div>
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Mini booking engine</p>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Guests, package, tents</h2>
+        <p class="text-stone-600 text-sm leading-relaxed mb-6">
+          We count tents from headcount: Budget fills 10 to a 6M, Medium fills 6 because the kitchen and beds take floor. 6M canvas is £100 a night with the 2027 early-bird 15% already in. Pitching is £225 a tent. Security hold is £200 a tent.
+        </p>
+        <div class="rounded-3xl bg-white border border-stone-200 p-6 text-sm text-stone-600 space-y-3">
+          <p class="font-display font-black text-[#111111]">Morrisons concierge</p>
+          <p>
+            Fort William Morrisons does click and collect. Tick it on the booking, email us your shopping list, we place the order and collect. You pay the <strong>basket plus 10%</strong> on a Stripe link once the list is in — not on this checkout.
+          </p>
+        </div>
+      </div>
+
+      <div class="rounded-3xl bg-white border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
+        <div>
+          <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-guests">Number of guests</label>
+          <div class="flex items-center gap-3">
+            <button type="button" id="rr-guests-minus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">−</button>
+            <input id="rr-guests" type="number" min="1" max="40" value="6" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
+            <button type="button" id="rr-guests-plus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">+</button>
+          </div>
+        </div>
+
+        <fieldset class="space-y-2">
+          <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">Package</legend>
+          <label class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
+            <input type="radio" name="rr-package" value="budget" class="mt-1" />
+            <span>
+              <span class="block font-display font-black">Budget</span>
+              <span class="text-xs text-stone-500">Canvas and a floor. Up to 10 people per 6M.</span>
+            </span>
+          </label>
+          <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer">
+            <input type="radio" name="rr-package" value="medium" checked class="mt-1" />
+            <span>
+              <span class="block font-display font-black">Medium</span>
+              <span class="text-xs text-stone-500">Kitchen, airframes, table and chairs. Up to 6 per 6M.</span>
+            </span>
+          </label>
+        </fieldset>
+
+        <fieldset class="space-y-2">
+          <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">Stay</legend>
+          <label class="flex gap-3 rounded-2xl border border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#7D6E23]">
+            <input type="radio" name="rr-nights" value="2" checked class="mt-1" />
+            <span class="text-sm"><strong>2 nights</strong> · Fri 10 Sep → Sun 12 Sep 2027</span>
+          </label>
+          <label class="flex gap-3 rounded-2xl border border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#7D6E23]">
+            <input type="radio" name="rr-nights" value="3" class="mt-1" />
+            <span class="text-sm"><strong>3 nights</strong> · Fri 10 Sep → Mon 13 Sep 2027</span>
+          </label>
+        </fieldset>
+
+        <label class="flex gap-3 items-start text-sm text-stone-700">
+          <input id="rr-concierge" type="checkbox" class="mt-1" />
+          <span>Add Morrisons Fort William concierge. I will send a shopping list after paying for canvas. You invoice basket + 10%.</span>
+        </label>
+
+        <div id="rr-quote" class="rounded-2xl bg-[#111111] text-white p-5 space-y-2 text-sm" data-initial={JSON.stringify(initialQuote)}>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-[#F7BA1E]">Quote</p>
+          <p id="rr-quote-tents" class="font-display text-xl font-black">{initialQuote.tentType} · {initialQuote.guests} guests</p>
+          <div id="rr-quote-lines" class="space-y-1 text-stone-300 text-xs">
+            {initialQuote.lines.map((line) => (
+              <div class="flex justify-between gap-3">
+                <span>{line.title}</span>
+                <span>£{line.price.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+          <div class="border-t border-white/10 pt-2 flex justify-between font-bold">
+            <span>Stay total</span>
+            <span id="rr-quote-total">£{initialQuote.totalRentalPrice.toFixed(2)}</span>
+          </div>
+          <p class="text-xs text-stone-400" id="rr-quote-pay">
+            Pay today: £{initialQuote.depositAmount.toFixed(2)} ({initialQuote.depositPercent}% ) + £{initialQuote.securityDeposit.toFixed(2)} security = £{initialQuote.totalDueToday.toFixed(2)}
+          </p>
+        </div>
+
+        <button
+          type="button"
+          id="rr-open-checkout"
+          class="w-full rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-sm uppercase tracking-wider py-4"
+        >
+          Continue to payment
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div
+    id="rr-checkout-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/75 backdrop-blur-xs"
+    data-stripe-pk={publishableKey}
+  >
+    <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-stone-200 overflow-hidden my-8">
+      <div class="bg-[#111111] text-white p-6 border-b border-stone-800 flex justify-between items-center">
+        <div>
+          <span class="text-[#F7BA1E] font-mono text-[10px] uppercase tracking-widest font-bold block">Rat Race 2027</span>
+          <h3 id="rr-modal-heading" class="text-xl font-display font-black text-white">Guest details</h3>
+        </div>
+        <button type="button" id="rr-close-modal" class="w-9 h-9 rounded-full bg-stone-800 text-stone-300" aria-label="Close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="bg-[#FAF7EE] border-b border-stone-200 px-6 py-3 text-xs font-bold" id="rr-modal-summary"></div>
+      <div id="rr-modal-error" class="hidden mx-6 mt-4 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl p-3"></div>
+      <div id="rr-modal-step-details" class="p-6 space-y-3">
+        <input id="rr-name" placeholder="Lead guest name *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-email" type="email" placeholder="Email *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-phone" type="tel" placeholder="Phone *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-address" placeholder="Billing address" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <textarea id="rr-notes" rows="3" placeholder="Crew notes, allergies, shopping-list timing" class="w-full rounded-2xl border border-stone-300 p-3 text-sm"></textarea>
+        <button type="button" id="rr-pay" class="w-full rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3">
+          Pay deposit
+        </button>
+      </div>
+      <div id="rr-modal-step-payment" class="hidden p-6">
+        <div id="rr-stripe-loading" class="py-10 text-center text-sm">Connecting to Stripe…</div>
+        <div id="rr-stripe-embedded-checkout" class="min-h-[350px]"></div>
+        <div id="rr-stripe-placeholder" class="hidden bg-amber-50 border border-amber-300 rounded-2xl p-5 text-xs space-y-3">
+          <p class="font-bold">Stripe keys not in this environment yet. Quote is ready.</p>
+          <a href="/booking/success" class="inline-block bg-[#111111] text-[#F7BA1E] px-5 py-3 rounded-xl font-display font-bold text-xs uppercase">Preview confirmation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline src="https://js.stripe.com/v3/"></script>
+<script is:inline>
+  const guestsInput = document.getElementById('rr-guests');
+  const quoteEl = document.getElementById('rr-quote');
+  let quote = JSON.parse(quoteEl.getAttribute('data-initial') || '{}');
+  let stripeCheckout = null;
+
+  function packageKind() {
+    return document.querySelector('input[name="rr-package"]:checked')?.value || 'medium';
+  }
+  function nights() {
+    return Number(document.querySelector('input[name="rr-nights"]:checked')?.value || 2);
+  }
+  function guests() {
+    return Math.min(40, Math.max(1, Number(guestsInput.value) || 1));
+  }
+
+  async function refreshQuote() {
+    guestsInput.value = String(guests());
+    const response = await fetch('/api/rat-race-quote', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ guests: guests(), packageKind: packageKind(), nights: nights() }),
+    });
+    quote = await response.json();
+    document.getElementById('rr-quote-tents').textContent = `${quote.tentType} · ${quote.guests} guests`;
+    document.getElementById('rr-quote-lines').innerHTML = quote.lines
+      .map((line) => `<div class="flex justify-between gap-3"><span>${line.title}</span><span>£${Number(line.price).toFixed(2)}</span></div>`)
+      .join('');
+    document.getElementById('rr-quote-total').textContent = `£${Number(quote.totalRentalPrice).toFixed(2)}`;
+    document.getElementById('rr-quote-pay').textContent =
+      `Pay today: £${Number(quote.depositAmount).toFixed(2)} (${quote.depositPercent}%) + £${Number(quote.securityDeposit).toFixed(2)} security = £${Number(quote.totalDueToday).toFixed(2)}`;
+    const summary = document.getElementById('rr-modal-summary');
+    if (summary) summary.textContent = `${quote.tentType} · ${quote.nights} nights · ${quote.guests} guests · due today £${Number(quote.totalDueToday).toFixed(2)}`;
+  }
+
+  document.getElementById('rr-guests-minus').addEventListener('click', () => {
+    guestsInput.value = String(guests() - 1);
+    refreshQuote();
+  });
+  document.getElementById('rr-guests-plus').addEventListener('click', () => {
+    guestsInput.value = String(guests() + 1);
+    refreshQuote();
+  });
+  guestsInput.addEventListener('change', refreshQuote);
+  document.querySelectorAll('input[name="rr-package"], input[name="rr-nights"]').forEach((el) => {
+    el.addEventListener('change', refreshQuote);
+  });
+
+  const modal = document.getElementById('rr-checkout-modal');
+  function openModal() {
+    refreshQuote();
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = 'auto';
+  }
+  document.getElementById('rr-open-checkout').addEventListener('click', openModal);
+  document.getElementById('rr-close-modal').addEventListener('click', closeModal);
+
+  document.getElementById('rr-pay').addEventListener('click', async () => {
+    const errorEl = document.getElementById('rr-modal-error');
+    errorEl.classList.add('hidden');
+    const name = document.getElementById('rr-name').value.trim();
+    const email = document.getElementById('rr-email').value.trim();
+    const phone = document.getElementById('rr-phone').value.trim();
+    if (!name || !email || !phone) {
+      errorEl.textContent = 'Name, email and phone are required.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    const payBtn = document.getElementById('rr-pay');
+    payBtn.disabled = true;
+    try {
+      const response = await fetch('/api/create-rat-race-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          guests: guests(),
+          packageKind: packageKind(),
+          nights: nights(),
+          conciergeRequested: document.getElementById('rr-concierge').checked,
+          customerName: name,
+          customerEmail: email,
+          customerPhone: phone,
+          customerAddress: document.getElementById('rr-address').value.trim(),
+          specialRequests: document.getElementById('rr-notes').value.trim(),
+        }),
+      });
+      const data = await response.json();
+      document.getElementById('rr-modal-step-details').classList.add('hidden');
+      document.getElementById('rr-modal-step-payment').classList.remove('hidden');
+      document.getElementById('rr-modal-heading').textContent = 'Secure payment';
+      if (!response.ok || !data.clientSecret) {
+        document.getElementById('rr-stripe-loading').classList.add('hidden');
+        document.getElementById('rr-stripe-placeholder').classList.remove('hidden');
+        return;
+      }
+      const pk = modal.getAttribute('data-stripe-pk') || '';
+      const stripe = window.Stripe(pk);
+      stripeCheckout = await stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+      document.getElementById('rr-stripe-loading').classList.add('hidden');
+      stripeCheckout.mount('#rr-stripe-embedded-checkout');
+    } catch (err) {
+      errorEl.textContent = err.message || 'Could not start payment.';
+      errorEl.classList.remove('hidden');
+      payBtn.disabled = false;
+    }
+  });
+</script>

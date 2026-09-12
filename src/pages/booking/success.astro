@@ -165,6 +165,12 @@ if (sessionId) {
                       <p class="text-stone-700 italic bg-stone-50 p-2.5 rounded-xl border border-stone-200">{booking.specialRequests}</p>
                     </div>
                   )}
+                  {booking.specialRequests?.toLowerCase().includes('morrisons') && (
+                    <div class="mt-4 rounded-2xl border border-[#F7BA1E] bg-[#FAF7EE] p-4 text-xs text-stone-700">
+                      <p class="font-display font-black text-[#111111] mb-1">Morrisons Fort William concierge</p>
+                      <p>Send your shopping list to hello@cosycanvasco.com. We click-and-collect in Fort William, then send a payment link for the basket plus 10%.</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

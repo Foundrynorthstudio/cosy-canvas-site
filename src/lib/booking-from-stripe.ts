@@ -61,5 +61,8 @@ export function bookingFromStripeSession(
     emails: existing?.emails || {},
     logistics: existing?.logistics,
     kitOps: existing?.kitOps,
+    eventSlug: meta.eventSlug || existing?.eventSlug,
+    conciergeRequested:
+      meta.conciergeRequested === 'true' || existing?.conciergeRequested === true,
   };
 }

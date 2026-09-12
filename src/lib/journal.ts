@@ -72,6 +72,102 @@ export function wordCount(markdown: string): number {
 
 export const SEED_POSTS: JournalPost[] = [
   {
+    slug: "michelle-rat-race-fort-william",
+    title: "Michelle, and a 6M on a Rat Race field",
+    excerpt:
+      "Last night I wrote this hire from a picnic table in Glen Coe. Today the 6M went up north of Fort William — and Michelle was the reason it felt like a home, not a pile of bags by a barrier.",
+    category: "guides",
+    categoryName: "Glamping Guides",
+    author: {
+      name: "Jeremie",
+      role: "Notes from the pitch",
+    },
+    date: "12 September 2026",
+    isoDate: "2026-09-12T19:00:00Z",
+    readTime: "6 min read",
+    featured: true,
+    status: "published",
+    image: "/journal/michelle-rat-race/6m-on-the-field.jpg",
+    imageAlt: "A 6M Cosy Canvas bell tent pitched on the Rat Race event field north of Fort William",
+    seoTitle: "Michelle at Rat Race: a 6M bell tent north of Fort William",
+    seoDescription:
+      "First-person notes from Rat Race day: kit by the barrier, a deluxe 6M with kitchen and airbeds, and Michelle, who made the pitch feel like a home.",
+    keywords:
+      "rat race camping scotland, bell tent hire fort william, event glamping scotland, 6m bell tent, cosy canvas journal",
+    content: `
+Last night I was still at [Red Squirrel](/journal/red-squirrel-campsite-glencoe), lamp on, laptop open, writing that tomorrow was a **Rat Race** hire just north of Fort William. That was the plan. This morning the plan became a pile of bags on wet gravel, a barrier with their cat on it, and a field that still had to become a bedroom.
+
+Michelle was amazing.
+
+I am not going to dress that up. Event days are noisy. Changing-room doors, first-aid kits on the wall, people already in the village while you are still counting poles. She kept the whole thing human. Calm when the kit was still a dump. Present when the canvas needed to feel like somewhere you would actually want to sleep after a long course. That is the job, really — not just getting a tent up, but making it kind.
+
+<figure>
+<img src="/journal/michelle-rat-race/night-before.jpg" alt="Picnic table, lamp, fire and laptop at Red Squirrel the night before the Rat Race hire">
+<figcaption>Friday night at Red Squirrel. The hire was still a kit list. Michelle made Saturday the real thing.</figcaption>
+</figure>
+
+---
+
+## Bags, then a home
+
+You start like this. Everything out of the van, stacked against the women’s changing block, Rat Race tape behind you. Groundsheets, airbeds, the 6M in its bag, a cooler, a trolley that has already done too many miles. It looks like chaos. It is just the inventory, waiting.
+
+Michelle did not flinch at that version of the day. She treated it like the beginning, not the mess.
+
+<div class="photo-pair">
+<figure>
+<img src="/journal/michelle-rat-race/kit-by-the-barrier.jpg" alt="Hire kit piled on gravel beside a Rat Race barrier and the women’s changing rooms">
+<figcaption>The honest start. Kit by the barrier. This is what “we deliver, we set up” looks like before the canvas goes up.</figcaption>
+</figure>
+<figure>
+<img src="/journal/michelle-rat-race/6m-door-open.jpg" alt="6M bell tent on the event field with the door open under a grey Highland sky">
+<figcaption>Then the field. Door open, guys out, the weather doing its usual Highland shrug.</figcaption>
+</figure>
+</div>
+
+---
+
+## What we actually pitched
+
+This was a **6M**. Inside: kitchen, table and chairs, airframes made up with sleeping bags. The deluxe shape we now know Rat Race want back next year — and the budget shape too, up to ten in a 6M if that is the brief. Today was the lived-in version. Bottles by the cooler. A stove in the corner. Beds in a ring so nobody is sleeping in the doorway.
+
+I can put canvas on grass in my sleep. Making it feel looked-after is different. Michelle was the difference. The chairs faced each other. The beds were made, not dumped. You could walk in after a finish line and sit down without asking where you were allowed to put your bag.
+
+<div class="photo-pair">
+<figure>
+<img src="/journal/michelle-rat-race/deluxe-kitchen.jpg" alt="Inside the 6M: camp kitchen, table, chairs and a cooler of drinks">
+<figcaption>Kitchen, table, chairs. This is the deluxe pitch — the one they asked to run again next year.</figcaption>
+</figure>
+<figure>
+<img src="/journal/michelle-rat-race/beds-ready.jpg" alt="Airbeds and sleeping bags made up around the centre pole of the 6M bell tent">
+<figcaption>Airframes made. Not a pile of kit. A place to recover.</figcaption>
+</figure>
+</div>
+
+---
+
+## The bit I will remember
+
+By the time the sky opened up, the 6M was the white mark on a green field, Rat Race village in the trees behind it. That photograph is the product shot. It is not the whole story.
+
+The whole story is Michelle. Showing up for a hire day that starts ugly and ends as somewhere people can laugh and sleep. Holding the mood while I did guy lines and pumps. Treating strangers’ rest as if it mattered — because it does.
+
+Thank you. Properly.
+
+<figure>
+<img src="/journal/michelle-rat-race/6m-on-the-field.jpg" alt="Finished 6M bell tent on the Rat Race field with blue sky and the event village beyond the trees">
+<figcaption>The 6M, done. North of Fort William. Rat Race in the trees. Michelle in the day, even if she is not in the frame.</figcaption>
+</figure>
+
+If you are planning an event village — Rat Race, a festival, a wedding field — this is the work. [Two 6M offerings](/events/rat-race) for next year: budget, up to ten; deluxe, with the kitchen, airframes, table and chairs. Loch Fyne want us back too. The canvas is the easy part. People like Michelle are why it lands.
+
+<div class="journal-cta">
+<a class="journal-btn journal-btn--olive" href="/events/rat-race">Rat Race glamping</a>
+<a class="journal-btn journal-btn--gold" href="/booking">Book Now</a>
+</div>
+    `,
+  },
+  {
     slug: "red-squirrel-campsite-glencoe",
     title: "Field notes from Red Squirrel: a Friday night in Glen Coe",
     excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my logistics base for a RatRace hire north of Fort William — then Gemini renders of the dream fleet before bed.",

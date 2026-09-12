@@ -41,7 +41,10 @@ export function buildKitManifest(booking: KitSource): {
   const guests = Math.max(1, booking.guests || 1);
   const diy = isDiyFulfillment(booking.fulfillment);
   const bedding = beddingKind(booking.beddingTier);
+  const tentCountMatch = booking.tentType.match(/^(\d+)\s*[×x]/i);
+  const tentQty = tentCountMatch ? tentCountMatch[1] : '1';
   const kitchen = hasAddon(booking, 'kitchen');
+  const airframes = hasAddon(booking, 'airframe');
   const living = hasAddon(booking, 'living', 'lounge');
   const woodburner = hasAddon(booking, 'wood burner', 'woodburner');
   const awning = hasAddon(booking, 'awning');
@@ -57,15 +60,23 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-campground',
       packed: true,
       lines: [
-        { sku: 'tent', label: booking.tentType, qty: '1', detail: `${booking.nights} nights` },
-        { sku: 'groundsheet', label: 'Groundsheet', qty: '1' },
-        { sku: 'poles', label: 'Poles, pegs & guy lines', qty: '1 set' },
-        { sku: 'flooring', label: 'Coir / carpet flooring', qty: '1' },
+        { sku: 'tent', label: booking.tentType, qty: tentQty, detail: `${booking.nights} nights` },
+        { sku: 'groundsheet', label: 'Groundsheet', qty: tentQty },
+        { sku: 'poles', label: 'Poles, pegs & guy lines', qty: `${tentQty} set${tentQty === '1' ? '' : 's'}` },
+        { sku: 'flooring', label: 'Coir / carpet flooring', qty: tentQty },
       ],
     },
   ];
 
-  if (bedding === 'essentials') {
+  if (airframes && bedding === 'none') {
+    groups.push({
+      id: 'sleep',
+      title: 'Airframes',
+      icon: 'fa-bed',
+      packed: true,
+      lines: [{ sku: 'mattress', label: 'Raised air-frame mattress', qty: String(guests) }],
+    });
+  } else if (bedding === 'essentials') {
     groups.push({
       id: 'sleep',
       title: 'Bedding: Essentials',
