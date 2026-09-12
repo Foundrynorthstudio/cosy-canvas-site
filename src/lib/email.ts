@@ -44,9 +44,15 @@ export async function sendHtmlEmail(options: {
   subject: string;
   html: string;
   from?: string;
+  attachments?: { filename: string; content: Buffer | Uint8Array; contentType?: string }[];
 }): Promise<{ success: boolean; mocked?: boolean; error?: string }> {
   const apiKey = resendKey();
   const from = options.from || 'The Cosy Canvas Co. <bookings@cosycanvas.co.uk>';
+  const attachments = options.attachments?.map((file) => ({
+    filename: file.filename,
+    content: Buffer.from(file.content),
+    contentType: file.contentType,
+  }));
 
   if (apiKey && apiKey !== 're_placeholder_key' && !apiKey.startsWith('re_placeholder')) {
     try {
@@ -56,6 +62,7 @@ export async function sendHtmlEmail(options: {
         to: options.to,
         subject: options.subject,
         html: options.html,
+        attachments,
       });
       return { success: true };
     } catch (err: any) {
@@ -64,7 +71,7 @@ export async function sendHtmlEmail(options: {
     }
   }
 
-  console.log(`[Email Mock] ${options.subject} → ${options.to}`);
+  console.log(`[Email Mock] ${options.subject} → ${options.to}${attachments?.length ? ` + ${attachments.map((file) => file.filename).join(', ')}` : ''}`);
   return { success: true, mocked: true };
 }
 

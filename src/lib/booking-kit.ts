@@ -6,9 +6,11 @@ export type KitSource = Pick<
 >;
 
 export interface KitLine {
+  sku: string;
   label: string;
   qty: string;
   detail?: string;
+  test?: string;
 }
 
 export interface KitGroup {
@@ -55,10 +57,10 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-campground',
       packed: true,
       lines: [
-        { label: booking.tentType, qty: '1', detail: `${booking.nights} nights` },
-        { label: 'Groundsheet', qty: '1' },
-        { label: 'Poles, pegs & guy lines', qty: '1 set' },
-        { label: 'Coir / carpet flooring', qty: '1' },
+        { sku: 'tent', label: booking.tentType, qty: '1', detail: `${booking.nights} nights` },
+        { sku: 'groundsheet', label: 'Groundsheet', qty: '1' },
+        { sku: 'poles', label: 'Poles, pegs & guy lines', qty: '1 set' },
+        { sku: 'flooring', label: 'Coir / carpet flooring', qty: '1' },
       ],
     },
   ];
@@ -69,7 +71,7 @@ export function buildKitManifest(booking: KitSource): {
       title: 'Bedding: Essentials',
       icon: 'fa-bed',
       packed: true,
-      lines: [{ label: 'Raised air-frame mattresses', qty: String(guests) }],
+      lines: [{ sku: 'mattress', label: 'Raised air-frame mattress', qty: String(guests) }],
     });
   } else if (bedding === 'cosy') {
     groups.push({
@@ -78,9 +80,9 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-bed',
       packed: true,
       lines: [
-        { label: 'Raised air-frame mattresses', qty: String(guests) },
-        { label: 'Hotel linen & duvet sets', qty: String(guests) },
-        { label: 'Pillows', qty: String(guests * 2) },
+        { sku: 'mattress', label: 'Raised air-frame mattress', qty: String(guests) },
+        { sku: 'linen', label: 'Hotel linen & duvet sets', qty: String(guests) },
+        { sku: 'pillows', label: 'Pillows', qty: String(guests * 2) },
       ],
     });
   }
@@ -92,10 +94,10 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-kitchen-set',
       packed: true,
       lines: [
-        { label: 'Gas stove', qty: '1' },
-        { label: 'Cookware, kettle & tableware', qty: `${guests} settings` },
-        { label: 'Cutlery', qty: `${guests} sets` },
-        { label: 'Coolbox', qty: '1' },
+        { sku: 'gas_stove', label: 'Gas stove', qty: '1' },
+        { sku: 'cookware', label: 'Cookware, kettle & tableware', qty: `${guests} settings` },
+        { sku: 'cutlery', label: 'Cutlery', qty: `${guests} sets` },
+        { sku: 'coolbox', label: 'Coolbox', qty: '1' },
       ],
     });
   }
@@ -107,10 +109,11 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-couch',
       packed: true,
       lines: [
-        { label: 'Power system', qty: '1' },
-        { label: 'Cinema projector', qty: '1' },
-        { label: 'Bluetooth speaker', qty: '1' },
-        { label: 'LED & fairy lights', qty: '1 set' },
+        { sku: 'power', label: 'Power system', qty: '1' },
+        { sku: 'projector', label: 'Cinema projector', qty: '1' },
+        { sku: 'speaker', label: 'Bluetooth speaker', qty: '1' },
+        { sku: 'fairy_lights', label: 'LED fairy lights', qty: '1 set' },
+        { sku: 'aa_batteries', label: 'AA rechargeable batteries', qty: '8', detail: 'Packed with the lights in case they run out' },
       ],
     });
   }
@@ -122,10 +125,10 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-fire-flame-curved',
       packed: true,
       lines: [
-        { label: 'Wood-burning tent stove', qty: '1' },
-        { label: 'Chimney flue & flashing', qty: '1' },
-        { label: 'Hearth mat', qty: '1' },
-        { label: 'Starter log basket', qty: '1' },
+        { sku: 'woodburner', label: 'Wood-burning tent stove', qty: '1' },
+        { sku: 'flue', label: 'Chimney flue & flashing', qty: '1' },
+        { sku: 'hearth', label: 'Hearth mat', qty: '1' },
+        { sku: 'logs', label: 'Starter log basket', qty: '1' },
       ],
     });
   }
@@ -136,7 +139,7 @@ export function buildKitManifest(booking: KitSource): {
       title: 'Outdoor Awning Porch',
       icon: 'fa-umbrella-beach',
       packed: true,
-      lines: [{ label: 'Entrance awning porch', qty: '1' }],
+      lines: [{ sku: 'awning', label: 'Entrance awning porch', qty: '1' }],
     });
   }
 
@@ -147,8 +150,8 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-chair',
       packed: true,
       lines: [
-        { label: 'Indoor lounge cushions', qty: String(guests) },
-        { label: 'Campfire folding chairs', qty: String(guests) },
+        { sku: 'cushions', label: 'Indoor lounge cushions', qty: String(guests) },
+        { sku: 'chairs', label: 'Campfire folding chairs', qty: String(guests) },
       ],
     });
   }
@@ -160,10 +163,10 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-fire',
       packed: true,
       lines: [
-        { label: 'Dutch oven', qty: '1' },
-        { label: 'Tripod fire grate', qty: '1' },
-        { label: 'Skewers', qty: '1 set' },
-        { label: 'Heat-resistant gloves', qty: '1 pair' },
+        { sku: 'dutch_oven', label: 'Dutch oven', qty: '1' },
+        { sku: 'grate', label: 'Tripod fire grate', qty: '1' },
+        { sku: 'skewers', label: 'Skewers', qty: '1 set' },
+        { sku: 'gloves', label: 'Heat-resistant gloves', qty: '1 pair' },
       ],
     });
   }
@@ -174,7 +177,7 @@ export function buildKitManifest(booking: KitSource): {
       title: 'Starlink Satellite Wi-Fi',
       icon: 'fa-satellite-dish',
       packed: true,
-      lines: [{ label: 'Starlink kit & stand', qty: '1', detail: `${booking.nights} nights` }],
+      lines: [{ sku: 'starlink', label: 'Starlink kit & stand', qty: '1', detail: `${booking.nights} nights` }],
     });
   }
 
@@ -185,8 +188,8 @@ export function buildKitManifest(booking: KitSource): {
       icon: 'fa-bucket',
       packed: true,
       lines: [
-        { label: 'Boogie boards', qty: '1 set' },
-        { label: 'Beach games & buckets', qty: '1' },
+        { sku: 'boards', label: 'Boogie boards', qty: '1 set' },
+        { sku: 'beach_games', label: 'Beach games & buckets', qty: '1' },
       ],
     });
   }

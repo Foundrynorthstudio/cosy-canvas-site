@@ -1,6 +1,14 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { capturePaidBooking } from "../../lib/booking-capture";
+import { isDiyFulfillment } from "../../lib/booking";
+import {
+  DEPOT,
+  depotMapsUrl,
+  depotW3wLabel,
+  depotW3wUrl,
+  depotWhat3Words,
+} from "../../lib/depot";
 import { getStripe } from "../../lib/stripe-client";
 import type { BookingDetails } from "../../lib/email";
 
@@ -8,6 +16,14 @@ const sessionId = Astro.url.searchParams.get("session_id");
 
 let booking: BookingDetails | null = null;
 let errorMsg = "";
+const diyCollection = {
+  hours: DEPOT.hoursShort,
+  hoursNote: DEPOT.hoursNote,
+  w3w: depotW3wLabel(),
+  w3wUrl: depotW3wUrl(),
+  mapsUrl: depotMapsUrl(),
+  hasPin: Boolean(depotWhat3Words()),
+};
 
 if (sessionId) {
   const stripe = getStripe();
@@ -246,6 +262,47 @@ if (sessionId) {
               </div>
             </div>
           </div>
+
+          {
+            booking && isDiyFulfillment(booking.fulfillment) && (
+              <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-stone-200">
+                <h2 class="text-lg font-display font-black text-[#111111] border-b border-stone-100 pb-3 flex items-center gap-2">
+                  <i class="fa-solid fa-warehouse text-[#7D6E23]"></i> Collection — Falkirk container
+                </h2>
+                <div class="mt-4 space-y-3 text-sm">
+                  <p class="text-stone-600 text-xs leading-relaxed">
+                    Pickup and return: <strong class="text-[#111111]">{diyCollection.hours}</strong>. {diyCollection.hoursNote}
+                  </p>
+                  <div class="flex flex-wrap gap-2">
+                    {diyCollection.hasPin ? (
+                      <a
+                        href={diyCollection.w3wUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 rounded-full bg-[#FAF7EE] border border-[#7D6E23]/30 px-4 py-2 text-xs font-bold text-[#4F571A]"
+                      >
+                        <i class="fa-solid fa-location-dot"></i>
+                        What3Words: {diyCollection.w3w}
+                      </a>
+                    ) : (
+                      <span class="inline-flex items-center gap-2 rounded-full bg-stone-50 border border-stone-200 px-4 py-2 text-xs font-bold text-stone-600">
+                        What3Words pin to follow by email
+                      </span>
+                    )}
+                    <a
+                      href={diyCollection.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-2 rounded-full bg-[#111111] text-white px-4 py-2 text-xs font-bold"
+                    >
+                      <i class="fa-brands fa-google"></i>
+                      Google Maps
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )
+          }
 
           <!-- What Happens Next Section -->
           <div class="bg-white rounded-3xl p-6 md:p-8 shadow-md border border-stone-200">

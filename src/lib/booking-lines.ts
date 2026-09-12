@@ -106,7 +106,7 @@ export function buildBookingLineItems(booking: LineSource): BookingLineItem[] {
       id: 'fulfillment',
       kind: 'fulfillment',
       title: booking.fulfillment,
-      detail: diy ? 'Collect from Polmont depot' : 'Pitch on site & collect at the end',
+      detail: diy ? 'Collect from the Falkirk container' : 'Pitch on site & collect at the end',
       price: booking.fulfillmentPrice || 0,
       icon: diy ? 'fa-warehouse' : 'fa-truck',
     },

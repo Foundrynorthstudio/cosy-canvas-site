@@ -59,5 +59,7 @@ export function bookingFromStripeSession(
     stripePaymentIntentId: paymentIntent,
     stripeBalanceSessionId: existing?.stripeBalanceSessionId,
     emails: existing?.emails || {},
+    logistics: existing?.logistics,
+    kitOps: existing?.kitOps,
   };
 }

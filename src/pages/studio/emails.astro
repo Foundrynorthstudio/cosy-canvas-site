@@ -14,6 +14,7 @@ const settings = await getMailSettings();
 const triggers: { value: MailTrigger; label: string }[] = [
   { value: 'on_payment', label: 'When the deposit is paid' },
   { value: 'days_before_checkin', label: 'Days before check-in' },
+  { value: 'on_checkout', label: 'When gear is checked out from the shelf' },
   { value: 'manual_only', label: 'Manual send only' },
 ];
 ---

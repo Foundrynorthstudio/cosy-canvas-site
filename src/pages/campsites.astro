@@ -1,10 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { CAMPSITE_ROUTES } from '../lib/campsites';
+import { DEPOT } from '../lib/depot';
+
+const cobleland = CAMPSITE_ROUTES.cobleland;
 ---
 
 <Layout 
   title="Recommended Scottish Campsites & Wild Spots | The Cosy Canvas Co." 
-  description="Explore top recommended bell tent campsites across Loch Lomond, the Trossachs, Glencoe, Isle of Mull, and the NC500 with driving routes from our Polmont base."
+  description="Explore top recommended bell tent campsites across Loch Lomond, the Trossachs, Glencoe, Isle of Mull, and the NC500 with driving routes from our Falkirk container."
 >
   <!-- Page Header Banner -->
   <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
@@ -12,7 +16,7 @@ import Layout from '../layouts/Layout.astro';
       <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">SCOTLAND DIRECTORY & WILD PITCHES</span>
       <h1 class="font-display text-3xl md:text-5xl font-black text-white">Recommended Scottish Campsites</h1>
       <p class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed">
-        Explore our recommended pitch locations across Scotland. Click any pin on our custom contour map or select a site below to inspect driving routes and elevation from our Polmont base.
+        Explore our recommended pitch locations across Scotland. Click any pin on our custom contour map or select a site below for the Google road route, typical drive time, and fuel from our Falkirk container.
       </p>
     </div>
   </div>
@@ -31,10 +35,10 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-map-location-dot text-[#F7BA1E]"></i>
                 <span>Interactive Scottish Contour Map</span>
               </h2>
-              <p class="text-stone-500 text-[11px]">Click any pin to inspect pitch details & route times</p>
+              <p class="text-stone-500 text-[11px]">Click any pin for road time, fuel, and Google Maps from Falkirk</p>
             </div>
             <div class="hidden sm:flex items-center gap-3 text-[11px]">
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#F7BA1E] border-2 border-[#111111]"></span> Polmont Base</span>
+              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#F7BA1E] border-2 border-[#111111]"></span> Falkirk container</span>
               <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#7D6E23] border-2 border-white"></span> Recommended Site</span>
             </div>
           </div>
@@ -43,8 +47,8 @@ import Layout from '../layouts/Layout.astro';
           <div class="relative w-full h-[420px] bg-[#FAF8F5] rounded-2xl border border-stone-200 overflow-hidden shadow-inner flex items-center justify-center p-2">
             <img src="/TCCC Map of Scotland.png" alt="The Cosy Canvas Co. Topographic Contour Map of Scotland" class="w-full h-full object-contain pointer-events-none select-none opacity-95" onerror="this.src='https://placehold.co/800x800/FAF7EE/7D6E23?text=TCCC+Scotland+Contour+Map'"/>
 
-            <!-- PIN 1: Polmont Base Depot (Star) -->
-            <button type="button" data-pin="polmont" id="pin-polmont" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-40" style="left: 58%; top: 68%;" title="Polmont Base Depot">
+            <!-- PIN 1: Falkirk container (Star) -->
+            <button type="button" data-pin="falkirk" id="pin-falkirk" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-40" style={`left: ${DEPOT.mapPinLeft}; top: ${DEPOT.mapPinTop};`} title="Falkirk container">
               <div class="pin-icon w-8 h-8 rounded-full bg-[#F7BA1E] border-2 border-[#111111] flex items-center justify-center text-[#111111] font-black text-xs shadow-2xl map-pin-pulse">
                 <i class="fa-solid fa-star"></i>
               </div>
@@ -105,8 +109,8 @@ import Layout from '../layouts/Layout.astro';
         <div style="flex: 1 1 380px; min-width: 300px; background-color: rgba(250, 247, 238, 0.9); padding: 1.25rem; border-radius: 1rem; border: 1px solid rgba(229, 231, 235, 0.8);" class="flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-3">
-              <span id="mapCardTag" class="os-grid-badge text-[10px] px-2.5 py-0.5 rounded uppercase font-bold">OS GRID: NS 539 800</span>
-              <span id="mapCardDrive" class="bg-[#F7BA1E] text-[#111111] font-mono text-[10px] font-bold px-2.5 py-0.5 rounded">25 MINS FROM POLMONT</span>
+              <span id="mapCardTag" class="os-grid-badge text-[10px] px-2.5 py-0.5 rounded uppercase font-bold">{cobleland.tag}</span>
+              <span id="mapCardDrive" class="bg-[#F7BA1E] text-[#111111] font-mono text-[10px] font-bold px-2.5 py-0.5 rounded">{cobleland.drive}</span>
             </div>
 
             <div class="relative h-44 rounded-xl overflow-hidden mb-4 border border-stone-200">
@@ -119,7 +123,7 @@ import Layout from '../layouts/Layout.astro';
             <h3 id="mapCardTitle" class="font-display font-black text-2xl text-[#111111] mb-1">Cobleland Campsite</h3>
             <p id="mapCardRegion" class="text-[#7D6E23] text-xs font-bold mb-3">Gartmore, Stirling • Queen Elizabeth Forest Park</p>
             <p id="mapCardDesc" class="text-stone-600 text-xs leading-relaxed mb-4">
-              Our absolute favorite local spot! Idyllic woodland campsite on the banks of the River Forth inside Queen Elizabeth Forest Park. Perfect flat grass pitches, walking trails, and quick setup from our Polmont base.
+              {cobleland.desc}
             </p>
           </div>
 
@@ -134,7 +138,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Website
               </a>
               <button type="button" id="mapCardBtn" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-sm">
-                Route Dossier &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -159,7 +163,7 @@ import Layout from '../layouts/Layout.astro';
         <div class="campsite-card bg-white rounded-xl overflow-hidden shadow-md flex flex-col border-2 border-[#F7BA1E] relative" data-region="loch">
           <div class="bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 flex items-center justify-between">
             <span class="flex items-center gap-1.5"><i class="fa-solid fa-star"></i> FEATURED LOCAL CAMPSITE</span>
-            <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">25 MINS FROM POLMONT BASE</span>
+            <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">{cobleland.drive}</span>
           </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_cobleland.jpg" alt="Cobleland Campsite" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Cobleland+Campsite'"/>
@@ -181,7 +185,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="cobleland">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -209,7 +213,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="fidden">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -237,7 +241,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="lochchon">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -265,7 +269,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="sallochy">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -293,7 +297,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="luss">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -321,7 +325,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
               </a>
               <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="redsquirrel">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -352,7 +356,7 @@ import Layout from '../layouts/Layout.astro';
                 <i class="fa-solid fa-compass text-[10px]"></i> Outdoor Access Code
               </a>
               <button type="button" class="open-dossier-btn text-xs text-[#7D6E23] font-bold hover:underline" data-site="durness">
-                OS Contour & Route Map &rarr;
+                Drive from Falkirk &rarr;
               </button>
             </div>
           </div>
@@ -363,205 +367,79 @@ import Layout from '../layouts/Layout.astro';
   </section>
 
   <!-- Route Dossier Modal -->
-  <div id="campsiteModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-    <div class="bg-white border border-stone-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative">
-      <button type="button" id="closeModalBtn" class="absolute top-5 right-5 text-stone-400 hover:text-stone-700 text-lg">
+  <div id="campsiteModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white border border-stone-200 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative my-8">
+      <button type="button" id="closeModalBtn" class="absolute top-5 right-5 text-stone-400 hover:text-stone-700 text-lg z-10">
         <i class="fa-solid fa-xmark"></i>
       </button>
-      <div class="mb-4">
-        <div class="flex items-center gap-2 mb-1">
-          <span class="os-grid-badge text-xs px-2.5 py-1 rounded" id="modalGridRef">OS GRID: NC 128 439</span>
-          <span class="bg-[#F7BA1E] text-[#111111] font-mono text-[10px] px-2 py-0.5 rounded font-bold uppercase" id="modalElevation">12m ELEVATION</span>
+      <div class="mb-4 pr-8">
+        <div class="flex flex-wrap items-center gap-2 mb-1">
+          <span class="os-grid-badge text-xs px-2.5 py-1 rounded" id="modalGridRef">{cobleland.tag}</span>
+          <span class="bg-[#F7BA1E] text-[#111111] font-mono text-[10px] px-2 py-0.5 rounded font-bold uppercase" id="modalElevation">{cobleland.elevation}</span>
         </div>
-        <h3 class="font-display font-bold text-[#111111] text-2xl mt-1" id="modalTitle">Campsite Details</h3>
-        <p class="text-[#7D6E23] text-xs font-semibold" id="modalRegion">Region Details</p>
+        <h3 class="font-display font-bold text-[#111111] text-2xl mt-1" id="modalTitle">{cobleland.title}</h3>
+        <p class="text-[#7D6E23] text-xs font-semibold" id="modalRegion">{cobleland.region}</p>
       </div>
 
-      <div class="relative h-44 bg-[#FAF7EE] rounded-2xl border border-stone-200 overflow-hidden flex items-center justify-center p-4 mb-4">
-        <svg class="w-full h-full text-[#7D6E23] opacity-25 absolute inset-0" viewBox="0 0 300 150">
-          <path d="M10 20 Q 80 5, 150 40 T 290 20" stroke="#7D6E23" stroke-width="1.5" fill="none"/>
-          <path d="M10 40 Q 90 25, 160 60 T 290 40" stroke="#7D6E23" stroke-width="1" fill="none"/>
-          <path d="M10 60 Q 100 45, 170 80 T 290 60" stroke="#F7BA1E" stroke-width="2" fill="none"/>
-        </svg>
-        <div class="relative z-10 w-full flex items-center justify-between px-4">
-          <div class="bg-[#111111] text-white p-3 rounded-xl text-center shadow-md border border-[#F7BA1E]/30">
-            <i class="fa-solid fa-warehouse text-[#F7BA1E] text-sm block mb-1"></i>
-            <span class="font-mono text-[10px] block text-stone-300">START</span>
-            <span class="font-bold text-xs">Polmont Base</span>
-          </div>
+      <div class="relative h-64 sm:h-80 bg-[#FAF7EE] rounded-2xl border border-stone-200 overflow-hidden mb-3">
+        <iframe
+          id="modalMapEmbed"
+          title="Driving route from Falkirk container"
+          class="w-full h-full border-0"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src={cobleland.embedSrc}
+        ></iframe>
+      </div>
+      <p class="text-[10px] text-stone-500 mb-4" id="modalMapNote">Google road route from the Falkirk container. Times are typical, not live traffic.</p>
 
-          <div class="flex-1 px-3 text-center relative">
-            <div class="border-t-2 border-dashed border-[#F7BA1E] w-full my-1"></div>
-            <span class="bg-white/90 px-2 py-0.5 rounded text-[10px] font-bold text-[#7D6E23] border border-stone-200 shadow-xs inline-block" id="modalDistance">
-              21 miles (25 mins)
-            </span>
-          </div>
-
-          <div class="bg-[#7D6E23] text-white p-3 rounded-xl text-center shadow-md">
-            <i class="fa-solid fa-tent text-[#F7BA1E] text-sm block mb-1"></i>
-            <span class="font-mono text-[10px] block text-stone-200">DESTINATION</span>
-            <span class="font-bold text-xs" id="modalDestShort">Cobleland</span>
-          </div>
+      <div class="grid sm:grid-cols-3 gap-2 text-xs text-stone-700 mb-3">
+        <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100">
+          <span class="font-semibold text-stone-500 block mb-0.5">Drive</span>
+          <span class="font-bold text-[#111111]" id="modalDistance">{cobleland.distance}</span>
+        </div>
+        <div class="bg-stone-50 p-2.5 rounded-xl border border-stone-100">
+          <span class="font-semibold text-stone-500 block mb-0.5">Fuel (loaded van)</span>
+          <span class="font-bold text-[#111111]" id="modalFuel">{cobleland.fuelOneWay} each way · {cobleland.fuelRoundTrip}</span>
+        </div>
+        <div class="bg-emerald-50 p-2.5 rounded-xl border border-[#7D6E23]/20">
+          <span class="font-semibold text-[#4F571A] block mb-0.5">Pitch</span>
+          <span class="text-[#7D6E23] font-bold" id="modalSuitability">{cobleland.suitability}</span>
         </div>
       </div>
 
       <div class="space-y-2 text-xs text-stone-700 mb-6">
-        <div class="flex items-start justify-between bg-stone-50 p-2.5 rounded-xl border border-stone-100">
-          <span class="font-semibold text-stone-500 shrink-0 mr-2">Driving Route:</span>
-          <span class="text-stone-800 text-right font-medium" id="modalRouteDesc">A811 west through Buchlyvie to Gartmore</span>
+        <div class="flex items-start justify-between bg-stone-50 p-2.5 rounded-xl border border-stone-100 gap-3">
+          <span class="font-semibold text-stone-500 shrink-0">Roads:</span>
+          <span class="text-stone-800 text-right font-medium" id="modalRouteDesc">{cobleland.routeDesc}</span>
         </div>
-        <div class="flex items-start justify-between bg-stone-50 p-2.5 rounded-xl border border-stone-100">
-          <span class="font-semibold text-stone-500 shrink-0 mr-2">Terrain & Access:</span>
-          <span class="text-stone-800 text-right font-medium" id="modalTerrain">Flat riverbank grass pitch with easy vehicle access.</span>
-        </div>
-        <div class="flex items-center justify-between bg-emerald-50 p-2.5 rounded-xl border border-[#7D6E23]/20">
-          <span class="font-semibold text-[#4F571A]">Pitch Capacity:</span>
-          <span class="text-[#7D6E23] font-bold" id="modalSuitability">Suitable for 4M, 5M & 6M Bell Tents</span>
+        <div class="flex items-start justify-between bg-stone-50 p-2.5 rounded-xl border border-stone-100 gap-3">
+          <span class="font-semibold text-stone-500 shrink-0">Terrain:</span>
+          <span class="text-stone-800 text-right font-medium" id="modalTerrain">{cobleland.terrain}</span>
         </div>
       </div>
 
-      <div class="flex gap-3">
-        <a href="#" id="modalWebsiteLink" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href={cobleland.mapsUrl} id="modalMapsLink" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-[#111111] hover:bg-stone-800 text-white font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
+          <i class="fa-brands fa-google text-[10px]"></i> Open in Google Maps
+        </a>
+        <a href={cobleland.website} id="modalWebsiteLink" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
           <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
         </a>
         <a href="/booking" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
-          Book Pitch Stay &rarr;
+          Book Now &rarr;
         </a>
       </div>
     </div>
   </div>
 </Layout>
 
-<script is:inline>
-  const campsiteMapData = {
-    'polmont': {
-      tag: 'POLMONT BASE DEPOT',
-      drive: 'DISPATCH HUB',
-      img: '/TCCC Horizontal Logo.png',
-      elevation: '65m ELEVATION',
-      title: 'The Cosy Canvas Co. Depot',
-      region: 'Polmont, Stirlingshire (OS NS 931 785)',
-      desc: 'Our primary dispatch hub in Stirlingshire. Offers free equipment pickup & return for DIY camping packages, plus 200-mile white-glove setup dispatch across Scotland.',
-      suitability: 'All Tent Sizes & Bespoke Event Packages',
-      website: '/',
-      gridRef: 'NS 931 785',
-      distance: '0 miles (Depot Hub)',
-      routeDesc: 'Central Belt Hub (M9 / A811 access)',
-      terrain: 'Paved depot base with secure equipment packing.'
-    },
-    'cobleland': {
-      tag: 'OS GRID: NS 539 800',
-      drive: '25 MINS FROM POLMONT',
-      img: '/campsite_cobleland.jpg',
-      elevation: '25m ELEVATION',
-      title: 'Cobleland Campsite',
-      region: 'Gartmore, Stirling • Queen Elizabeth Forest Park',
-      desc: 'Our absolute favorite local spot! Idyllic woodland campsite on the banks of the River Forth inside Queen Elizabeth Forest Park. Perfect flat grass pitches, walking trails, and quick setup from our Polmont base.',
-      suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
-      website: 'https://www.coblelandcampsite.co.uk/',
-      gridRef: 'NS 539 800',
-      distance: '21 miles (25 mins drive via A811)',
-      routeDesc: 'A811 west through Buchlyvie to Gartmore',
-      terrain: 'Flat riverbank grass pitch with easy vehicle access.'
-    },
-    'fidden': {
-      tag: 'OS GRID: NM 301 214',
-      drive: 'FERRY + 2.5 HRS DRIVE',
-      img: '/campsite_fidden_farm.jpg',
-      elevation: '5m ELEVATION',
-      title: 'Fidden Farm Campsite',
-      region: 'Fionnphort, Isle of Mull',
-      desc: 'Spectacular coastal farm setting on the southwestern tip of Mull. Pitch on coastal machair grass next to pink granite outcrops, crystal clear waters, and seals.',
-      suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
-      website: 'https://fiddenfarm.co.uk/',
-      gridRef: 'NM 301 214',
-      distance: '142 miles (incl. Oban to Craignure Ferry)',
-      routeDesc: 'M80 west to Oban ferry port, CalMac ferry to Mull, A849 to Fionnphort',
-      terrain: 'Coastal machair grass meadow. High-grade storm pegs used.'
-    },
-    'lochchon': {
-      tag: 'OS GRID: NN 420 051',
-      drive: '40 MINS FROM POLMONT',
-      img: '/campsite_loch_chon.jpg',
-      elevation: '90m ELEVATION',
-      title: 'Loch Chon Campsite',
-      region: 'Kinlochard, The Trossachs',
-      desc: 'Tucked away in scenic woodland beside picturesque Loch Chon. Tranquil lochside pitching in the heart of Loch Lomond and The Trossachs National Park.',
-      suitability: 'Suitable for 4M & 5M Bell Tents',
-      website: 'https://www.lochlomond-trossachs.org/',
-      gridRef: 'NN 420 051',
-      distance: '32 miles (40 mins drive via Aberfoyle)',
-      routeDesc: 'A81 north to Aberfoyle, B829 past Loch Ard to Loch Chon',
-      terrain: 'Woodland lochside pitches. Bunkered soil & grass clearing.'
-    },
-    'sallochy': {
-      tag: 'OS GRID: NS 383 956',
-      drive: '50 MINS FROM POLMONT',
-      img: '/campsite_sallochy.jpg',
-      elevation: '15m ELEVATION',
-      title: 'Sallochy Campsite',
-      region: 'East Loch Lomond Shore',
-      desc: 'Beautiful semi-natural oak woodland campsite directly on the eastern shore of Loch Lomond. Uninterrupted loch views and pristine natural surroundings.',
-      suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
-      website: 'https://www.lochlomond-trossachs.org/',
-      gridRef: 'NS 383 956',
-      distance: '38 miles (50 mins drive via Drymen)',
-      routeDesc: 'A811 to Drymen, B837 west to Rowardennan',
-      terrain: 'Sheltered shore woodland clearing with loch views.'
-    },
-    'luss': {
-      tag: 'OS GRID: NS 359 932',
-      drive: '50 MINS FROM POLMONT',
-      img: '/campsite_glen_Luss.jpg',
-      elevation: '10m ELEVATION',
-      title: 'Luss Campsite',
-      region: 'Loch Lomond West Bank',
-      desc: 'Nestled near the historic village of Luss along the west bank of Loch Lomond. Scenic water\'s-edge pitching with panoramic views across to Ben Lomond.',
-      suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
-      website: 'https://www.lusscampsite.co.uk/',
-      gridRef: 'NS 359 932',
-      distance: '42 miles (50 mins drive via M8/A82)',
-      routeDesc: 'M8 west, Erskine Bridge to A82 north to Luss',
-      terrain: 'Manicured level lawn pitch right near water edge.'
-    },
-    'redsquirrel': {
-      tag: 'OS GRID: NN 105 577',
-      drive: '2 HRS FROM POLMONT',
-      img: '/campsite_red_squirrel.jpg',
-      elevation: '50m ELEVATION',
-      title: 'Red Squirrel Campsite',
-      destShort: 'Red Squirrel',
-      region: 'Glen Coe, Lochaber • River Coe woodland',
-      desc: 'Twenty-two acres of woodland beside the River Coe, 14 miles south of Fort William. Warm welcome, proper Highland feel. Excellent for two people. On a busy Friday the flat pitches go early — daylight arrival if you are bringing a 4M bell tent.',
-      suitability: 'Best for 4M (2 guests). Larger canvas needs a daylight arrival.',
-      website: 'https://redsquirrelcampsite.co.uk/',
-      gridRef: 'NN 105 577',
-      distance: '110 miles (about 2 hrs via the A82)',
-      routeDesc: 'M9 / A80 west, then A82 north through Crianlarich into Glen Coe',
-      terrain: 'Wooded river-valley clearings. Easy enough once you have done a lap of the site.'
-    },
-    'durness': {
-      tag: 'SECRET GRID: NC 40* ***',
-      drive: '4.5 HRS (A9 NORTH)',
-      img: '/campsite_durness_wild.jpg',
-      elevation: '18m ELEVATION',
-      title: 'Durness Coastal Spot',
-      region: 'Sutherland, NC500 (Wild Spot)',
-      desc: 'Secluded wild coastal headland with panoramic ocean sunset views over Balnakeil cliffs. We keep the exact pitch location private to protect the spot.',
-      suitability: '4M & 6M Tents (Bespoke Setup Only)',
-      website: 'https://www.outdooraccess-scotland.scot/',
-      gridRef: 'NC 40* ***',
-      distance: '245 miles (4.5 hrs via A9 North)',
-      routeDesc: 'A9 north through Inverness, A835/A838 to Durness headland',
-      terrain: 'Wild coastal bluff. Heavy storm anchoring required.'
-    }
-  };
-
+<script define:vars={{ campsiteMapData: CAMPSITE_ROUTES }}>
   function updateMapShowcase(pinKey) {
     const data = campsiteMapData[pinKey];
     if (!data) return;
 
-    document.querySelectorAll('.pin-icon').forEach(p => p.classList.remove('active-map-pin'));
+    document.querySelectorAll('.pin-icon').forEach((p) => p.classList.remove('active-map-pin'));
     const activeBtn = document.querySelector(`[data-pin="${pinKey}"] .pin-icon`);
     if (activeBtn) activeBtn.classList.add('active-map-pin');
 
@@ -583,7 +461,7 @@ import Layout from '../layouts/Layout.astro';
 
   function openModal(data) {
     document.getElementById('modalTitle').innerText = data.title;
-    document.getElementById('modalGridRef').innerText = `OS GRID: ${data.gridRef}`;
+    document.getElementById('modalGridRef').innerText = data.tag;
     document.getElementById('modalRegion').innerText = data.region;
     document.getElementById('modalElevation').innerText = data.elevation;
     document.getElementById('modalSuitability').innerText = data.suitability;
@@ -591,7 +469,18 @@ import Layout from '../layouts/Layout.astro';
     document.getElementById('modalDistance').innerText = data.distance;
     document.getElementById('modalRouteDesc').innerText = data.routeDesc;
     document.getElementById('modalTerrain').innerText = data.terrain;
-    document.getElementById('modalDestShort').innerText = data.destShort || data.title.split(' ')[0];
+    document.getElementById('modalFuel').innerText = `${data.fuelOneWay} each way · ${data.fuelRoundTrip}`;
+    document.getElementById('modalMapsLink').href = data.mapsUrl;
+    const embed = document.getElementById('modalMapEmbed');
+    if (embed) embed.src = data.embedSrc;
+    const note = document.getElementById('modalMapNote');
+    if (note && data.key === 'durness') {
+      note.innerText = 'Public road into Durness village only. The wild pitch is not shown.';
+    } else if (note && data.key === 'falkirk') {
+      note.innerText = 'Falkirk container. What3Words is on DIY booking confirmation.';
+    } else if (note) {
+      note.innerText = 'Google road route from the Falkirk container. Times are typical, not live traffic.';
+    }
 
     const modal = document.getElementById('campsiteModal');
     if (modal) {
@@ -609,16 +498,14 @@ import Layout from '../layouts/Layout.astro';
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Pin click listeners
-    document.querySelectorAll('.map-pin-btn').forEach(btn => {
+    document.querySelectorAll('.map-pin-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const key = btn.getAttribute('data-pin');
         if (key) updateMapShowcase(key);
       });
     });
 
-    // Dossier button click listeners on grid cards
-    document.querySelectorAll('.open-dossier-btn').forEach(btn => {
+    document.querySelectorAll('.open-dossier-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const key = btn.getAttribute('data-site');
         const data = campsiteMapData[key];
@@ -626,11 +513,10 @@ import Layout from '../layouts/Layout.astro';
       });
     });
 
-    // Region tab filters
-    document.querySelectorAll('.filter-btn').forEach(btn => {
+    document.querySelectorAll('.filter-btn').forEach((btn) => {
       btn.addEventListener('click', () => {
         const filter = btn.getAttribute('data-filter');
-        document.querySelectorAll('.campsite-card').forEach(card => {
+        document.querySelectorAll('.campsite-card').forEach((card) => {
           if (filter === 'all' || card.getAttribute('data-region') === filter) {
             card.style.display = 'flex';
           } else {
@@ -640,16 +526,15 @@ import Layout from '../layouts/Layout.astro';
       });
     });
 
-    // Modal close handlers
     document.getElementById('closeModalBtn')?.addEventListener('click', closeModal);
     document.getElementById('campsiteModal')?.addEventListener('click', (e) => {
       if (e.target === document.getElementById('campsiteModal')) closeModal();
     });
 
-    // Default to Cobleland
     updateMapShowcase('cobleland');
   });
 </script>
+
 
 <style is:global>
   .os-grid-badge {

@@ -4,6 +4,7 @@ import { composeGuestMail, MAIL_META, MAIL_TYPES, type MailType, type MailTempla
 import { getMailSettings } from './booking-mail-settings';
 import { getAllBookings, updateBooking } from './booking-store';
 import { sendAdminNewBookingAlert, sendHtmlEmail } from './email';
+import { kitInventoryPublicUrl } from './kit-inventory-link';
 import { getStripe } from './stripe-client';
 
 export async function createBalancePayUrl(booking: BookingRecord, origin: string): Promise<string> {
@@ -39,7 +40,7 @@ export async function composeBookingMail(
   booking: BookingRecord,
   type: MailType,
   overrides?: Partial<MailTemplate>,
-  extras: { payUrl?: string } = {},
+  extras: { payUrl?: string; kitPdfUrl?: string } = {},
 ) {
   const settings = await getMailSettings();
   const template: MailTemplate = {
@@ -79,6 +80,7 @@ export async function sendBookingMail(options: {
 }): Promise<{ ok: boolean; mocked?: boolean; error?: string }> {
   const { booking, type } = options;
   const payUrl = type === 'balance' && options.origin ? await createBalancePayUrl(booking, options.origin) : '';
+  const kitPdfUrl = type === 'kitHandover' && options.origin ? kitInventoryPublicUrl(options.origin, booking.bookingRef) : '';
   const composed = await composeBookingMail(
     booking,
     type,
@@ -87,7 +89,7 @@ export async function sendBookingMail(options: {
       body: options.body,
       headline: options.headline,
     },
-    { payUrl },
+    { payUrl, kitPdfUrl },
   );
 
   const result = await sendHtmlEmail({

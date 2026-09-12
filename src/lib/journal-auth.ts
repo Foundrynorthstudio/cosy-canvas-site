@@ -32,6 +32,15 @@ function safeEqual(a: string, b: string): boolean {
   return timingSafeEqual(left, right);
 }
 
+export function signedToken(payload: string): string {
+  return hmac(payload);
+}
+
+export function tokenMatches(payload: string, token: string): boolean {
+  if (!token || !secret()) return false;
+  return safeEqual(hmac(payload), token);
+}
+
 export function verifyStudioPassword(password: string): boolean {
   const expected = adminPassword();
   if (!expected || !password) return false;

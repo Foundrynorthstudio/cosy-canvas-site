@@ -132,7 +132,7 @@ Then I drove the whole site. First time round. A couple of awkward five- and six
 
 I put up the **Decathlon two-man pop-up**. I absolutely love this tent. Up in two minutes. No guy-line ballet, no headtorch faff. On a night like this, that is the difference between being a nuisance in the car park and sitting down with a cuppa.
 
-For Cosy Canvas guests the honest note still stands. Red Squirrel is excellent for two people. On a busy Friday I would not have got a **4M bell tent** down easily. The flat, usable clearings go first. Guy lines need room. Come up in daylight, walk the site, and take a pitch while there is still space to stake. Midweek, or a daytime deluxe run from Polmont, is how you do canvas here properly.
+For Cosy Canvas guests the honest note still stands. Red Squirrel is excellent for two people. On a busy Friday I would not have got a **4M bell tent** down easily. The flat, usable clearings go first. Guy lines need room. Come up in daylight, walk the site, and take a pitch while there is still space to stake. Midweek, or a daytime deluxe run from Falkirk, is how you do canvas here properly.
 
 <div class="photo-pair">
 <figure>
@@ -164,7 +164,7 @@ That is the work. Hire kit has to be right on the hill, not almost right.
 
 * **Best for:** Two people, a simple tent, or a 4M bell tent if you arrive in daylight — or a logistics overnighter with a laptop and a stove
 * **OS grid:** NN 105 577
-* **Drive:** about 2 hours / 110 miles from Polmont via the A82
+* **Drive:** about 2 hours / 108 miles from the Falkirk container via the A82
 * **Book:** [redsquirrelcampsite.co.uk](https://redsquirrelcampsite.co.uk/)
 
 Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full signal, friendly late check-in, and a picnic table that works as a desk. That is why it earns a pin on the [campsites](/campsites) page.
@@ -227,7 +227,7 @@ The actual dream logistics vehicle is a **LWB Caddy Maxi**. Probably white — t
 
 I love driving the Highland roads in Scotland. That is a huge part of why I am doing this. The canvas is the product. The A82 is the reason it does not feel like a spreadsheet company.
 
-This is tonight, from the bench. Tomorrow is Fort William. If you want the same Glen Coe setup — a pitch at Red Squirrel and canvas delivered from Polmont — the buttons are the next step.
+This is tonight, from the bench. Tomorrow is Fort William. If you want the same Glen Coe setup — a pitch at Red Squirrel and canvas delivered from Falkirk — the buttons are the next step.
 
 <div class="journal-cta">
 <a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>
@@ -268,7 +268,7 @@ When booking with **The Cosy Canvas Co.**, our logistics team delivers and pitch
 ### 1. Cobleland Campsite (Loch Lomond & The Trossachs)
 * **Location:** Near Aberfoyle, Stirlingshire (OS Grid: NN 531 002)
 * **Best For:** Woodland tranquility, river walks, campfire pits, and family glamping.
-* **Why We Love It:** Tucked inside the Queen Elizabeth Forest Park on the banks of the River Forth, Cobleland offers peaceful grass pitches shaded by grand oak trees. It's only 40 minutes from our Polmont base depot, making setup seamless.
+* **Why We Love It:** Tucked inside the Queen Elizabeth Forest Park on the banks of the River Forth, Cobleland offers peaceful grass pitches shaded by grand oak trees. It's only about 40 minutes from our Falkirk container, making setup seamless.
 
 ### 2. Fidden Farm (Isle of Mull, Inner Hebrides)
 * **Location:** Fionnphort, Isle of Mull

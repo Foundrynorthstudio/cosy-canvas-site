@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getBookingByRef, updateBooking } from '../../../../../lib/booking-store';
+import { kitCharges } from '../../../../../lib/kit-ops';
 import { getStripe } from '../../../../../lib/stripe-client';
 
 export const POST: APIRoute = async ({ params, request }) => {
@@ -8,6 +9,17 @@ export const POST: APIRoute = async ({ params, request }) => {
 
   const booking = await getBookingByRef(ref);
   if (!booking) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
+  const charges = kitCharges(booking);
+  if (!charges.depositReady) {
+    return new Response(
+      JSON.stringify({
+        error: charges.allTested
+          ? 'Every Fail / damaged item needs a description and a photo before the deposit can be refunded.'
+          : 'Every kit item must be tested (Pass or Fail / damaged) before the deposit can be processed.',
+      }),
+      { status: 400 },
+    );
+  }
   if (!booking.stripePaymentIntentId) {
     return new Response(JSON.stringify({ error: 'No Stripe payment on this booking yet.' }), { status: 400 });
   }

@@ -7,6 +7,16 @@ import { buildBookingLineItems, formatGbp } from '../../../lib/booking-lines';
 import { MAIL_META, MAIL_TYPES, ruleSummary, sentAt } from '../../../lib/booking-mail';
 import { getMailSettings } from '../../../lib/booking-mail-settings';
 import { getBookingByRef } from '../../../lib/booking-store';
+import { formatKitMoney } from '../../../lib/kit-catalog';
+import {
+  allOutboundDone,
+  inspectableKit,
+  isDeluxeFulfillment,
+  kitCharges,
+  kitPhotoPath,
+  mergeKitInspection,
+  pickedCount,
+} from '../../../lib/kit-ops';
 
 const { ref } = Astro.params;
 const booking = ref ? await getBookingByRef(ref) : undefined;
@@ -17,6 +27,17 @@ if (!booking) {
 
 const status = deriveBookingStatus(booking);
 const kit = buildKitManifest(booking);
+const inspectables = inspectableKit(booking);
+const inspection = mergeKitInspection(booking);
+const inspectionBySku = new Map(inspection.items.map((item) => [item.sku, item]));
+const charges = kitCharges(booking);
+const pickStats = pickedCount(inspection.items);
+const shelfReady = allOutboundDone(inspection.items);
+const deluxe = isDeluxeFulfillment(booking.fulfillment);
+const logistics = booking.logistics || { pitchDetail: '', pitchW3w: '', accessNotes: '' };
+const pitchW3wUrl = logistics.pitchW3w
+  ? `https://what3words.com/${logistics.pitchW3w.replace(/\s+/g, '.').toLowerCase()}`
+  : '';
 const lineItems = buildBookingLineItems(booking);
 const selectedAddons = lineItems.filter((item) => item.kind === 'addon');
 const mailSettings = await getMailSettings();
@@ -91,58 +112,7 @@ const mailSettings = await getMailSettings();
       </div>
     </section>
 
-    <section class="rounded-3xl border border-[#F7BA1E]/30 bg-[#F7BA1E]/5 p-6 mb-6">
-      <div class="flex flex-wrap items-start justify-between gap-3 mb-5">
-        <div>
-          <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Load sheet</p>
-          <h2 class="font-display text-2xl font-black">{kit.loadVerb}</h2>
-          <p class="text-stone-400 text-sm mt-1">Only the tent, bedding and extras they added at booking.</p>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <a
-            href={`/api/studio/bookings/${booking.bookingRef}/pack-list.pdf`}
-            class="rounded-full border border-[#F7BA1E]/50 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
-          >
-            Download PDF
-          </a>
-          <a
-            href={`/studio/bookings/${booking.bookingRef}/pack-list?print=1`}
-            target="_blank"
-            rel="noreferrer"
-            class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
-          >
-            Print pack list
-          </a>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {
-          kit.groups.map((group) => (
-            <article class="rounded-2xl bg-[#111111] border border-white/10 p-4">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="w-8 h-8 rounded-lg bg-[#F7BA1E]/20 text-[#F7BA1E] flex items-center justify-center">
-                  <i class={`fa-solid ${group.icon} text-sm`} />
-                </span>
-                <h3 class="font-display font-black text-sm">{group.title}</h3>
-              </div>
-              <ul class="space-y-2">
-                {group.lines.map((line) => (
-                  <li class="flex items-start justify-between gap-3 text-sm border-b border-white/5 pb-2">
-                    <span>
-                      {line.label}
-                      {line.detail && <span class="block text-[11px] text-stone-500">{line.detail}</span>}
-                    </span>
-                    <span class="font-mono text-[#F7BA1E] text-xs shrink-0">{line.qty}</span>
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))
-        }
-      </div>
-    </section>
-
-    <div class="grid lg:grid-cols-3 gap-6">
+    <div class="grid lg:grid-cols-3 gap-6 mb-6">
       <form id="edit-form" class="lg:col-span-2 space-y-4 rounded-3xl border border-white/10 p-6 bg-white/[0.03]">
         <h2 class="font-display font-black text-lg">Customer & stay</h2>
         <div class="grid sm:grid-cols-2 gap-3">
@@ -186,13 +156,21 @@ const mailSettings = await getMailSettings();
           <p class="font-semibold">Stay total <span class="float-right">{formatGbp(booking.totalRentalPrice)}</span></p>
           <p class="clear-both pt-2">Paid so far <span class="float-right">{formatGbp(booking.totalPaidToday)}</span></p>
           <p>Security hold <span class="float-right">{formatGbp(booking.securityDeposit)}</span></p>
+          <p class="text-stone-300">Kit keep from deposit <span class="float-right" id="money-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</span></p>
+          <p class="text-[#F7BA1E]">Leftover deposit to refund <span class="float-right" id="money-deposit-refund">{charges.depositReady ? formatGbp(charges.depositRefund) : '—'}</span></p>
           <p class="text-amber-300">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
           <p class="text-stone-500">Refunded <span class="float-right">{formatGbp(booking.amountRefunded)}</span></p>
           <form id="refund-form" class="mt-4 flex gap-2">
-            <input name="amount" type="number" step="0.01" placeholder="Refund £" class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm" />
-            <button class="rounded-full bg-white/10 px-4 text-xs font-bold uppercase tracking-wider">Refund</button>
+            <input id="refund-amount" name="amount" type="number" step="0.01" placeholder="Refund £" value={charges.depositReady ? charges.depositRefund : ''} disabled={!charges.depositReady} class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm disabled:opacity-40" />
+            <button id="refund-button" disabled={!charges.depositReady} class="rounded-full bg-white/10 px-4 text-xs font-bold uppercase tracking-wider disabled:opacity-40">Refund</button>
           </form>
-          <p class="text-[11px] text-stone-500 mt-2">Refunds go back through Stripe to the original card.</p>
+          <p id="money-deposit-gate" class="text-[11px] text-stone-500 mt-2">
+            {charges.depositReady
+              ? `After check-in, refund the leftover security deposit. Replacement prices stay with us. Extra above £${booking.securityDeposit} is invoiced, not taken from Stripe automatically.`
+              : charges.allTested
+                ? 'Fail / damaged items still need a description and a photo before the deposit can be processed.'
+                : 'Deposit cannot be completed until every kit item is tested (Pass or Fail / damaged).'}
+          </p>
         </div>
 
         <div class="rounded-3xl border border-white/10 p-5 bg-white/[0.03] space-y-3">
@@ -229,11 +207,354 @@ const mailSettings = await getMailSettings();
         </div>
       </div>
     </div>
+
+    <section class="rounded-3xl border border-[#F7BA1E]/30 bg-[#F7BA1E]/5 p-6 mb-6">
+      <div class="flex flex-wrap items-start justify-between gap-3 mb-5">
+        <div>
+          <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Load sheet</p>
+          <h2 class="font-display text-2xl font-black">{kit.loadVerb}</h2>
+          <p class="text-stone-400 text-sm mt-1">Only the tent, bedding and extras they added at booking.</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <a
+            href={`/api/studio/bookings/${booking.bookingRef}/pack-list.pdf`}
+            class="rounded-full border border-[#F7BA1E]/50 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+          >
+            Download PDF
+          </a>
+          <a
+            href={`/api/studio/bookings/${booking.bookingRef}/kit-handover.pdf`}
+            class="rounded-full border border-white/20 text-stone-200 font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+          >
+            Download kit list
+          </a>
+          <a
+            href={`/studio/bookings/${booking.bookingRef}/pack-list?print=1`}
+            target="_blank"
+            rel="noreferrer"
+            class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+          >
+            Print pack list
+          </a>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {
+          kit.groups.map((group) => (
+            <article class="rounded-2xl bg-[#111111] border border-white/10 p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="w-8 h-8 rounded-lg bg-[#F7BA1E]/20 text-[#F7BA1E] flex items-center justify-center">
+                  <i class={`fa-solid ${group.icon} text-sm`} />
+                </span>
+                <h3 class="font-display font-black text-sm">{group.title}</h3>
+              </div>
+              <ul class="space-y-2">
+                {group.lines.map((line) => (
+                  <li class="flex items-start justify-between gap-3 text-sm border-b border-white/5 pb-2">
+                    <span>
+                      {line.label}
+                      {line.detail && <span class="block text-[11px] text-stone-500">{line.detail}</span>}
+                    </span>
+                    <span class="font-mono text-[#F7BA1E] text-xs shrink-0">{line.qty}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+
+      {
+        deluxe && (
+          <form id="logistics-form" class="mt-6 rounded-2xl bg-[#111111] border border-white/10 p-5 space-y-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-wider text-[#F7BA1E] font-bold">Deluxe logistics</p>
+              <h3 class="font-display font-black text-lg">Pitch location</h3>
+              <p class="text-stone-400 text-xs mt-1">Where the crew actually pitches. Guests still book the site themselves.</p>
+            </div>
+            <p class="text-sm text-stone-300">
+              <span class="text-stone-500 text-[11px] uppercase tracking-wider font-bold block">Campsite</span>
+              {booking.campsiteLocation}
+            </p>
+            <label class="text-xs text-stone-400 block">
+              Pitch / plot
+              <input name="pitchDetail" value={logistics.pitchDetail} placeholder="e.g. Pitch 14, riverbank, left of showers" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+            </label>
+            <label class="text-xs text-stone-400 block">
+              Pitch What3Words
+              <input name="pitchW3w" value={logistics.pitchW3w} placeholder="filled.count.soap" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+            </label>
+            {
+              pitchW3wUrl && (
+                <a href={pitchW3wUrl} target="_blank" rel="noopener noreferrer" class="text-xs text-[#F7BA1E] font-bold">
+                  Open What3Words pin →
+                </a>
+              )
+            }
+            <label class="text-xs text-stone-400 block">
+              Access / parking / how to find it
+              <textarea name="accessNotes" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{logistics.accessNotes}</textarea>
+            </label>
+            <button class="rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save pitch logistics</button>
+            <p id="logistics-status" class="text-xs text-stone-500"></p>
+          </form>
+        )
+      }
+
+      <form id="kit-ops-form" class="mt-6 space-y-4">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p class="text-[11px] uppercase tracking-wider text-[#F7BA1E] font-bold">Gear desk</p>
+            <h3 class="font-display font-black text-lg">Check-out / check-in</h3>
+            <p class="text-stone-400 text-xs mt-1 max-w-2xl">
+              Tick each piece as you take it off the container shelf, then press <strong class="text-stone-200">Check gear out</strong>. The guest gets a short email with a button to download their kit list. Return tests stay separate: every item starts on Test, and the deposit cannot be refunded until every return row is Pass or Fail / damaged.
+            </p>
+          </div>
+          <label class="text-xs text-stone-400">
+            Checked by
+            <input name="checkedBy" placeholder="Your name" class="mt-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+          </label>
+        </div>
+        <p class="text-[11px] text-stone-500">
+          Shelf pick: <span id="kit-pick-count">{pickStats.picked} / {pickStats.total}</span>
+          · Outbound: {inspection.outboundAt ? `checked out ${new Date(inspection.outboundAt).toLocaleString('en-GB')} (${inspection.outboundBy})` : 'not checked out yet'}
+          · Return: {inspection.inboundAt ? `checked in ${new Date(inspection.inboundAt).toLocaleString('en-GB')} (${inspection.inboundBy})` : 'not checked in yet'}
+        </p>
+        <div class="overflow-x-auto rounded-2xl border border-white/10">
+          <table class="w-full text-left text-xs min-w-[720px]">
+            <thead class="bg-black/40 text-stone-500 uppercase tracking-wider">
+              <tr>
+                <th class="p-3 font-bold">Kit</th>
+                <th class="p-3 font-bold">Test</th>
+                <th class="p-3 font-bold">Our cost</th>
+                <th class="p-3 font-bold">Replace</th>
+                <th class="p-3 font-bold">Picked</th>
+                <th class="p-3 font-bold">Return</th>
+                <th class="p-3 font-bold">Note / photo</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                inspectables.map((item) => {
+                  const row = inspectionBySku.get(item.sku);
+                  return (
+                    <tr
+                      class="kit-row border-t border-white/5 align-top"
+                      data-sku={item.sku}
+                      data-label={item.label}
+                      data-replacement={item.replacement}
+                      data-has-photo={row?.photoName ? '1' : ''}
+                    >
+                      <td class="p-3">
+                        <span class="block text-stone-200 font-semibold">{item.label}</span>
+                        <span class="text-stone-500">{item.groupTitle} · {item.qty}</span>
+                        <input type="hidden" name="sku" value={item.sku} />
+                      </td>
+                      <td class="p-3 text-stone-400 max-w-[14rem]">{item.test}</td>
+                      <td class="p-3 font-mono text-stone-400">{formatKitMoney(item.cost)}</td>
+                      <td class="p-3 font-mono text-[#F7BA1E]">{formatKitMoney(item.replacement)}</td>
+                      <td class="p-3">
+                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            name={`picked-${item.sku}`}
+                            class="kit-picked h-5 w-5 accent-[#F7BA1E]"
+                            checked={Boolean(row?.picked)}
+                          />
+                          <span class="text-stone-300">From shelf</span>
+                        </label>
+                      </td>
+                      <td class="p-3">
+                        <select name={`in-${item.sku}`} class="kit-inbound w-full rounded-lg bg-[#1a1a1a] border border-stone-700 px-2 py-1.5 text-white">
+                          <option value="test" selected={(row?.inbound || 'test') === 'test'}>Test</option>
+                          <option value="pass" selected={row?.inbound === 'pass'}>Pass</option>
+                          <option value="fail" selected={row?.inbound === 'fail'}>Fail / damaged</option>
+                        </select>
+                      </td>
+                      <td class="p-3 min-w-[12rem]">
+                        <input name={`note-${item.sku}`} value={row?.note || ''} placeholder="Required if fail: puncture, missing bag…" class="w-full rounded-lg bg-[#1a1a1a] border border-stone-700 px-2 py-1.5 text-white" />
+                        <div class={`kit-fail-extra mt-2 space-y-1 ${(row?.inbound || 'test') === 'fail' ? '' : 'hidden'}`}>
+                          <input type="file" accept="image/*" name={`photo-${item.sku}`} class="kit-photo-input block w-full text-[11px] text-stone-400" />
+                          {
+                            row?.photoName ? (
+                              <a href={kitPhotoPath(booking.bookingRef, item.sku)} target="_blank" rel="noreferrer" class="kit-photo-link text-[11px] text-[#F7BA1E] font-bold">
+                                View photo
+                              </a>
+                            ) : (
+                              <p class="kit-photo-link text-[11px] text-stone-500">Photo required for fail / damaged.</p>
+                            )
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-3">
+          <div class="rounded-2xl border border-white/10 p-4">
+            <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold">Replacement bill</p>
+            <p class="font-display font-black text-xl mt-1" id="kit-bill-total">{formatGbp(charges.total)}</p>
+            <ul id="kit-bill-lines" class="mt-2 space-y-1 text-[11px] text-stone-400">
+              {
+                charges.lines.length === 0 ? (
+                  <li id="kit-bill-empty">Nothing billed yet.</li>
+                ) : (
+                  charges.lines.map((line) => (
+                    <li class="flex justify-between gap-2">
+                      <span>{line.label} ({line.reason})</span>
+                      <span class="font-mono text-[#F7BA1E]">{formatGbp(line.amount)}</span>
+                    </li>
+                  ))
+                )
+              }
+            </ul>
+          </div>
+          <div class="rounded-2xl border border-white/10 p-4">
+            <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold">Keep from £{booking.securityDeposit} deposit</p>
+            <p class="font-display font-black text-xl mt-1" id="kit-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</p>
+            <p class="text-[11px] text-stone-500 mt-1">Refund leftover <span id="kit-deposit-refund-copy">{charges.depositReady ? formatGbp(charges.depositRefund) : '—'}</span>.</p>
+          </div>
+          <div class="rounded-2xl border border-amber-500/30 p-4">
+            <p class="text-[11px] uppercase tracking-wider text-amber-200 font-bold">If kit exceeds deposit</p>
+            <p class="font-display font-black text-xl mt-1" id="kit-extra-owed">{charges.depositReady ? formatGbp(charges.extraOwed) : '—'}</p>
+            <p class="text-[11px] text-stone-500 mt-1">Invoice the guest separately if this is above £0.</p>
+          </div>
+        </div>
+        <p id="kit-deposit-gate" class="text-xs text-stone-400">
+          {charges.depositReady
+            ? 'All return tests complete. Deposit figures above are ready for refund.'
+            : charges.allTested
+              ? 'Add a description and photo on every Fail / damaged return before the deposit can be processed.'
+              : 'Items still on Test — deposit is not ready for payment processing.'}
+        </p>
+        <div class="flex flex-wrap gap-2">
+          <button name="kitAction" value="save" class="rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save tests</button>
+          <button id="kit-checkout-button" name="kitAction" value="checkout" disabled={!shelfReady} class="rounded-full bg-[#F7BA1E] text-[#111111] px-4 py-2 text-xs font-extrabold uppercase tracking-wider disabled:opacity-40">Check gear out</button>
+          <button name="kitAction" value="checkin" class="rounded-full border border-[#F7BA1E]/50 text-[#F7BA1E] px-4 py-2 text-xs font-extrabold uppercase tracking-wider">Check gear in</button>
+          <a
+            href={`/api/studio/bookings/${booking.bookingRef}/kit-handover.pdf`}
+            class="rounded-full border border-white/20 text-stone-200 px-4 py-2 text-xs font-extrabold uppercase tracking-wider"
+          >
+            Download kit list
+          </a>
+        </div>
+        <p id="kit-ops-status" class="text-xs text-stone-400"></p>
+      </form>
+    </section>
   </div>
 </StudioLayout>
 
-<script define:vars={{ ref: booking.bookingRef }}>
+<script define:vars={{ ref: booking.bookingRef, securityDeposit: booking.securityDeposit || 200 }}>
   const saveStatus = document.getElementById('save-status');
+  const logisticsStatus = document.getElementById('logistics-status');
+  const kitStatus = document.getElementById('kit-ops-status');
+  const kitForm = document.getElementById('kit-ops-form');
+  let saveTimer;
+
+  function gbp(amount) {
+    return `£${Number(amount || 0).toFixed(2)}`;
+  }
+
+  function inboundValue(row) {
+    const sku = row.dataset.sku;
+    return kitForm?.querySelector(`[name="in-${sku}"]`)?.value || 'test';
+  }
+
+  function syncFailUi() {
+    if (!kitForm) return;
+    kitForm.querySelectorAll('.kit-row').forEach((row) => {
+      const extra = row.querySelector('.kit-fail-extra');
+      extra?.classList.toggle('hidden', inboundValue(row) !== 'fail');
+    });
+  }
+
+  function syncPickedUi() {
+    if (!kitForm) return;
+    const boxes = [...kitForm.querySelectorAll('.kit-picked')];
+    const picked = boxes.filter((box) => box.checked).length;
+    const count = document.getElementById('kit-pick-count');
+    const checkout = document.getElementById('kit-checkout-button');
+    if (count) count.textContent = `${picked} / ${boxes.length}`;
+    if (checkout) checkout.disabled = boxes.length === 0 || picked !== boxes.length;
+  }
+
+  function liveCharges() {
+    if (!kitForm) {
+      return { lines: [], total: 0, depositKeep: 0, depositRefund: securityDeposit, extraOwed: 0, allTested: false, failEvidenceOk: false, depositReady: false };
+    }
+    const lines = [];
+    let untested = 0;
+    let failGaps = 0;
+    kitForm.querySelectorAll('.kit-row').forEach((row) => {
+      const sku = row.dataset.sku;
+      const inbound = inboundValue(row);
+      if (inbound === 'test') untested += 1;
+      if (inbound === 'fail') {
+        const amount = Number(row.dataset.replacement) || 0;
+        lines.push({ label: row.dataset.label || sku, reason: 'fail', amount });
+        const note = kitForm.querySelector(`[name="note-${sku}"]`)?.value?.trim();
+        if (!note || row.dataset.hasPhoto !== '1') failGaps += 1;
+      }
+    });
+    const total = Number(lines.reduce((sum, line) => sum + line.amount, 0).toFixed(2));
+    const depositKeep = Math.min(securityDeposit, total);
+    const depositRefund = Number((securityDeposit - depositKeep).toFixed(2));
+    const extraOwed = Number(Math.max(0, total - securityDeposit).toFixed(2));
+    const allTested = untested === 0;
+    const failEvidenceOk = failGaps === 0;
+    return { lines, total, depositKeep, depositRefund, extraOwed, allTested, failEvidenceOk, depositReady: allTested && failEvidenceOk };
+  }
+
+  function paintCharges() {
+    const charges = liveCharges();
+    const bill = document.getElementById('kit-bill-total');
+    const keep = document.getElementById('kit-deposit-keep');
+    const leftoverCopy = document.getElementById('kit-deposit-refund-copy');
+    const extra = document.getElementById('kit-extra-owed');
+    const moneyKeep = document.getElementById('money-deposit-keep');
+    const moneyRefund = document.getElementById('money-deposit-refund');
+    const refundInput = document.getElementById('refund-amount');
+    const refundButton = document.getElementById('refund-button');
+    const list = document.getElementById('kit-bill-lines');
+    const kitGate = document.getElementById('kit-deposit-gate');
+    const moneyGate = document.getElementById('money-deposit-gate');
+    const keepText = charges.depositReady ? gbp(charges.depositKeep) : '—';
+    const refundText = charges.depositReady ? gbp(charges.depositRefund) : '—';
+    const extraText = charges.depositReady ? gbp(charges.extraOwed) : '—';
+    if (bill) bill.textContent = gbp(charges.total);
+    if (keep) keep.textContent = keepText;
+    if (leftoverCopy) leftoverCopy.textContent = refundText;
+    if (extra) extra.textContent = extraText;
+    if (moneyKeep) moneyKeep.textContent = keepText;
+    if (moneyRefund) moneyRefund.textContent = refundText;
+    if (refundInput) {
+      refundInput.disabled = !charges.depositReady;
+      refundInput.value = charges.depositReady ? charges.depositRefund.toFixed(2) : '';
+    }
+    if (refundButton) refundButton.disabled = !charges.depositReady;
+    const gateCopy = charges.depositReady
+      ? 'All return tests complete. Deposit figures above are ready for refund.'
+      : charges.allTested
+        ? 'Add a description and photo on every Fail / damaged return before the deposit can be processed.'
+        : 'Items still on Test — deposit is not ready for payment processing.';
+    if (kitGate) kitGate.textContent = gateCopy;
+    if (moneyGate) moneyGate.textContent = gateCopy;
+    if (list) {
+      if (charges.lines.length === 0) {
+        list.innerHTML = '<li id="kit-bill-empty">Nothing billed yet.</li>';
+      } else {
+        list.innerHTML = charges.lines
+          .map(
+            (line) =>
+              `<li class="flex justify-between gap-2"><span>${line.label} (fail / damaged)</span><span class="font-mono text-[#F7BA1E]">${gbp(line.amount)}</span></li>`,
+          )
+          .join('');
+      }
+    }
+  }
 
   document.getElementById('edit-form')?.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -246,6 +567,116 @@ const mailSettings = await getMailSettings();
     });
     const json = await res.json();
     if (saveStatus) saveStatus.textContent = res.ok ? 'Saved.' : json.error || 'Could not save.';
+  });
+
+  document.getElementById('logistics-form')?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    if (logisticsStatus) logisticsStatus.textContent = 'Saving…';
+    const res = await fetch(`/api/studio/bookings/${ref}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        logistics: {
+          pitchDetail: form.get('pitchDetail') || '',
+          pitchW3w: form.get('pitchW3w') || '',
+          accessNotes: form.get('accessNotes') || '',
+        },
+      }),
+    });
+    const json = await res.json();
+    if (logisticsStatus) logisticsStatus.textContent = res.ok ? 'Pitch logistics saved.' : json.error || 'Could not save.';
+  });
+
+  function kitPayload(form, action) {
+    const data = new FormData(form);
+    const skus = [...form.querySelectorAll('input[name="sku"]')].map((input) => input.value);
+    return {
+      action,
+      checkedBy: data.get('checkedBy') || '',
+      items: skus.map((sku) => ({
+        sku,
+        picked: Boolean(form.querySelector(`[name="picked-${sku}"]`)?.checked),
+        inbound: data.get(`in-${sku}`) || 'test',
+        note: data.get(`note-${sku}`) || '',
+      })),
+    };
+  }
+
+  async function saveKit(action) {
+    if (!kitForm) return { ok: false };
+    const res = await fetch(`/api/studio/bookings/${ref}/kit-ops`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(kitPayload(kitForm, action)),
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      if (kitStatus) kitStatus.textContent = json.error || 'Could not save kit desk.';
+      return { ok: false };
+    }
+    return { ok: true, mail: json.mail };
+  }
+
+  async function uploadKitPhoto(row, file) {
+    const sku = row.dataset.sku;
+    const body = new FormData();
+    body.set('photo', file);
+    const res = await fetch(`/api/studio/bookings/${ref}/kit-photo/${encodeURIComponent(sku)}`, {
+      method: 'POST',
+      body,
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      if (kitStatus) kitStatus.textContent = json.error || 'Could not upload photo.';
+      return false;
+    }
+    row.dataset.hasPhoto = '1';
+    const link = row.querySelector('.kit-photo-link');
+    if (link) {
+      const anchor = document.createElement('a');
+      anchor.href = `/api/studio/bookings/${ref}/kit-photo/${encodeURIComponent(sku)}`;
+      anchor.target = '_blank';
+      anchor.rel = 'noreferrer';
+      anchor.className = 'kit-photo-link text-[11px] text-[#F7BA1E] font-bold';
+      anchor.textContent = 'View photo';
+      link.replaceWith(anchor);
+    }
+    return true;
+  }
+
+  kitForm?.addEventListener('change', async (event) => {
+    const target = event.target;
+    if (target?.classList?.contains('kit-photo-input') && target.files?.[0]) {
+      const row = target.closest('.kit-row');
+      if (kitStatus) kitStatus.textContent = 'Uploading photo…';
+      const ok = await uploadKitPhoto(row, target.files[0]);
+      if (ok && kitStatus) kitStatus.textContent = 'Photo saved.';
+      paintCharges();
+      return;
+    }
+    syncFailUi();
+    syncPickedUi();
+    paintCharges();
+    const picking = target?.classList?.contains('kit-picked');
+    if (kitStatus) kitStatus.textContent = picking ? 'Saving pick list…' : 'Updating deposit…';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      const result = await saveKit('save');
+      if (result.ok && kitStatus) kitStatus.textContent = picking ? 'Pick list saved.' : 'Deposit totals updated.';
+    }, 250);
+  });
+
+  kitForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const action = event.submitter?.value || 'save';
+    if (kitStatus) kitStatus.textContent = action === 'checkout' ? 'Checking out and emailing the kit list…' : 'Saving…';
+    const result = await saveKit(action);
+    if (!result.ok) return;
+    if (action === 'checkout' && result.mail && !result.mail.ok) {
+      alert(result.mail.error || 'Gear is checked out, but the kit inventory email failed. Send it from Emails.');
+    }
+    window.location.reload();
   });
 
   document.getElementById('refund-form')?.addEventListener('submit', async (event) => {
@@ -261,4 +692,8 @@ const mailSettings = await getMailSettings();
     if (!res.ok) alert(json.error || 'Refund failed');
     else window.location.reload();
   });
+
+  syncFailUi();
+  syncPickedUi();
+  paintCharges();
 </script>

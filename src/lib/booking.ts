@@ -47,7 +47,35 @@ export interface BookingRecord {
     welcomePackAt?: string;
     diyGuideAt?: string;
     balanceReminderAt?: string;
+    kitHandoverAt?: string;
   };
+  logistics?: BookingLogistics;
+  kitOps?: KitInspection;
+}
+
+export interface BookingLogistics {
+  pitchDetail: string;
+  pitchW3w: string;
+  accessNotes: string;
+}
+
+export type KitItemStatus = 'test' | 'pass' | 'fail';
+
+export interface KitInspectionItem {
+  sku: string;
+  picked: boolean;
+  inbound: KitItemStatus;
+  note: string;
+  photoName?: string;
+}
+
+export interface KitInspection {
+  outboundAt?: string;
+  outboundBy?: string;
+  inboundAt?: string;
+  inboundBy?: string;
+  depositRefundedAt?: string;
+  items: KitInspectionItem[];
 }
 
 export function isDiyFulfillment(fulfillment: string): boolean {

@@ -789,8 +789,8 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                                 <p
                                     class="text-xs text-stone-500 leading-relaxed"
                                 >
-                                    Collect directly from our Polmont base
-                                    depot.
+                                    Collect from our Falkirk container,
+                                    9am–10pm, seven days.
                                 </p>
                             </div>
 
@@ -1141,7 +1141,7 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                         placeholder="e.g. Loch Lomond Holiday Park (Pitch 14) or OS Grid Ref"
                         class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
                     />
-                    <p class="text-[11px] text-stone-500 mt-1">If selecting DIY Depot Pickup, enter 'Polmont Base Depot'.</p>
+                    <p class="text-[11px] text-stone-500 mt-1">DIY pickup is the Falkirk container. Deluxe: enter the campsite name or pitch.</p>
                 </div>
 
                 <div>
@@ -1475,7 +1475,7 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
         document.getElementById("summary-fulfillment-title").innerText =
             bookingState.fulfillment === "deluxe"
                 ? "Cosy Camping Deluxe Setup"
-                : "DIY Pickup (Polmont Base)";
+                : "DIY Pickup (Falkirk container)";
         document.getElementById("summary-fulfillment-detail").innerText =
             bookingState.fulfillment === "deluxe"
                 ? "Flat £225.00 fee for entire stay"

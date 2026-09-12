@@ -79,6 +79,9 @@ const autoPrint = Astro.url.searchParams.get('print') === '1';
         <p><span>Pitch</span>{booking.campsiteLocation}</p>
         <p><span>Setup</span>{booking.fulfillment}</p>
         <p><span>Tent</span>{booking.tentType}</p>
+        {booking.logistics?.pitchDetail && <p><span>Pitch detail</span>{booking.logistics.pitchDetail}</p>}
+        {booking.logistics?.pitchW3w && <p><span>What3Words</span>{booking.logistics.pitchW3w}</p>}
+        {booking.logistics?.accessNotes && <p class="notes" style="grid-column:1/-1"><span>Access</span>{booking.logistics.accessNotes}</p>}
       </div>
       {
         kit.groups.map((group) => (

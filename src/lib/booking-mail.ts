@@ -1,10 +1,17 @@
 import { isDiyFulfillment, type BookingRecord } from './booking';
 import { kitEmailHtml } from './booking-kit';
 import { formatGbp, lineItemsEmailRows } from './booking-lines';
+import {
+  DEPOT,
+  depotMapsUrl,
+  depotW3wLabel,
+  depotW3wUrl,
+  depotWhat3Words,
+} from './depot';
 
-export const MAIL_TYPES = ['confirmation', 'welcome', 'diy', 'balance'] as const;
+export const MAIL_TYPES = ['confirmation', 'welcome', 'diy', 'kitHandover', 'balance'] as const;
 export type MailType = (typeof MAIL_TYPES)[number];
-export type MailTrigger = 'on_payment' | 'days_before_checkin' | 'manual_only';
+export type MailTrigger = 'on_payment' | 'days_before_checkin' | 'on_checkout' | 'manual_only';
 
 export interface MailTemplate {
   headline: string;
@@ -45,6 +52,11 @@ export const MAIL_META: Record<
     blurb: 'Pitching checklist for depot collections.',
     sentKey: 'diyGuideAt',
   },
+  kitHandover: {
+    label: 'Kit list',
+    blurb: 'Short checkout note with a button to download the kit list PDF.',
+    sentKey: 'kitHandoverAt',
+  },
   balance: {
     label: 'Balance reminder',
     blurb: 'Remaining stay balance with a Stripe payment link.',
@@ -77,6 +89,14 @@ export const DEFAULT_RULES: Record<MailType, MailRule> = {
     requireBalance: false,
     notifyAdmin: false,
   },
+  kitHandover: {
+    enabled: true,
+    trigger: 'on_checkout',
+    daysBefore: 0,
+    onlyDiy: false,
+    requireBalance: false,
+    notifyAdmin: false,
+  },
   balance: {
     enabled: true,
     trigger: 'days_before_checkin',
@@ -99,6 +119,11 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 </div>
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Stay details</h3>
 <p>{{checkinDate}} → {{checkoutDate}} · {{nights}} nights · {{guests}} guests<br/>{{campsiteLocation}}<br/>{{fulfillment}}</p>
+{{#diy}}
+<h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Collection — Falkirk container</h3>
+<p>Pickup and return: <strong>{{depotHours}}</strong>. What3Words: <strong>{{depotW3w}}</strong>{{#depotW3wUrl}} · <a href="{{depotW3wUrl}}">Open the pin</a>{{/depotW3wUrl}}<br/>
+<a href="{{depotMapsUrl}}">Google Maps to the container</a>. {{depotHoursNote}}</p>
+{{/diy}}
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Your booking</h3>
 {{lineItemsHtml}}
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">What we are packing</h3>
@@ -124,7 +149,13 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
   <li>Headtorch, reusable bottle, and any food you want to cook</li>
 </ul>
 <h3 style="color:#111;">Arrival</h3>
-<p>Please be on-site for the agreed pitching window if you booked Deluxe setup. For depot pickup we will confirm collection from Polmont (OS NS 931 785) the week before.</p>
+{{#diy}}
+<p>Collect from the Falkirk container, <strong>{{depotHours}}</strong>. What3Words: <strong>{{depotW3w}}</strong>{{#depotW3wUrl}} · <a href="{{depotW3wUrl}}">Open the pin</a>{{/depotW3wUrl}}.<br/>
+<a href="{{depotMapsUrl}}">Google Maps directions</a>. {{depotHoursNote}}</p>
+{{/diy}}
+{{#deluxe}}
+<p>Please be on-site for the agreed pitching window. Our crew will confirm access the week before.</p>
+{{/deluxe}}
 <p>See you under canvas.</p>`,
   },
   diy: {
@@ -142,8 +173,18 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
   <li>Keep guy lines taut and re-check after the first night of rain or wind.</li>
 </ol>
 <h3 style="color:#111;">Collection &amp; return</h3>
-<p>Collect from our Polmont base. Canvas must come back dry, or extra drying time may be charged against the security deposit. Pack poles together and bag the canvas as you found it.</p>
+<p>Collect from the Falkirk container, <strong>{{depotHours}}</strong>. What3Words: <strong>{{depotW3w}}</strong>{{#depotW3wUrl}} · <a href="{{depotW3wUrl}}">Open the pin</a>{{/depotW3wUrl}}.<br/>
+<a href="{{depotMapsUrl}}">Google Maps to the container</a>. Canvas must come back dry, or extra drying time may be charged against the security deposit. Pack poles together and bag the canvas as you found it. {{depotHoursNote}}</p>
 <p>Stuck on the pitch? Reply to this email and we will talk you through it.</p>`,
+  },
+  kitHandover: {
+    headline: 'Your kit is on its way',
+    subject: 'Your kit list {{bookingRef}}',
+    body: `<p>Hi <strong>{{customerName}}</strong>,</p>
+<p>Your canvas kit for <strong>{{bookingRef}}</strong> has been picked and checked out for {{checkinDate}} → {{checkoutDate}} at {{campsiteLocation}}.</p>
+<p>Every piece is catalogued for this stay so we can keep the same standard for you and for the next guest. Please look after it, and shout if anything isn't right.</p>
+{{kitPdfButton}}
+<p>See you under canvas.</p>`,
   },
   balance: {
     headline: 'Balance due',
@@ -176,7 +217,13 @@ export const PLACEHOLDER_HELP = [
   '{{securityDeposit}}',
   '{{specialRequests}}',
   '{{kitHtml}}',
+  '{{kitPdfButton}}',
   '{{lineItemsHtml}}',
+  '{{depotW3w}}',
+  '{{depotW3wUrl}}',
+  '{{depotHours}}',
+  '{{depotHoursNote}}',
+  '{{depotMapsUrl}}',
   '{{payButton}}',
 ];
 
@@ -197,12 +244,15 @@ function applyConditionals(text: string, flags: Record<string, boolean>): string
 
 export function mailVars(
   booking: BookingRecord,
-  extras: { payUrl?: string } = {},
+  extras: { payUrl?: string; kitPdfUrl?: string } = {},
 ): Record<string, string> {
   const addons =
     booking.addons.length > 0
       ? booking.addons.map((addon) => `${addon.title} (${formatGbp(addon.price)})`).join(', ')
       : 'None';
+  const kitPdfButton = extras.kitPdfUrl
+    ? `<p style="margin:28px 0;text-align:center;"><a href="${extras.kitPdfUrl}" style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:999px;">Download kit list</a></p>`
+    : `<p style="margin:28px 0;text-align:center;"><span style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;padding:14px 22px;border-radius:999px;">Download kit list</span></p><p style="font-size:12px;color:#78716c;">The live download link is added when this email is sent.</p>`;
   const payButton = extras.payUrl
     ? `<p style="margin:24px 0;"><a href="${extras.payUrl}" style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:999px;">Pay remaining balance · ${formatGbp(booking.remainingBalance)}</a></p>`
     : booking.remainingBalance > 0
@@ -230,8 +280,14 @@ export function mailVars(
     securityDeposit: formatGbp(booking.securityDeposit),
     specialRequests: escapeHtml(booking.specialRequests || 'None'),
     kitHtml: kitEmailHtml(booking),
+    kitPdfButton,
     lineItemsHtml: `<table style="width:100%;border-collapse:collapse;font-size:13px;">${lineItemsEmailRows(booking)}</table>`,
     payButton,
+    depotW3w: escapeHtml(depotW3wLabel()),
+    depotW3wUrl: depotW3wUrl(),
+    depotHours: escapeHtml(DEPOT.hoursShort),
+    depotHoursNote: escapeHtml(DEPOT.hoursNote),
+    depotMapsUrl: depotMapsUrl(),
   };
 }
 
@@ -266,13 +322,16 @@ export function composeGuestMail(
   booking: BookingRecord,
   type: MailType,
   template: MailTemplate,
-  extras: { payUrl?: string } = {},
+  extras: { payUrl?: string; kitPdfUrl?: string } = {},
 ): { to: string; subject: string; headline: string; body: string; html: string } {
   const vars = mailVars(booking, extras);
+  const diy = isDiyFulfillment(booking.fulfillment);
   const flags = {
     balance: booking.remainingBalance > 0.01,
     balanceDueDate: Boolean(booking.balanceDueDate),
-    diy: isDiyFulfillment(booking.fulfillment),
+    diy,
+    deluxe: !diy,
+    depotW3wUrl: Boolean(depotWhat3Words()),
   };
   const headline = interpolate(template.headline, vars, flags);
   const subject = interpolate(template.subject, vars, flags);
@@ -302,6 +361,7 @@ export function ruleSummary(rule: MailRule): string {
   ].filter(Boolean);
   const extra = extras.length ? ` (${extras.join(', ')})` : '';
   if (rule.trigger === 'on_payment') return `Auto: when the deposit is paid${extra}`;
+  if (rule.trigger === 'on_checkout') return `Auto: when gear is checked out from the shelf${extra}`;
   return `Auto: ${rule.daysBefore} days before check-in${extra}`;
 }
 
@@ -311,6 +371,12 @@ export function mergeMailSettings(input?: Partial<MailSettings> | null): MailSet
   for (const type of MAIL_TYPES) {
     templates[type] = { ...DEFAULT_TEMPLATES[type], ...(input?.templates?.[type] || {}) };
     rules[type] = { ...DEFAULT_RULES[type], ...(input?.rules?.[type] || {}) };
+    if (/Polmont/i.test(templates[type].body)) {
+      templates[type] = { ...templates[type], body: DEFAULT_TEMPLATES[type].body };
+    }
+    if (type === 'kitHandover' && /kitHandoverHtml|security deposit|replacement price/i.test(templates[type].body)) {
+      templates[type] = DEFAULT_TEMPLATES.kitHandover;
+    }
   }
   return { templates, rules };
 }

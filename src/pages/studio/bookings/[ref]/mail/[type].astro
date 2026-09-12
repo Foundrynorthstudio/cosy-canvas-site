@@ -5,6 +5,7 @@ import { MAIL_META, isMailType, ruleSummary, sentAt } from '../../../../../lib/b
 import { composeBookingMail } from '../../../../../lib/booking-mail-send';
 import { getMailSettings } from '../../../../../lib/booking-mail-settings';
 import { getBookingByRef } from '../../../../../lib/booking-store';
+import { kitInventoryPublicUrl } from '../../../../../lib/kit-inventory-link';
 
 const { ref, type } = Astro.params;
 const booking = ref ? await getBookingByRef(ref) : undefined;
@@ -14,7 +15,12 @@ if (!booking || !type || !isMailType(type)) {
 }
 
 const settings = await getMailSettings();
-const composed = await composeBookingMail(booking, type);
+const composed = await composeBookingMail(
+  booking,
+  type,
+  undefined,
+  type === 'kitHandover' ? { kitPdfUrl: kitInventoryPublicUrl(Astro.url.origin, booking.bookingRef) } : {},
+);
 const meta = MAIL_META[type];
 const lastSent = sentAt(booking, type);
 const sentLabel = lastSent
@@ -31,6 +37,11 @@ const sentLabel = lastSent
         <p class="font-mono text-[#F7BA1E] text-sm">{meta.label}</p>
         <h1 class="font-display text-3xl font-black">To {booking.customerName}</h1>
         <p class="text-stone-400 text-sm mt-1">{composed.to} · {ruleSummary(settings.rules[type])} · {sentLabel}</p>
+        {type === 'kitHandover' && (
+          <p class="text-[11px] text-stone-500 mt-2">
+            Guests get a Download kit list button. You can also download the PDF from the booking gear desk.
+          </p>
+        )}
       </div>
       <a href="/studio/emails" class="text-xs uppercase tracking-wider font-bold text-stone-400 hover:text-white">Edit master template</a>
     </div>

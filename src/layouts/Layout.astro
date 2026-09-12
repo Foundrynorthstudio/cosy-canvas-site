@@ -31,6 +31,7 @@ const {
 
 import '../styles/global.css';
 import CookieConsent from '../components/CookieConsent.astro';
+import { DEPOT, depotWhat3Words } from '../lib/depot';
 
 const siteUrl = Astro.site ? Astro.site.origin : "https://cosycanvas.co.uk";
 const fullImageUrl = image.startsWith("http") ? image : `${siteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
@@ -51,16 +52,16 @@ const defaultLocalBusinessSchema = {
   "priceRange": "££",
   "address": {
     "@type": "PostalAddress",
-    "streetAddress": "Polmont Depot (OS Grid: NS 931 785)",
-    "addressLocality": "Polmont",
-    "addressRegion": "Stirlingshire",
-    "postalCode": "FK2",
+    "streetAddress": DEPOT.label,
+    "addressLocality": DEPOT.locality,
+    "addressRegion": DEPOT.region,
+    "postalCode": "FK1",
     "addressCountry": "GB"
   },
   "geo": {
     "@type": "GeoCoordinates",
-    "latitude": 55.9922,
-    "longitude": -3.7123
+    "latitude": DEPOT.latitude,
+    "longitude": DEPOT.longitude
   },
   "openingHoursSpecification": {
     "@type": "OpeningHoursSpecification",
@@ -73,8 +74,8 @@ const defaultLocalBusinessSchema = {
       "Saturday",
       "Sunday"
     ],
-    "opens": "08:00",
-    "closes": "20:00"
+    "opens": DEPOT.opens,
+    "closes": DEPOT.closes
   },
   "areaServed": [
     { "@type": "AdministrativeArea", "name": "Scotland" },
@@ -139,9 +140,9 @@ const breadcrumbSchema = {
 
   <!-- Local Scotland & UK SEO Geo-Tags -->
   <meta name="geo.region" content="GB-STG" />
-  <meta name="geo.placename" content="Polmont, Stirlingshire, Scotland" />
-  <meta name="geo.position" content="55.9922;-3.7123" />
-  <meta name="ICBM" content="55.9922, -3.7123" />
+  <meta name="geo.placename" content="Falkirk, Stirlingshire, Scotland" />
+  <meta name="geo.position" content={`${DEPOT.latitude};${DEPOT.longitude}`} />
+  <meta name="ICBM" content={`${DEPOT.latitude}, ${DEPOT.longitude}`} />
 
   <!-- Open Graph / Facebook / WhatsApp / iMessage -->
   <meta property="og:type" content={type} />
@@ -248,7 +249,7 @@ const breadcrumbSchema = {
               Done-for-you luxury bell tent hire and camping stays delivered and pitched across Scotland.
             </p>
             <div class="os-grid-badge text-[#F7BA1E] text-[11px] px-2.5 py-1 rounded inline-block bg-stone-800 border-[#F7BA1E]/40 font-mono">
-              POLMONT BASE: OS NS 931 785
+              {depotWhat3Words() ? `W3W: ${depotWhat3Words()}` : DEPOT.badge}
             </div>
           </div>
 
@@ -275,7 +276,7 @@ const breadcrumbSchema = {
               </li>
               <li class="flex items-center gap-2">
                 <i class="fa-solid fa-location-dot text-[#7D6E23]"></i>
-                <span>Polmont, Stirlingshire, Scotland</span>
+                <span>Falkirk container · {DEPOT.hoursShort}</span>
               </li>
               <li class="flex items-center gap-2 pt-2">
                 <a href="https://www.facebook.com/profile.php?id=61574022630011" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full bg-stone-800 hover:bg-[#F7BA1E] hover:text-[#111111] flex items-center justify-center transition" aria-label="Facebook">
