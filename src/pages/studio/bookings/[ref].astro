@@ -7,6 +7,7 @@ import { buildBookingLineItems, formatGbp } from '../../../lib/booking-lines';
 import { MAIL_META, MAIL_TYPES, ruleSummary, sentAt } from '../../../lib/booking-mail';
 import { getMailSettings } from '../../../lib/booking-mail-settings';
 import { getBookingByRef } from '../../../lib/booking-store';
+import { isRatRaceBooking } from '../../../lib/rat-race';
 import { formatKitMoney } from '../../../lib/kit-catalog';
 import {
   allOutboundDone,
@@ -155,10 +156,15 @@ const mailSettings = await getMailSettings();
           </ul>
           <p class="font-semibold">Stay total <span class="float-right">{formatGbp(booking.totalRentalPrice)}</span></p>
           <p class="clear-both pt-2">Paid so far <span class="float-right">{formatGbp(booking.totalPaidToday)}</span></p>
-          <p>Security hold <span class="float-right">{formatGbp(booking.securityDeposit)}</span></p>
+          <p>{isRatRaceBooking(booking) ? 'Security at check-in' : 'Security hold'} <span class="float-right">{formatGbp(booking.securityDeposit)}</span></p>
           <p class="text-stone-300">Kit keep from deposit <span class="float-right" id="money-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</span></p>
           <p class="text-[#F7BA1E]">Leftover deposit to refund <span class="float-right" id="money-deposit-refund">{charges.depositReady ? formatGbp(charges.depositRefund) : '—'}</span></p>
           <p class="text-amber-300">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
+          {booking.paymentPlan === 'instalment' ? (
+            <p class="text-[11px] text-stone-400 mt-1">
+              Pay Up · {booking.instalmentCount || 10} × {formatGbp(booking.instalmentMonthly || 0)} on Stripe. Last {booking.balanceDueDate || '—'}
+            </p>
+          ) : null}
           <p class="text-stone-500">Refunded <span class="float-right">{formatGbp(booking.amountRefunded)}</span></p>
           <form id="refund-form" class="mt-4 flex gap-2">
             <input id="refund-amount" name="amount" type="number" step="0.01" placeholder="Refund £" value={charges.depositReady ? charges.depositRefund : ''} disabled={!charges.depositReady} class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm disabled:opacity-40" />
@@ -167,7 +173,7 @@ const mailSettings = await getMailSettings();
           {booking.conciergeRequested || booking.specialRequests?.toLowerCase().includes('morrisons') ? (
             <form id="concierge-form" class="mt-5 pt-4 border-t border-white/10 space-y-2">
               <p class="text-xs font-bold uppercase tracking-wider text-[#F7BA1E]">Morrisons concierge</p>
-              <p class="text-[11px] text-stone-400">Basket value. We email the guest a Stripe link for basket + 10%.</p>
+              <p class="text-[11px] text-stone-400">Basket value. Stripe link for basket + 10%, with the 10% capped at £15.</p>
               <div class="flex gap-2">
                 <input id="concierge-basket" type="number" step="0.01" min="0.01" placeholder="Basket £" class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm" />
                 <button class="rounded-full bg-[#F7BA1E] text-[#111111] px-4 text-xs font-extrabold uppercase tracking-wider">Send link</button>
@@ -719,7 +725,7 @@ const mailSettings = await getMailSettings();
       if (status) status.textContent = json.error || 'Could not send link';
       return;
     }
-    if (status) status.textContent = `Sent. Charge £${Number(json.charge).toFixed(2)} (basket + 10%).`;
+    if (status) status.textContent = `Sent. Charge £${Number(json.charge).toFixed(2)} (basket + 10%, cap £15).`;
   });
 
   syncFailUi();

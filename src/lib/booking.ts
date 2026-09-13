@@ -42,6 +42,11 @@ export interface BookingRecord {
   stripeSessionId: string;
   stripePaymentIntentId: string;
   stripeBalanceSessionId?: string;
+  stripeSubscriptionId?: string;
+  paymentPlan?: 'deposit' | 'instalment';
+  instalmentMonthly?: number;
+  instalmentCount?: number;
+  paidInvoiceIds?: string[];
   emails: {
     confirmationAt?: string;
     welcomePackAt?: string;

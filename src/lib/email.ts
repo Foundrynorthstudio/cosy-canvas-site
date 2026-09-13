@@ -2,6 +2,7 @@ import { Resend } from 'resend';
 import type { BookingRecord } from './booking';
 import { kitEmailHtml } from './booking-kit';
 import { formatGbp, lineItemsEmailRows } from './booking-lines';
+import { isRatRaceBooking } from './rat-race';
 import { readSecretEnv } from './stripe-client';
 
 export interface BookingDetails {
@@ -29,6 +30,10 @@ export interface BookingDetails {
   totalPaidToday: number;
   remainingBalance: number;
   balanceDueDate?: string;
+  paymentPlan?: 'deposit' | 'instalment';
+  instalmentMonthly?: number;
+  instalmentCount?: number;
+  eventSlug?: string;
 }
 
 function resendKey(): string {
@@ -128,7 +133,9 @@ export async function sendAdminNewBookingAlert(booking: BookingDetails | Booking
       <table>
         <tr><td>Total Stay Value:</td><td>${formatGbp(booking.totalRentalPrice)}</td></tr>
         <tr><td>Deposit Collected (${booking.depositPercent}%):</td><td>£${booking.depositAmount.toFixed(2)}</td></tr>
-        <tr><td>Security Deposit:</td><td>£${booking.securityDeposit.toFixed(2)}</td></tr>
+        <tr><td>Security Deposit:</td><td>£${booking.securityDeposit.toFixed(2)}${
+          isRatRaceBooking(booking) ? ' (card reader at Saturday check-in)' : ''
+        }</td></tr>
         <tr><td><strong>Total Collected in Stripe Today:</strong></td><td class="highlight" style="color: #059669; font-size: 16px;">£${booking.totalPaidToday.toFixed(2)}</td></tr>
         ${booking.remainingBalance > 0 ? `<tr><td><strong>Remaining Balance Due:</strong></td><td style="color: #d97706;">£${booking.remainingBalance.toFixed(2)}</td></tr>` : ''}
       </table>

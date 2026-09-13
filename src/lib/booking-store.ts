@@ -116,6 +116,14 @@ export async function getBookingByRef(ref: string): Promise<BookingRecord | unde
   return bookings.find((booking) => booking.bookingRef === ref);
 }
 
+export async function getBookingBySubscriptionId(
+  subscriptionId: string,
+): Promise<BookingRecord | undefined> {
+  if (!subscriptionId) return undefined;
+  const bookings = await loadBookings();
+  return bookings.find((booking) => booking.stripeSubscriptionId === subscriptionId);
+}
+
 export async function upsertBooking(next: BookingRecord): Promise<BookingRecord> {
   return enqueueWrite(async () => {
     const bookings = await loadBookings();

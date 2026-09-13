@@ -79,6 +79,9 @@ export async function sendBookingMail(options: {
   headline?: string;
 }): Promise<{ ok: boolean; mocked?: boolean; error?: string }> {
   const { booking, type } = options;
+  if (type === 'balance' && booking.paymentPlan === 'instalment') {
+    return { ok: true };
+  }
   const payUrl = type === 'balance' && options.origin ? await createBalancePayUrl(booking, options.origin) : '';
   const kitPdfUrl = type === 'kitHandover' && options.origin ? kitInventoryPublicUrl(options.origin, booking.bookingRef) : '';
   const composed = await composeBookingMail(
@@ -117,6 +120,7 @@ export async function runPaymentEmails(booking: BookingRecord, origin: string): 
     if (!rule.enabled || rule.trigger !== 'on_payment') continue;
     if (rule.onlyDiy && !isDiyFulfillment(current.fulfillment)) continue;
     if (rule.requireBalance && current.remainingBalance <= 0.01) continue;
+    if (type === 'balance' && current.paymentPlan === 'instalment') continue;
     if (alreadySent(current, type)) continue;
     await sendBookingMail({ booking: current, type, origin });
     current = { ...current, emails: withSentFlag(current, type) };
@@ -139,6 +143,7 @@ export async function runScheduledBookingEmails(origin: string): Promise<{ sent:
       if (!rule.enabled || rule.trigger !== 'days_before_checkin') continue;
       if (rule.onlyDiy && !isDiyFulfillment(booking.fulfillment)) continue;
       if (rule.requireBalance && booking.remainingBalance <= 0.01) continue;
+      if (type === 'balance' && booking.paymentPlan === 'instalment') continue;
       if (alreadySent(booking, type)) continue;
       if (days > rule.daysBefore || days < 1) continue;
       const result = await sendBookingMail({ booking, type, origin });

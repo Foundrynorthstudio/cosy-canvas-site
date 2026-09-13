@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
-import { capturePaidBooking } from '../../lib/booking-capture';
+import { capturePaidBooking, captureSubscriptionInvoice } from '../../lib/booking-capture';
+import { instalmentSubscriptionSchedule } from '../../lib/rat-race';
 import { getStripeSecretKey } from '../../lib/stripe-client';
 import { readSecretEnv } from '../../lib/stripe-client';
 
@@ -34,8 +35,23 @@ export const POST: APIRoute = async ({ request, url }) => {
     const session = event.data.object as Stripe.Checkout.Session;
     try {
       await capturePaidBooking(session, url.origin);
+      const subscriptionId =
+        typeof session.subscription === 'string' ? session.subscription : session.subscription?.id;
+      if (session.mode === 'subscription' && subscriptionId && session.metadata?.paymentPlan === 'instalment') {
+        const schedule = instalmentSubscriptionSchedule();
+        await stripe.subscriptions.update(subscriptionId, { cancel_at: schedule.cancelAtUnix });
+      }
     } catch (error) {
       console.error('[Webhook] Failed to capture booking', error);
+    }
+  }
+
+  if (event.type === 'invoice.paid') {
+    const invoice = event.data.object as Stripe.Invoice;
+    try {
+      await captureSubscriptionInvoice(invoice);
+    } catch (error) {
+      console.error('[Webhook] Failed to capture instalment invoice', error);
     }
   }
 

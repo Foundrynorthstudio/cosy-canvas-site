@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
 ---
 
 <Layout 
@@ -195,7 +196,7 @@ import Layout from '../layouts/Layout.astro';
             </div>
             <div class="p-6 flex flex-col justify-center">
               <h3 class="font-display font-bold text-xl sm:text-2xl text-[#111111] mb-2 group-hover:text-[#7D6E23] transition-colors">Rat Race Coast to Coast canvas</h3>
-              <p class="text-stone-600 text-xs leading-relaxed max-w-2xl">11–12 September 2027. Budget 6M for up to ten, or Medium with kitchen, airframes, table and chairs. Pay on this site. Optional Morrisons Fort William shop once you send a list.</p>
+              <p class="text-stone-600 text-xs leading-relaxed max-w-2xl">Saturday night 11 September 2027. Cosy £{COSY_RATE_PER_GUEST}/guest, Deluxe +£{DELUXE_ADDON_PER_GUEST} for kitchen camp. Same rate in a 4M or 6M — we pack from headcount. We pitch Friday and pack up on Sunday 12 September. Optional Morrisons Fort William shop once you send a list.</p>
               <span class="text-xs font-bold text-[#7D6E23] mt-4 group-hover:text-[#111111] transition-colors">Book Rat Race glamping →</span>
             </div>
           </div>

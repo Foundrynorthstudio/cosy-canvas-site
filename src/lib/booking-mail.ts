@@ -1,6 +1,7 @@
 import { isDiyFulfillment, type BookingRecord } from './booking';
 import { kitEmailHtml } from './booking-kit';
 import { formatGbp, lineItemsEmailRows } from './booking-lines';
+import { isRatRaceBooking } from './rat-race';
 import {
   DEPOT,
   depotMapsUrl,
@@ -129,8 +130,9 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">What we are packing</h3>
 {{kitHtml}}
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Payment</h3>
-<p>Stay total {{stayTotal}} · Deposit paid {{depositPaid}} · Paid today {{paidToday}}<br/>Security hold {{securityDeposit}}{{#balance}} · Balance {{remainingBalance}} due {{balanceDueDate}}{{/balance}}</p>
-<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} security deposit is held against damage or missing kit and is refunded after the post-stay check.</p>`,
+<p>Stay total {{stayTotal}} · Deposit paid {{depositPaid}} · Paid today {{paidToday}}<br/>{{#ratRace}}Security at Saturday check-in {{securityDeposit}}{{/ratRace}}{{#cardHoldSecurity}}Security hold {{securityDeposit}}{{/cardHoldSecurity}}{{#instalment}} · Pay Up remaining {{remainingBalance}} in {{instalmentCount}} Stripe months of {{instalmentMonthly}}, last charge {{balanceDueDate}}{{/instalment}}{{#lumpBalance}} · Balance {{remainingBalance}} due {{balanceDueDate}}{{/lumpBalance}}</p>
+{{#ratRace}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} refundable deposit is £200 a tent. We take it on a card reader at Saturday check-in.</p>{{/ratRace}}
+{{#cardHoldSecurity}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} security deposit is held against damage or missing kit and is refunded after the post-stay check.</p>{{/cardHoldSecurity}}`,
   },
   welcome: {
     headline: 'Your welcome pack',
@@ -193,7 +195,8 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 <p>Your remaining stay balance for <strong>{{bookingRef}}</strong> is <strong>{{remainingBalance}}</strong>{{#balanceDueDate}}, due by {{balanceDueDate}}{{/balanceDueDate}}.</p>
 <p>{{checkinDate}} → {{checkoutDate}} at {{campsiteLocation}}.</p>
 {{payButton}}
-<p>The {{securityDeposit}} security deposit is already held and is separate from this balance.</p>`,
+{{#ratRace}}<p>The {{securityDeposit}} refundable deposit is taken on a card reader at Saturday check-in and is separate from this balance.</p>{{/ratRace}}
+{{#cardHoldSecurity}}<p>The {{securityDeposit}} security deposit is already held and is separate from this balance.</p>{{/cardHoldSecurity}}`,
   },
 };
 
@@ -253,9 +256,10 @@ export function mailVars(
   const kitPdfButton = extras.kitPdfUrl
     ? `<p style="margin:28px 0;text-align:center;"><a href="${extras.kitPdfUrl}" style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:999px;">Download kit list</a></p>`
     : `<p style="margin:28px 0;text-align:center;"><span style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;padding:14px 22px;border-radius:999px;">Download kit list</span></p><p style="font-size:12px;color:#78716c;">The live download link is added when this email is sent.</p>`;
-  const payButton = extras.payUrl
+  const payButton =
+    extras.payUrl && booking.paymentPlan !== 'instalment'
     ? `<p style="margin:24px 0;"><a href="${extras.payUrl}" style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;text-decoration:none;padding:14px 22px;border-radius:999px;">Pay remaining balance · ${formatGbp(booking.remainingBalance)}</a></p>`
-    : booking.remainingBalance > 0
+    : booking.remainingBalance > 0 && booking.paymentPlan !== 'instalment'
       ? `<p style="margin:24px 0;"><span style="display:inline-block;background:#f7ba1e;color:#111;font-weight:800;padding:14px 22px;border-radius:999px;">Pay remaining balance · ${formatGbp(booking.remainingBalance)}</span></p><p style="font-size:12px;color:#78716c;">A live Stripe link is added when this email is sent.</p>`
       : '';
 
@@ -276,6 +280,8 @@ export function mailVars(
     depositPaid: formatGbp(booking.depositAmount),
     paidToday: formatGbp(booking.totalPaidToday),
     remainingBalance: formatGbp(booking.remainingBalance),
+    instalmentMonthly: formatGbp(booking.instalmentMonthly || 0),
+    instalmentCount: String(booking.instalmentCount || 10),
     balanceDueDate: escapeHtml(booking.balanceDueDate || '28 days before check-in'),
     securityDeposit: formatGbp(booking.securityDeposit),
     specialRequests: escapeHtml(booking.specialRequests || 'None'),
@@ -328,9 +334,13 @@ export function composeGuestMail(
   const diy = isDiyFulfillment(booking.fulfillment);
   const flags = {
     balance: booking.remainingBalance > 0.01,
+    lumpBalance: booking.remainingBalance > 0.01 && booking.paymentPlan !== 'instalment',
+    instalment: booking.paymentPlan === 'instalment',
     balanceDueDate: Boolean(booking.balanceDueDate),
     diy,
     deluxe: !diy,
+    ratRace: isRatRaceBooking(booking),
+    cardHoldSecurity: !isRatRaceBooking(booking),
     depotW3wUrl: Boolean(depotWhat3Words()),
   };
   const headline = interpolate(template.headline, vars, flags);

@@ -1,7 +1,7 @@
 import type Stripe from 'stripe';
 import { bookingFromStripeSession } from './booking-from-stripe';
 import { sendOnboardingEmails } from './booking-emails';
-import { getBookingByRef, upsertBooking } from './booking-store';
+import { getBookingByRef, getBookingBySubscriptionId, upsertBooking } from './booking-store';
 
 export async function capturePaidBooking(session: Stripe.Checkout.Session, origin = '') {
   const meta = session.metadata || {};
@@ -37,4 +37,38 @@ export async function capturePaidBooking(session: Stripe.Checkout.Session, origi
   const saved = await upsertBooking(record);
   const emails = await sendOnboardingEmails(saved, origin);
   return upsertBooking({ ...saved, emails });
+}
+
+function invoiceSubscriptionId(invoice: Stripe.Invoice): string | undefined {
+  const legacy = (invoice as Stripe.Invoice & { subscription?: string | { id: string } }).subscription;
+  if (typeof legacy === 'string') return legacy;
+  if (legacy && typeof legacy === 'object' && 'id' in legacy) return legacy.id;
+  const parent = (
+    invoice as Stripe.Invoice & {
+      parent?: { subscription_details?: { subscription?: string | { id: string } } };
+    }
+  ).parent?.subscription_details?.subscription;
+  if (typeof parent === 'string') return parent;
+  if (parent && typeof parent === 'object' && 'id' in parent) return parent.id;
+  return undefined;
+}
+
+export async function captureSubscriptionInvoice(invoice: Stripe.Invoice) {
+  if (invoice.billing_reason !== 'subscription_cycle') return null;
+  const subscriptionId = invoiceSubscriptionId(invoice);
+  if (!subscriptionId) return null;
+
+  const existing = await getBookingBySubscriptionId(subscriptionId);
+  if (!existing || existing.paymentPlan !== 'instalment') return null;
+  if (existing.paidInvoiceIds?.includes(invoice.id)) return existing;
+
+  const paid = invoice.amount_paid ? invoice.amount_paid / 100 : 0;
+  if (paid <= 0) return existing;
+
+  return upsertBooking({
+    ...existing,
+    remainingBalance: Math.max(0, Number((existing.remainingBalance - paid).toFixed(2))),
+    totalPaidToday: Number((existing.totalPaidToday + paid).toFixed(2)),
+    paidInvoiceIds: [...(existing.paidInvoiceIds || []), invoice.id],
+  });
 }

@@ -2,19 +2,21 @@
 import Layout from '../../layouts/Layout.astro';
 import {
   quoteRatRace,
+  COSY_RATE_PER_GUEST,
+  DELUXE_ADDON_PER_GUEST,
   RAT_RACE_2027,
   RAT_RACE_EVENT_URL,
   RAT_RACE_PACKAGE_META,
 } from '../../lib/rat-race';
 
 const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
-const initialQuote = quoteRatRace({ guests: 6, packageKind: 'medium', nights: 2 });
+const initialQuote = quoteRatRace({ guests: 5, packageKind: 'deluxe' });
 const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
 ---
 
 <Layout
-  title="Rat Race Coast to Coast Glamping 2027 | Book Budget or Medium 6M | The Cosy Canvas Co."
-  description="Book overnight bell tents for Rat Race Scotland Coast to Coast, 11–12 September 2027. Budget up to 10 in a 6M, or Medium with kitchen, airframes, table and chairs. Morrisons Fort William concierge extra."
+  title="Rat Race Coast to Coast Glamping 2027 | Cosy & Deluxe Saturday Night | The Cosy Canvas Co."
+  description={`Book Saturday-night bell tents for Rat Race Scotland Coast to Coast, 11 September 2027. Cosy £${COSY_RATE_PER_GUEST}/guest, Deluxe +£${DELUXE_ADDON_PER_GUEST}. 4M or 6M auto-packed from headcount. Morrisons Fort William concierge extra.`}
   image={RAT_RACE_2027.tile}
   keywords="rat race coast to coast camping, rat race glamping 2027, fort william bell tent hire, event camping scotland"
   breadcrumbItems={[
@@ -26,19 +28,35 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   <div class="bg-[#111111] text-white py-10 md:py-14 border-b border-stone-800 relative z-30 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
       <div>
+        <a
+          href={RAT_RACE_EVENT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block mb-4 hover:opacity-80 transition-opacity"
+          aria-label="Rat Race official event page"
+        >
+          <img
+            src={RAT_RACE_2027.logo}
+            alt="Rat Race"
+            class="h-10 md:h-12 w-auto"
+          />
+        </a>
         <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">Event partner · bookable now</span>
-        <h1 class="font-display text-3xl md:text-5xl font-black text-white leading-tight">Rat Race Coast to Coast canvas</h1>
+        <h1 class="font-display text-3xl md:text-5xl font-black text-white leading-tight">
+          Rat Race Coast to Coast
+          <span class="block">Under Canvas</span>
+        </h1>
         <p class="text-stone-300 text-sm md:text-base mt-3 max-w-xl font-light leading-relaxed">
-          Official event: <strong class="text-white font-medium">{RAT_RACE_2027.eventDatesLabel}</strong>.
-          We pitch Friday {new Date(`${RAT_RACE_2027.checkinDate}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })}.
-          Choose Budget or Medium, tell us the headcount, pay here.
+          Event date: <strong class="text-white font-medium">{RAT_RACE_2027.eventDatesLabel}</strong>.
+          You sleep <strong class="text-white font-medium">{RAT_RACE_2027.guestNightLabel}</strong>.
+          {RAT_RACE_2027.opsLabel}. Cosy £{COSY_RATE_PER_GUEST} a head · Deluxe is a £{DELUXE_ADDON_PER_GUEST} add-on.
         </p>
         <div class="flex flex-wrap gap-3 mt-6">
           <a
             href="#book-rat-race"
             class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3"
           >
-            Book this event
+            Book Saturday night
           </a>
           <a
             href={RAT_RACE_EVENT_URL}
@@ -50,45 +68,112 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
           </a>
         </div>
       </div>
-      <a href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer" class="block rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-stone-900">
+      <div class="rounded-3xl overflow-hidden border border-white/15 shadow-2xl bg-stone-900">
         <img
-          src={RAT_RACE_2027.tile}
-          alt="Rat Race Scotland Coast to Coast official event tile"
+          src={RAT_RACE_2027.photos.header}
+          alt="Glen Coe wilderness under evening cloud, colour-graded for Rat Race 2027"
           class="w-full h-full object-cover aspect-[1200/630]"
         />
-      </a>
+      </div>
     </div>
   </div>
 
+  <div class="bg-[#111111]">
+    <img
+      src={RAT_RACE_2027.photos.deluxeFive}
+      alt="Deluxe 6M laid out for five: kitchen half, table, chairs and airframe beds"
+      class="w-full max-h-56 md:max-h-72 object-cover object-center"
+    />
+  </div>
+
   <section class="py-14 border-b border-stone-200/80">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10">
-      <article>
-        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">The weekend</p>
-        <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Same weekend as the course</h2>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 lg:items-stretch">
+      <article class="flex flex-col h-full">
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">Village setup</p>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Saturday is the guest night</h2>
         <p class="text-stone-600 leading-relaxed mb-4">
-          Rat Race’s Scotland Coast to Coast is <strong>11–12 September 2027</strong> — one day or two, same hills we pitched this year.
-          Canvas check-in is the Friday before. Two-night stays cover Saturday night; add a third night if you finish Sunday and want a slow Monday pack-up.
+          You sleep <strong>Saturday night</strong>. We pitch Friday, you move in Saturday, we pack up on Sunday 12 September — billed for the night you stay. Village setup is in the rate: we are on the field to check you in, show you the tent, and stay close if anything needs a hand.
         </p>
         <p class="text-stone-600 leading-relaxed mb-4">
-          Pitch photography is being colour-graded. Until those files land, this page uses Rat Race’s own Coast to Coast tile so the event is unmistakable.
+          Booked the Morrisons concierge? We’ll collect the shop and have it at check-in for you when you arrive. These shots are this year’s Deluxe beds on the Rat Race campsite — the Glengarry Shinty Club field.
         </p>
-        <ul class="text-sm text-stone-700 space-y-2">
+        <ul class="text-sm text-stone-700 space-y-2 mb-6">
           <li class="flex gap-2"><i class="fa-solid fa-flag-checkered text-[#7D6E23] mt-0.5"></i> Enter the race on the <a class="underline font-semibold" href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer">official Rat Race page</a></li>
-          <li class="flex gap-2"><i class="fa-solid fa-tent text-[#7D6E23] mt-0.5"></i> Sleep with us: delivered, pitched, collected</li>
-          <li class="flex gap-2"><i class="fa-solid fa-basket-shopping text-[#7D6E23] mt-0.5"></i> Optional Morrisons Fort William concierge after you send a list</li>
+          <li class="flex gap-2"><i class="fa-solid fa-clipboard-check text-[#7D6E23] mt-0.5"></i> Check-in on the field Saturday — we are onsite</li>
+          <li class="flex gap-2"><i class="fa-solid fa-basket-shopping text-[#7D6E23] mt-0.5"></i> Optional Morrisons shop, at check-in when you arrive</li>
         </ul>
+        <img
+          src={RAT_RACE_2027.photos.deluxeBeds}
+          alt="Deluxe 6M interior: airframes, bags, chairs and table"
+          class="w-full rounded-3xl object-cover aspect-[4/3] lg:aspect-auto lg:flex-1 lg:min-h-[280px] border border-stone-200"
+        />
       </article>
-      <div class="grid sm:grid-cols-2 gap-4">
-        <article class="rounded-3xl bg-[#FAF7EE] border border-stone-200 p-6">
-          <p class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-1">Budget</p>
-          <h3 class="font-display text-xl font-black mb-2">Up to {RAT_RACE_PACKAGE_META.budget.capacity} in a 6M</h3>
-          <p class="text-sm text-stone-600">{RAT_RACE_PACKAGE_META.budget.summary}</p>
+      <div class="flex flex-col gap-4 h-full">
+        <article class="rounded-3xl bg-[#F7BA1E] border border-[#F7BA1E] p-6 shrink-0">
+          <p class="text-[11px] uppercase tracking-wider font-bold text-[#111111]/60 mb-1">Cosy · £{RAT_RACE_PACKAGE_META.cosy.ratePerGuest} / guest</p>
+          <h3 class="font-display text-xl font-black text-[#111111] mb-2">The Saturday night rate</h3>
+          <p class="text-sm text-[#111111]/80">{RAT_RACE_PACKAGE_META.cosy.summary}</p>
         </article>
-        <article class="rounded-3xl bg-white border-2 border-[#F7BA1E] p-6">
-          <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">Medium</p>
-          <h3 class="font-display text-xl font-black mb-2">Kitchen camp, {RAT_RACE_PACKAGE_META.medium.capacity} per tent</h3>
-          <p class="text-sm text-stone-600">{RAT_RACE_PACKAGE_META.medium.summary}</p>
+        <article class="rounded-3xl bg-white border-2 border-[#F7BA1E] overflow-hidden flex flex-col flex-1 min-h-0">
+          <img src={RAT_RACE_2027.photos.deluxeBedsClose} alt="Close-up of Deluxe Quechua airframes, bags and night stands" class="w-full h-40 lg:h-auto lg:flex-1 object-cover min-h-[160px]" />
+          <div class="p-6">
+            <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">Deluxe · +£{RAT_RACE_PACKAGE_META.deluxe.addonPerGuest} / guest</p>
+            <h3 class="font-display text-xl font-black mb-2">Deluxe add-on</h3>
+            <p class="text-sm text-stone-600">{RAT_RACE_PACKAGE_META.deluxe.summary}</p>
+            <p class="text-xs text-stone-500 mt-3">£{COSY_RATE_PER_GUEST} Cosy + Deluxe = £{COSY_RATE_PER_GUEST + DELUXE_ADDON_PER_GUEST}pp</p>
+          </div>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="rr-layouts" class="py-16 border-b border-stone-200/80 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">4M and 6M mix</p>
+      <h2 class="font-display text-3xl font-black text-[#111111] mb-3">We pack the village from your headcount</h2>
+      <p class="text-stone-700 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-medium">
+        Same price per person in a 4M or a 6M.
+      </p>
+
+      <div class="rounded-[2rem] border border-stone-200 bg-[#FAF7EE] p-5 sm:p-8 shadow-sm">
+        <div class="grid lg:grid-cols-[minmax(16rem,18rem)_minmax(0,1fr)_minmax(13rem,16rem)] gap-6 lg:gap-8 items-start">
+          <div class="space-y-5">
+            <div class="inline-flex rounded-full bg-white border border-stone-200 p-1">
+              <button type="button" class="rr-layout-pkg px-4 py-2 rounded-full text-xs font-display font-extrabold uppercase tracking-wider" data-pkg="cosy">Cosy</button>
+              <button type="button" class="rr-layout-pkg px-4 py-2 rounded-full text-xs font-display font-extrabold uppercase tracking-wider is-on" data-pkg="deluxe">Deluxe +£{DELUXE_ADDON_PER_GUEST}</button>
+            </div>
+            <p id="rr-layout-mix" class="font-display font-black text-[#111111] text-xl leading-tight">1 × 6M Deluxe · 5 guests</p>
+            <div>
+              <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-layout-guests">Crew size</label>
+              <div class="flex items-center gap-3">
+                <button type="button" id="rr-layout-minus" class="w-11 h-11 shrink-0 rounded-2xl border border-stone-300 bg-white font-bold text-lg hover:bg-stone-50" aria-label="Fewer guests">−</button>
+                <input id="rr-layout-guests" type="number" min="2" max="20" value="5" class="w-full bg-white border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
+                <button type="button" id="rr-layout-plus" class="w-11 h-11 shrink-0 rounded-2xl border border-stone-300 bg-white font-bold text-lg hover:bg-stone-50" aria-label="More guests">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="rr-layout-stage" class="flex flex-wrap items-center justify-center gap-4 min-h-[220px] lg:min-h-[280px] py-2 lg:py-6"></div>
+
+          <div class="flex flex-col gap-2">
+            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="deluxe" data-guests="2">
+              <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">4M Deluxe</span>
+              <span class="font-display font-black text-sm">2 guests</span>
+            </button>
+            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="deluxe" data-guests="5">
+              <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">6M Deluxe</span>
+              <span class="font-display font-black text-sm">Up to 5 guests</span>
+            </button>
+            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="cosy" data-guests="2">
+              <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">4M Cosy</span>
+              <span class="font-display font-black text-sm">2–4 guests</span>
+            </button>
+            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="cosy" data-guests="5">
+              <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">6M Cosy</span>
+              <span class="font-display font-black text-sm">5–10 guests</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -97,15 +182,18 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start">
       <div>
         <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Mini booking engine</p>
-        <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Guests, package, tents</h2>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Guests and package</h2>
         <p class="text-stone-600 text-sm leading-relaxed mb-6">
-          We count tents from headcount: Budget fills 10 to a 6M, Medium fills 6 because the kitchen and beds take floor. 6M canvas is £100 a night with the 2027 early-bird 15% already in. Pitching is £225 a tent. Security hold is £200 a tent.
+          Cosy is £{COSY_RATE_PER_GUEST} a guest from two people in a 4M. Deluxe is that plus £{DELUXE_ADDON_PER_GUEST} for airframes and a kitchen camp — 2 in a 4M, up to 5 in a 6M. Same rate in a 4M or a 6M — we pick the mix from your headcount. Setup included. £200 security deposit a tent on a card reader at Saturday check-in. Pay Up is two months now and ten after, interest-free, on a Stripe subscription — Klarna energy, not Klarna.
         </p>
-        <div class="rounded-3xl bg-white border border-stone-200 p-6 text-sm text-stone-600 space-y-3">
-          <p class="font-display font-black text-[#111111]">Morrisons concierge</p>
-          <p>
-            Fort William Morrisons does click and collect. Tick it on the booking, email us your shopping list, we place the order and collect. You pay the <strong>basket plus 10%</strong> on a Stripe link once the list is in — not on this checkout.
-          </p>
+        <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden text-sm text-stone-600">
+          <img src={RAT_RACE_2027.photos.morrisons} alt="Morrisons Fort William shop in the Deluxe kitchen half" class="w-full h-44 object-cover" />
+          <div class="p-6 space-y-3">
+            <p class="font-display font-black text-[#111111]">Morrisons concierge</p>
+            <p>
+              Add it to the booking and we’ll send instructions on how to build your order. Send it back to us and we’ll process it for payment with a Stripe link. You’ll pay the basket plus 10%, with that 10% capped at £15.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -114,44 +202,37 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
           <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-guests">Number of guests</label>
           <div class="flex items-center gap-3">
             <button type="button" id="rr-guests-minus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">−</button>
-            <input id="rr-guests" type="number" min="1" max="40" value="6" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
+            <input id="rr-guests" type="number" min="2" max="40" value="5" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
             <button type="button" id="rr-guests-plus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">+</button>
           </div>
+          <p id="rr-min-note" class="text-[11px] text-stone-500 mt-2 hidden"></p>
         </div>
 
         <fieldset class="space-y-2">
           <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">Package</legend>
           <label class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
-            <input type="radio" name="rr-package" value="budget" class="mt-1" />
+            <input type="radio" name="rr-package" value="cosy" class="mt-1" />
             <span>
-              <span class="block font-display font-black">Budget</span>
-              <span class="text-xs text-stone-500">Canvas and a floor. Up to 10 people per 6M.</span>
+              <span class="block font-display font-black">Cosy · £50</span>
+              <span class="text-xs text-stone-500">Mattress, sleeping bag, pillow, night stand, chair.</span>
             </span>
           </label>
           <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer">
-            <input type="radio" name="rr-package" value="medium" checked class="mt-1" />
+            <input type="radio" name="rr-package" value="deluxe" checked class="mt-1" />
             <span>
-              <span class="block font-display font-black">Medium</span>
-              <span class="text-xs text-stone-500">Kitchen, airframes, table and chairs. Up to 6 per 6M.</span>
+              <span class="block font-display font-black">Deluxe · +£{DELUXE_ADDON_PER_GUEST}</span>
+              <span class="text-xs text-stone-500">Cosy + airframes and a kitchen camp for the booking party. One kitchen per Deluxe booking.</span>
             </span>
           </label>
         </fieldset>
 
-        <fieldset class="space-y-2">
-          <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">Stay</legend>
-          <label class="flex gap-3 rounded-2xl border border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#7D6E23]">
-            <input type="radio" name="rr-nights" value="2" checked class="mt-1" />
-            <span class="text-sm"><strong>2 nights</strong> · Fri 10 Sep → Sun 12 Sep 2027</span>
-          </label>
-          <label class="flex gap-3 rounded-2xl border border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#7D6E23]">
-            <input type="radio" name="rr-nights" value="3" class="mt-1" />
-            <span class="text-sm"><strong>3 nights</strong> · Fri 10 Sep → Mon 13 Sep 2027</span>
-          </label>
-        </fieldset>
+        <p class="text-sm text-stone-600 rounded-2xl bg-stone-50 border border-stone-200 p-4">
+          <strong class="text-[#111111]">Saturday night only.</strong> Check-in Saturday 11 September, out Sunday 12. We are on the field Friday to Sunday.
+        </p>
 
         <label class="flex gap-3 items-start text-sm text-stone-700">
           <input id="rr-concierge" type="checkbox" class="mt-1" />
-          <span>Add Morrisons Fort William concierge. I will send a shopping list after paying for canvas. You invoice basket + 10%.</span>
+          <span>Add Morrisons Fort William concierge. We’ll get in touch with order instructions.</span>
         </label>
 
         <div id="rr-quote" class="rounded-2xl bg-[#111111] text-white p-5 space-y-2 text-sm" data-initial={JSON.stringify(initialQuote)}>
@@ -161,18 +242,39 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
             {initialQuote.lines.map((line) => (
               <div class="flex justify-between gap-3">
                 <span>{line.title}</span>
-                <span>£{line.price.toFixed(2)}</span>
+                <span>{line.price === 0 ? 'Included' : `£${line.price.toFixed(2)}`}</span>
               </div>
             ))}
           </div>
           <div class="border-t border-white/10 pt-2 flex justify-between font-bold">
-            <span>Stay total</span>
+            <span>Saturday total</span>
             <span id="rr-quote-total">£{initialQuote.totalRentalPrice.toFixed(2)}</span>
           </div>
           <p class="text-xs text-stone-400" id="rr-quote-pay">
-            Pay today: £{initialQuote.depositAmount.toFixed(2)} ({initialQuote.depositPercent}% ) + £{initialQuote.securityDeposit.toFixed(2)} security = £{initialQuote.totalDueToday.toFixed(2)}
+            Pay today: £{initialQuote.depositAmount.toFixed(2)} ({initialQuote.depositPercent}%)
           </p>
+          <p class="text-xs text-stone-400" id="rr-quote-security">{initialQuote.securityCheckinNote}</p>
         </div>
+
+        <fieldset class="space-y-2">
+          <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">How you pay the stay</legend>
+          <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer">
+            <input type="radio" name="rr-pay-plan" value="deposit" checked class="mt-1" />
+            <span>
+              <span class="block font-display font-black">Pay the stay</span>
+              <span class="text-xs text-stone-500">50% to book. 50% balance collected the week before.</span>
+            </span>
+          </label>
+          <label id="rr-pay-up-label" class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
+            <input type="radio" name="rr-pay-plan" value="instalment" class="mt-1" id="rr-pay-instalment" />
+            <span>
+              <span class="block font-display font-black">Pay Up · 2 months now, 10 after</span>
+              <span class="text-xs text-stone-500" id="rr-pay-up-copy">
+                Two months of the stay today, then ten interest-free months on the same card. Stripe runs the subscription — the card platform most people already trust at checkout. Klarna energy, not Klarna.
+              </span>
+            </span>
+          </label>
+        </fieldset>
 
         <button
           type="button"
@@ -209,7 +311,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
         <input id="rr-address" placeholder="Billing address" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
         <textarea id="rr-notes" rows="3" placeholder="Crew notes, allergies, shopping-list timing" class="w-full rounded-2xl border border-stone-300 p-3 text-sm"></textarea>
         <button type="button" id="rr-pay" class="w-full rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3">
-          Pay deposit
+          Continue to Stripe
         </button>
       </div>
       <div id="rr-modal-step-payment" class="hidden p-6">
@@ -224,6 +326,28 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   </div>
 </Layout>
 
+<style is:global>
+  .rr-layout-pkg.is-on,
+  .rr-layout-preset.is-on {
+    background: #111;
+    color: #f7ba1e;
+    border-color: #111;
+  }
+  .rr-layout-preset.is-on span:first-child {
+    color: #caba9f;
+  }
+  .rr-tent {
+    animation: rr-pop 0.45s cubic-bezier(0.22, 1.2, 0.36, 1);
+  }
+  .rr-tent img {
+    filter: drop-shadow(0 8px 16px rgb(17 17 17 / 0.08));
+  }
+  @keyframes rr-pop {
+    from { opacity: 0; transform: translateY(16px) scale(0.92); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+</style>
+
 <script is:inline src="https://js.stripe.com/v3/"></script>
 <script is:inline>
   const guestsInput = document.getElementById('rr-guests');
@@ -232,13 +356,80 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   let stripeCheckout = null;
 
   function packageKind() {
-    return document.querySelector('input[name="rr-package"]:checked')?.value || 'medium';
+    return document.querySelector('input[name="rr-package"]:checked')?.value || 'deluxe';
   }
-  function nights() {
-    return Number(document.querySelector('input[name="rr-nights"]:checked')?.value || 2);
+  function paymentPlan() {
+    return document.querySelector('input[name="rr-pay-plan"]:checked')?.value || 'deposit';
   }
+  function isValidDeluxeGuests(n) {
+    if (n < 2 || n > 40) return false;
+    if (n === 3) return false;
+    if (n % 5 === 1) return false;
+    return true;
+  }
+
+  function billedCrew(n, kind) {
+    let guests = Math.min(40, Math.max(2, Math.round(Number(n) || 2)));
+    if (kind === 'deluxe') {
+      while (guests <= 40 && !isValidDeluxeGuests(guests)) guests += 1;
+      if (!isValidDeluxeGuests(guests)) {
+        while (guests >= 2 && !isValidDeluxeGuests(guests)) guests -= 1;
+      }
+    }
+    return guests;
+  }
+
+  function stepCrew(current, delta, kind) {
+    const dir = delta >= 0 ? 1 : -1;
+    let n = billedCrew(current, kind) + dir;
+    while (n >= 2 && n <= 40) {
+      if (kind !== 'deluxe' || isValidDeluxeGuests(n)) return n;
+      n += dir;
+    }
+    return billedCrew(current, kind);
+  }
+
   function guests() {
-    return Math.min(40, Math.max(1, Number(guestsInput.value) || 1));
+    return billedCrew(guestsInput.value, packageKind());
+  }
+
+  function moneyLabel(price) {
+    return Number(price) === 0 ? 'Included' : `£${Number(price).toFixed(2)}`;
+  }
+
+  function dueToday(q) {
+    if (paymentPlan() === 'instalment' && q.payMonthly?.available) return Number(q.payMonthly.totalDueToday);
+    return Number(q.totalDueToday);
+  }
+
+  function renderPayCopy(q) {
+    const payEl = document.getElementById('rr-quote-pay');
+    const instalment = paymentPlan() === 'instalment' && q.payMonthly?.available;
+    if (instalment) {
+      const m = q.payMonthly;
+      payEl.textContent =
+        `Pay Up today: 2 months £${Number(m.upfrontAmount).toFixed(2)}. Then ${m.monthlyCount} × £${Number(m.monthlyAmount).toFixed(2)} (first ${m.firstMonthlyDate}, last ${m.lastMonthlyDate}).`;
+    } else {
+      payEl.textContent =
+        `Pay today: £${Number(q.depositAmount).toFixed(2)} (${q.depositPercent}%)`;
+    }
+    const securityEl = document.getElementById('rr-quote-security');
+    if (securityEl) securityEl.textContent = q.securityCheckinNote || '';
+    const copy = document.getElementById('rr-pay-up-copy');
+    const radio = document.getElementById('rr-pay-instalment');
+    if (q.payMonthly?.available) {
+      radio.disabled = false;
+      copy.textContent =
+        `Two months of the stay (£${Number(q.payMonthly.upfrontAmount).toFixed(2)}) today, then ${q.payMonthly.monthlyCount} × £${Number(q.payMonthly.monthlyAmount).toFixed(2)} on a Stripe subscription. Klarna energy, not Klarna.`;
+    } else {
+      if (paymentPlan() === 'instalment') {
+        document.querySelector('input[name="rr-pay-plan"][value="deposit"]').checked = true;
+      }
+      radio.disabled = true;
+      copy.textContent = q.payMonthly?.reason || 'Pay Up is not available this close to the Saturday night.';
+    }
+    const summary = document.getElementById('rr-modal-summary');
+    if (summary) summary.textContent = `${q.tentType} · Saturday night · ${q.guests} guests · due today £${dueToday(q).toFixed(2)}`;
   }
 
   async function refreshQuote() {
@@ -246,31 +437,51 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
     const response = await fetch('/api/rat-race-quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guests: guests(), packageKind: packageKind(), nights: nights() }),
+      body: JSON.stringify({ guests: guests(), packageKind: packageKind() }),
     });
     quote = await response.json();
-    document.getElementById('rr-quote-tents').textContent = `${quote.tentType} · ${quote.guests} guests`;
+    document.getElementById('rr-quote-tents').textContent = `${quote.tentType} · ${quote.guests} guests · Saturday`;
     document.getElementById('rr-quote-lines').innerHTML = quote.lines
-      .map((line) => `<div class="flex justify-between gap-3"><span>${line.title}</span><span>£${Number(line.price).toFixed(2)}</span></div>`)
+      .map((line) => `<div class="flex justify-between gap-3"><span>${line.title}</span><span>${moneyLabel(line.price)}</span></div>`)
       .join('');
     document.getElementById('rr-quote-total').textContent = `£${Number(quote.totalRentalPrice).toFixed(2)}`;
-    document.getElementById('rr-quote-pay').textContent =
-      `Pay today: £${Number(quote.depositAmount).toFixed(2)} (${quote.depositPercent}%) + £${Number(quote.securityDeposit).toFixed(2)} security = £${Number(quote.totalDueToday).toFixed(2)}`;
-    const summary = document.getElementById('rr-modal-summary');
-    if (summary) summary.textContent = `${quote.tentType} · ${quote.nights} nights · ${quote.guests} guests · due today £${Number(quote.totalDueToday).toFixed(2)}`;
+    renderPayCopy(quote);
+    const minNote = document.getElementById('rr-min-note');
+    if (quote.requestedGuests < quote.minGuests) {
+      minNote.textContent = `${quote.packageLabel} is billed for at least ${quote.minGuests} guests.`;
+      minNote.classList.remove('hidden');
+    } else if (quote.packageKind === 'deluxe' && quote.requestedGuests !== quote.guests) {
+      minNote.textContent = 'A Deluxe 4M needs two people, so we skip a leftover of one (6 becomes 7, 11 becomes 12).';
+      minNote.classList.remove('hidden');
+    } else {
+      minNote.classList.add('hidden');
+    }
+    guestsInput.min = '2';
+    guestsInput.step = '1';
   }
 
   document.getElementById('rr-guests-minus').addEventListener('click', () => {
-    guestsInput.value = String(guests() - 1);
+    guestsInput.value = String(stepCrew(guests(), -1, packageKind()));
     refreshQuote();
+    syncLayoutFromBooking();
   });
   document.getElementById('rr-guests-plus').addEventListener('click', () => {
-    guestsInput.value = String(guests() + 1);
+    guestsInput.value = String(stepCrew(guests(), 1, packageKind()));
     refreshQuote();
+    syncLayoutFromBooking();
   });
-  guestsInput.addEventListener('change', refreshQuote);
-  document.querySelectorAll('input[name="rr-package"], input[name="rr-nights"]').forEach((el) => {
-    el.addEventListener('change', refreshQuote);
+  guestsInput.addEventListener('change', () => {
+    refreshQuote();
+    syncLayoutFromBooking();
+  });
+  document.querySelectorAll('input[name="rr-package"]').forEach((el) => {
+    el.addEventListener('change', () => {
+      refreshQuote();
+      syncLayoutFromBooking();
+    });
+  });
+  document.querySelectorAll('input[name="rr-pay-plan"]').forEach((el) => {
+    el.addEventListener('change', () => renderPayCopy(quote));
   });
 
   const modal = document.getElementById('rr-checkout-modal');
@@ -308,16 +519,22 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
         body: JSON.stringify({
           guests: guests(),
           packageKind: packageKind(),
-          nights: nights(),
           conciergeRequested: document.getElementById('rr-concierge').checked,
           customerName: name,
           customerEmail: email,
           customerPhone: phone,
           customerAddress: document.getElementById('rr-address').value.trim(),
           specialRequests: document.getElementById('rr-notes').value.trim(),
+          paymentPlan: paymentPlan(),
         }),
       });
       const data = await response.json();
+      if (!response.ok && !data.isPlaceholderKey) {
+        errorEl.textContent = data.error || 'Could not start payment.';
+        errorEl.classList.remove('hidden');
+        payBtn.disabled = false;
+        return;
+      }
       document.getElementById('rr-modal-step-details').classList.add('hidden');
       document.getElementById('rr-modal-step-payment').classList.remove('hidden');
       document.getElementById('rr-modal-heading').textContent = 'Secure payment';
@@ -337,4 +554,168 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
       payBtn.disabled = false;
     }
   });
+
+  renderPayCopy(quote);
+
+  const layoutCaps = {
+    cosy: { cap6: 10, cap4: 4, min: 2, label: 'Cosy' },
+    deluxe: { cap6: 5, cap4: 2, min: 2, label: 'Deluxe' },
+  };
+  let layoutPkg = 'deluxe';
+  let syncingCrew = false;
+
+  function billedLayoutGuests(n, kind) {
+    const max = 20;
+    return Math.min(max, billedCrew(n, kind));
+  }
+
+  function distributeOccupancy(tents, people, cap) {
+    if (tents <= 0) return [];
+    const fills = [];
+    let left = people;
+    for (let i = 0; i < tents; i += 1) {
+      const fill = Math.min(cap, Math.max(0, Math.ceil(left / (tents - i))));
+      fills.push(fill);
+      left -= fill;
+    }
+    return fills;
+  }
+
+  function packVillage(n, kind) {
+    const meta = layoutCaps[kind];
+    const guests = billedLayoutGuests(n, kind);
+    let six = Math.floor(guests / meta.cap6);
+    const rem = guests % meta.cap6;
+    let four = 0;
+    if (kind === 'deluxe') {
+      if (rem === meta.cap4) four = 1;
+      else if (rem > 0) six += 1;
+    } else if (rem > 0 && rem <= meta.cap4) four = 1;
+    else if (rem > 0) six += 1;
+    if (six + four === 0) four = 1;
+    const occupancy4 = distributeOccupancy(four, Math.min(guests, four * meta.cap4), meta.cap4);
+    const sixPeople = guests - occupancy4.reduce((sum, v) => sum + v, 0);
+    const occupancy6 = distributeOccupancy(six, sixPeople, meta.cap6);
+    return { six, four, guests, rem, occupancy6, occupancy4, cap6: meta.cap6, cap4: meta.cap4, label: meta.label };
+  }
+
+  function tentGraphic(size, kind, filled) {
+    const sets = {
+      '6-cosy': [5, 6, 7, 8],
+      '4-cosy': [2, 3, 4],
+      '6-deluxe': [3, 4, 5],
+      '4-deluxe': [2],
+    };
+    const list = sets[`${size}-${kind}`] || [filled];
+    if (list.includes(filled)) return filled;
+    const under = list.filter((n) => n <= filled);
+    return under.length ? under[under.length - 1] : list[0];
+  }
+
+  function tentMarkup(size, kind, filled, cap, delay) {
+    const drawn = tentGraphic(size, kind, filled);
+    const src = `/events/layouts/${size}m-${kind}-${drawn}.svg`;
+    const width = size === 6 ? 200 : 148;
+    return `<figure class="rr-tent text-center" style="animation-delay:${delay}ms">
+      <img src="${src}" width="${width}" height="${width}" alt="${size}M ${kind} for ${drawn} guests" class="mx-auto select-none" />
+      <figcaption class="mt-1 text-[11px] font-display font-black">${size}M · ${filled}/${cap}</figcaption>
+    </figure>`;
+  }
+
+  function layoutGuestsInput() {
+    return document.getElementById('rr-layout-guests');
+  }
+
+  function setLayoutGuests(n) {
+    const input = layoutGuestsInput();
+    const guests = billedLayoutGuests(n, layoutPkg);
+    input.min = '2';
+    input.step = '1';
+    input.value = String(guests);
+  }
+
+  function syncBookingFromLayout() {
+    if (syncingCrew) return;
+    syncingCrew = true;
+    const pack = packVillage(Number(layoutGuestsInput().value), layoutPkg);
+    guestsInput.value = String(pack.guests);
+    const radio = document.querySelector(`input[name="rr-package"][value="${layoutPkg}"]`);
+    if (radio) radio.checked = true;
+    refreshQuote();
+    syncingCrew = false;
+  }
+
+  function syncLayoutFromBooking() {
+    if (syncingCrew) return;
+    syncingCrew = true;
+    layoutPkg = packageKind();
+    setLayoutGuests(guests());
+    renderLayout();
+    syncingCrew = false;
+  }
+
+  function renderLayout() {
+    const input = layoutGuestsInput();
+    const requested = Number(input.value) || 5;
+    const pack = packVillage(requested, layoutPkg);
+    const mixEl = document.getElementById('rr-layout-mix');
+    const stage = document.getElementById('rr-layout-stage');
+    const bits = [];
+    if (pack.six) bits.push(`${pack.six} × 6M`);
+    if (pack.four) bits.push(`${pack.four} × 4M`);
+    mixEl.textContent = `${bits.join(' + ')} ${pack.label} · ${pack.guests} guests`;
+    document.querySelectorAll('.rr-layout-pkg').forEach((btn) => {
+      btn.classList.toggle('is-on', btn.getAttribute('data-pkg') === layoutPkg);
+    });
+    document.querySelectorAll('.rr-layout-preset').forEach((btn) => {
+      const match = btn.getAttribute('data-pkg') === layoutPkg && Number(btn.getAttribute('data-guests')) === pack.guests;
+      btn.classList.toggle('is-on', match);
+    });
+    if (Number(input.value) !== pack.guests) input.value = String(pack.guests);
+
+    const parts = [];
+    let delay = 0;
+    pack.occupancy6.forEach((filled) => {
+      parts.push(tentMarkup(6, layoutPkg, filled, pack.cap6, delay));
+      delay += 70;
+    });
+    pack.occupancy4.forEach((filled) => {
+      parts.push(tentMarkup(4, layoutPkg, filled, pack.cap4, delay));
+      delay += 70;
+    });
+    stage.innerHTML = parts.join('');
+  }
+
+  document.getElementById('rr-layout-guests').addEventListener('change', () => {
+    setLayoutGuests(Number(layoutGuestsInput().value));
+    renderLayout();
+    syncBookingFromLayout();
+  });
+  document.getElementById('rr-layout-minus').addEventListener('click', () => {
+    setLayoutGuests(stepCrew(Number(layoutGuestsInput().value), -1, layoutPkg));
+    renderLayout();
+    syncBookingFromLayout();
+  });
+  document.getElementById('rr-layout-plus').addEventListener('click', () => {
+    setLayoutGuests(stepCrew(Number(layoutGuestsInput().value), 1, layoutPkg));
+    renderLayout();
+    syncBookingFromLayout();
+  });
+  document.querySelectorAll('.rr-layout-pkg').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      layoutPkg = btn.getAttribute('data-pkg');
+      setLayoutGuests(Number(layoutGuestsInput().value));
+      renderLayout();
+      syncBookingFromLayout();
+    });
+  });
+  document.querySelectorAll('.rr-layout-preset').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      layoutPkg = btn.getAttribute('data-pkg');
+      setLayoutGuests(Number(btn.getAttribute('data-guests')));
+      renderLayout();
+      syncBookingFromLayout();
+    });
+  });
+  renderLayout();
 </script>

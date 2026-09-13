@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from "../lib/rat-race";
 ---
 
 <Layout
@@ -35,7 +36,7 @@ import Layout from "../layouts/Layout.astro";
           <div class="p-6 md:p-8 flex flex-col justify-center">
             <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-1">Now bookable on this site</p>
             <h2 class="font-display text-2xl font-black text-[#111111] mb-2">Rat Race Coast to Coast · 11–12 Sep 2027</h2>
-            <p class="text-sm text-stone-600 mb-4">Budget or Medium 6M tents, tent count from your headcount, pay through to confirmation. Optional Fort William Morrisons concierge after you send a list.</p>
+            <p class="text-sm text-stone-600 mb-4">Saturday night only. Cosy £{COSY_RATE_PER_GUEST}/guest, Deluxe +£{DELUXE_ADDON_PER_GUEST}. 4M or 6M packed from headcount. We pitch Friday and pack up on Sunday 12 September. Optional Fort William Morrisons concierge after you send a list.</p>
             <span class="text-sm font-bold text-[#7D6E23]">Open the Rat Race booking engine →</span>
           </div>
         </a>

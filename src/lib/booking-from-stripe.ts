@@ -58,6 +58,14 @@ export function bookingFromStripeSession(
     stripeSessionId: session.id,
     stripePaymentIntentId: paymentIntent,
     stripeBalanceSessionId: existing?.stripeBalanceSessionId,
+    stripeSubscriptionId:
+      (typeof session.subscription === 'string'
+        ? session.subscription
+        : session.subscription?.id) || existing?.stripeSubscriptionId,
+    paymentPlan: (meta.paymentPlan as BookingRecord['paymentPlan']) || existing?.paymentPlan || 'deposit',
+    instalmentMonthly: Number(meta.instalmentMonthly) || existing?.instalmentMonthly,
+    instalmentCount: Number(meta.instalmentCount) || existing?.instalmentCount,
+    paidInvoiceIds: existing?.paidInvoiceIds,
     emails: existing?.emails || {},
     logistics: existing?.logistics,
     kitOps: existing?.kitOps,

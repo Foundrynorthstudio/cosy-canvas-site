@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import { capturePaidBooking } from "../../lib/booking-capture";
 import { isDiyFulfillment } from "../../lib/booking";
+import { isRatRaceBooking } from "../../lib/rat-race";
 import {
   DEPOT,
   depotMapsUrl,
@@ -168,7 +169,7 @@ if (sessionId) {
                   {booking.specialRequests?.toLowerCase().includes('morrisons') && (
                     <div class="mt-4 rounded-2xl border border-[#F7BA1E] bg-[#FAF7EE] p-4 text-xs text-stone-700">
                       <p class="font-display font-black text-[#111111] mb-1">Morrisons Fort William concierge</p>
-                      <p>Send your shopping list to hello@cosycanvasco.com. We click-and-collect in Fort William, then send a payment link for the basket plus 10%.</p>
+                      <p>We’ll send instructions on how to build your order. Send it back and we’ll process it with a Stripe payment link. Basket plus 10%, with that 10% capped at £15.</p>
                     </div>
                   )}
                 </div>
@@ -232,11 +233,17 @@ if (sessionId) {
                     <span class="font-bold text-[#111111]">£{booking.totalRentalPrice.toFixed(2)}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-stone-500">Deposit Paid Today ({booking.depositPercent}%):</span>
+                    <span class="text-stone-500">
+                      {booking.paymentPlan === 'instalment' ? 'Pay Up deposit (2 months of the stay):' : `Deposit Paid Today (${booking.depositPercent}%):`}
+                    </span>
                     <span class="font-bold text-[#111111]">£{booking.depositAmount.toFixed(2)}</span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-stone-500">Refundable Security Deposit:</span>
+                    <span class="text-stone-500">
+                      {isRatRaceBooking(booking)
+                        ? 'Refundable security (card reader at check-in):'
+                        : 'Refundable Security Deposit:'}
+                    </span>
                     <span class="font-bold text-[#111111]">£{booking.securityDeposit.toFixed(2)}</span>
                   </div>
 
@@ -246,14 +253,28 @@ if (sessionId) {
                     <span class="text-xl font-display font-black text-[#111111]">£{booking.totalPaidToday.toFixed(2)}</span>
                   </div>
 
-                  {booking.remainingBalance > 0 && (
+                  {booking.paymentPlan === 'instalment' && booking.remainingBalance > 0 && (
+                    <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-[#7D6E23] text-xs">
+                      <div class="flex justify-between font-bold">
+                        <span>Pay Up remaining ({booking.instalmentCount || 10} months):</span>
+                        <span>£{booking.remainingBalance.toFixed(2)}</span>
+                      </div>
+                      <span class="text-[11px] text-stone-600 block mt-1">
+                        Stripe takes {booking.instalmentCount || 10} interest-free payments of £{(booking.instalmentMonthly || 0).toFixed(2)} from the same card. Last charge {booking.balanceDueDate || 'before the Saturday night'}. No Klarna — just a Stripe subscription.
+                      </span>
+                    </div>
+                  )}
+
+                  {booking.paymentPlan !== 'instalment' && booking.remainingBalance > 0 && (
                     <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-[#7D6E23] text-xs">
                       <div class="flex justify-between font-bold">
                         <span>Remaining 50% Balance:</span>
                         <span>£{booking.remainingBalance.toFixed(2)}</span>
                       </div>
                       <span class="text-[11px] text-stone-600 block mt-1">
-                        Due 28 days prior to check-in ({booking.balanceDueDate || '28 days before arrival'}). An automated payment link will be sent to your email.
+                        {isRatRaceBooking(booking)
+                          ? `Collected the week before (${booking.balanceDueDate || 'the week before arrival'}). An automated payment link will be sent to your email.`
+                          : `Due 28 days prior to check-in (${booking.balanceDueDate || '28 days before arrival'}). An automated payment link will be sent to your email.`}
                       </span>
                     </div>
                   )}
@@ -261,7 +282,9 @@ if (sessionId) {
                   <div class="text-[11px] text-stone-500 bg-stone-50 p-3 rounded-xl border border-stone-200 flex items-start gap-2">
                     <i class="fa-solid fa-shield-halved text-[#7D6E23] mt-0.5 shrink-0"></i>
                     <span>
-                      The £200.00 security deposit will be released back to your payment card within 48 hours following checkout inspection.
+                      {isRatRaceBooking(booking)
+                        ? 'The £200 refundable deposit per tent is taken on a card reader at Saturday check-in, then released after the post-stay check.'
+                        : 'The £200.00 security deposit will be released back to your payment card within 48 hours following checkout inspection.'}
                     </span>
                   </div>
                 </div>

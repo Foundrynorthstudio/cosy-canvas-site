@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getBookingByRef, updateBooking } from '../../../../../lib/booking-store';
-import { conciergeChargeFromBasket } from '../../../../../lib/rat-race';
+import { conciergeChargeFromBasket, conciergeFeeFromBasket } from '../../../../../lib/rat-race';
 import { sendHtmlEmail } from '../../../../../lib/email';
 import { getStripe } from '../../../../../lib/stripe-client';
 
@@ -18,6 +18,7 @@ export const POST: APIRoute = async ({ params, request, url }) => {
   }
 
   const charge = conciergeChargeFromBasket(basket);
+  const fee = conciergeFeeFromBasket(basket);
   const stripe = getStripe();
   if (!stripe) {
     return new Response(JSON.stringify({ error: 'Stripe is not configured.' }), { status: 400 });
@@ -36,7 +37,7 @@ export const POST: APIRoute = async ({ params, request, url }) => {
           unit_amount: Math.round(charge * 100),
           product_data: {
             name: `Morrisons Fort William concierge ${booking.bookingRef}`,
-            description: `Basket £${basket.toFixed(2)} + 10% click-and-collect service.`,
+            description: `Basket £${basket.toFixed(2)} + £${fee.toFixed(2)} concierge (10%, capped at £15).`,
           },
         },
       },
@@ -56,7 +57,7 @@ export const POST: APIRoute = async ({ params, request, url }) => {
       subject: `Morrisons shop payment · ${booking.bookingRef}`,
       html: `<p>Hi ${booking.customerName.split(' ')[0] || 'there'},</p>
 <p>Your Fort William Morrisons click-and-collect shop is ready to pay.</p>
-<p>Basket £${basket.toFixed(2)} + 10% concierge = <strong>£${charge.toFixed(2)}</strong>.</p>
+<p>Basket £${basket.toFixed(2)} + £${fee.toFixed(2)} concierge (10%, capped at £15) = <strong>£${charge.toFixed(2)}</strong>.</p>
 <p><a href="${payUrl}">Pay the shopping link</a></p>
 <p>The Cosy Canvas Co.</p>`,
     });
