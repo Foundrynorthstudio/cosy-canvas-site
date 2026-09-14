@@ -215,7 +215,7 @@ Watch this space. The pictures below are the vision — Cosy Hotel rooms and an 
   {
     slug: "red-squirrel-campsite-glencoe",
     title: "Field notes from Red Squirrel: a Friday night in Glen Coe",
-    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my staging post for a Coast to Coast hire north of Fort William — then Gemini renders of the dream fleet before bed.",
+    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my staging post for a Coast to Coast hire north of Fort William.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
@@ -230,8 +230,8 @@ Watch this space. The pictures below are the vision — Cosy Hotel rooms and an 
     image: "/campsite_red_squirrel.jpg",
     imageAlt: "Night pitch at Red Squirrel Campsite: two-person tent, stove, and picnic table under the Glen Coe trees",
     seoTitle: "Red Squirrel Campsite Glencoe: Friday Field Notes",
-    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a staging post for Coast to Coast, fire cooking, and Gemini renders of the Cosy Canvas fleet.",
-    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, vw caddy maxi, audi a4 wrap, a82 glencoe drive",
+    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a staging post for Coast to Coast, fire cooking, and a picnic table claimed as a desk.",
+    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, a82 glencoe drive",
     content: `
 I am writing this from a picnic bench at **Red Squirrel Campsite** in Glen Coe, lamp on, stove going, laptop open. I love camping. I love driving. Put those together on the A82 on a Friday night and that is the whole point.
 
@@ -241,11 +241,7 @@ Tonight is a Cosy Canvas recce wrapped around a customer job. I am here a couple
 
 ## The drive
 
-The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. You get into a state of flow, chewing down miles of twisting A-roads in the Scottish Highlands. You are always going to end up stuck in a convoy behind something — and you need to remember the public buses use this road too. When there is traffic, being in this car is very comfortable. Low down. Just enough hug from the sporty seat. Everything easily within reach with both hands.
-
-It needs next to no input once you are in cruise on an A9. Dial in the speed and go. Tight in every corner. All the power when you want it. The weight of a heavy car, with the grip and the agility still there.
-
-It would definitely benefit from adaptive cruise. And if this is eventually going to be a work car, it definitely needs a lift kit, off-road alloys and tyres. For me that means distance, in comfort, fully loaded with gear. Office and logistics will be in vans.
+The drive north was spectacular, as expected in Glen Coe.
 
 <div class="photo-pair">
 <figure>
@@ -314,7 +310,7 @@ I am glad I chose Red Squirrel as my base. I have always looked at this site whe
 * **Drive:** about 2 hours / 108 miles from the Falkirk container via the A82
 * **Book:** [redsquirrelcampsite.co.uk](https://redsquirrelcampsite.co.uk/)
 
-Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full 5G phone signal, friendly late check-in, and a picnic table that works as a desk. That is why it earns a pin on the [campsites](/campsites) page.
+Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full 5G phone signal, friendly late check-in, and a picnic table I claimed as my desk. That is why it earns a pin on the [campsites](/campsites) page.
 
 <div class="journal-cta">
 <a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>
@@ -327,9 +323,9 @@ Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower bl
 
 People talk about Glen Coe like you come here to switch off. You can definitely do that, but given the excitement of the day, I made full use of the phone signal.
 
-There is **full 5G** on this pitch. Laptop is fine. Maps are fine. Studio tools are fine. For me, Red Squirrel turned into the perfect **logistics base** — close enough to tomorrow’s Rat Race job, wild enough that you remember why the canvas is worth dragging north, connected enough that we could run the business from a picnic table.
+I had full 5G on this pitch. Laptop is fine. Maps are fine. Studio tools are fine. For me, Red Squirrel turned into the perfect **logistics base** — close enough to tomorrow’s Rat Race job, wild enough that you remember why the canvas is worth dragging north, connected enough that we could run the business from a picnic table.
 
-Then you close the lid and fall asleep to the sound of the river. Bliss.
+You can then close the lid and fall asleep to the sound of the river. Bliss.
 
 <figure>
 <img src="/glencoe-red-squirrel/pitch-night-river.jpg" alt="Night pitch at Red Squirrel: two-man tent, stove, and a picnic table under a tarp in the woods">
@@ -338,30 +334,24 @@ Then you close the lid and fall asleep to the sound of the river. Bliss.
 
 ---
 
-## Dream fleet, rendered before bed
-
-I finished the night in Gemini, playing with the contour graphic on the vehicles I actually want to be driving on jobs like this.
-
-First up: the wife’s **A4**, wrapped. Contour lines, triangle mark, still a Black Edition underneath. Then the greedy spec — roof rack, steels, the all-terrain look I keep threatening her with.
-
-<div class="photo-pair photo-pair--portrait">
-<figure>
-<img src="/glencoe-red-squirrel/a4-wrap.jpg" alt="Audi A4 wrapped in Cosy Canvas contour graphics parked in Glen Coe with bell tents behind">
-<figcaption>The A4 Quattro in Cosy Canvas wrap. Still her car. Just louder about it.</figcaption>
-</figure>
-<figure>
-<img src="/glencoe-red-squirrel/a4-wrap-swamper.jpg" alt="Wrapped Audi A4 with roof rack and black steel wheels in Glen Coe">
-<figcaption>Same wrap, my version: rack, steels, a bit of swamper. We can argue about the rims another night.</figcaption>
-</figure>
-</div>
-
-Next time I visit, I will be in something more sensible. The A4 is a laugh on the A82 — low, tight, all the power — but it is still her and the kids’ car, and a lift kit and alloys is a conversation I would lose. A van should take the kit.
-
----
-
 ## Matt, the morning I left
 
-I met **Matt**, the owner, the morning I left. Busy working with the team, getting the facilities cleaned and turned over. Leading from the front. We had a great chat. I explained who we are, what we are up to, and we agreed to keep the conversation going and that together we would make it a great experience for guests.
+I met **Matt**, the owner, the morning I left. Busy working with the team, getting the facilities cleaned and turned over. Leading from the front. We had a great chat. I explained who we are, what we are up to, and we agreed to keep the conversation going and that together we would make it a great experience for guests of Red Squirrel Campsite.
+
+<div class="photo-stack">
+<figure>
+<img src="/glencoe-red-squirrel/morning-river.jpg" alt="The River Coe in daylight, looking up Glen Coe from a pebble shore">
+<figcaption>The river in the morning. Same water I fell asleep to.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/morning-pitch.jpg" alt="Daytime pitch at Red Squirrel: grass, trees, a small tent, and the river running into Glen Coe">
+<figcaption>The pitch in daylight. Tent still up, Glen Coe doing the rest.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/morning-riverbank.jpg" alt="Riverbank at Red Squirrel with the tent in the trees and a van on the grass">
+<figcaption>From the stones. Campsite on the left, Coe on the right.</figcaption>
+</figure>
+</div>
 
 If you want a full Cosy setup at Red Squirrel, [book with them first](https://redsquirrelcampsite.co.uk/), then sort out the cosiness with [us](/booking).
 
