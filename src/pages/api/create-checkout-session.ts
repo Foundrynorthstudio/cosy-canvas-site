@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
+import { getAllBookings } from '../../lib/booking-store';
+import { durnessUnavailableMessage, isDurnessBooking, takenDurnessMonthKeys } from '../../lib/durness';
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
@@ -17,6 +19,8 @@ export const POST: APIRoute = async ({ request, url }) => {
       customerAddress,
       campsiteLocation,
       specialRequests,
+      partnerSiteKey = '',
+      conciergeRequested = false,
     } = data;
 
     if (!checkinDate || !checkoutDate || !guests || !customerName || !customerEmail || !campsiteLocation) {
@@ -24,6 +28,17 @@ export const POST: APIRoute = async ({ request, url }) => {
         JSON.stringify({ error: 'Missing required booking details. Please complete all fields.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    if (isDurnessBooking(campsiteLocation, partnerSiteKey)) {
+      const taken = takenDurnessMonthKeys(await getAllBookings());
+      const durnessError = durnessUnavailableMessage(checkinDate, taken);
+      if (durnessError) {
+        return new Response(JSON.stringify({ error: durnessError }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     // 1. Calculate dates and nights
@@ -122,6 +137,15 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     // Unique Booking Ref
     const bookingRef = `CC-${Math.floor(100000 + Math.random() * 900000)}`;
+    const partner = Boolean(partnerSiteKey);
+    const concierge = Boolean(conciergeRequested) || partner;
+    const conciergeNote = [
+      specialRequests || '',
+      concierge ? 'Cosy Concierge with Trystan.' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .trim();
 
     const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
 
@@ -188,7 +212,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         customerPhone,
         customerAddress: customerAddress || '',
         campsiteLocation,
-        specialRequests: specialRequests || '',
+        specialRequests: conciergeNote,
         checkinDate,
         checkoutDate,
         nights: String(nights),
@@ -207,6 +231,8 @@ export const POST: APIRoute = async ({ request, url }) => {
         remainingBalance: String(remainingBalance.toFixed(2)),
         balanceDueDate,
         type: 'deposit',
+        conciergeRequested: concierge ? 'true' : 'false',
+        partnerSiteKey: partnerSiteKey || '',
       },
     });
 

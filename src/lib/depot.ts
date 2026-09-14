@@ -14,8 +14,8 @@ export const DEPOT = {
   closes: '22:00',
   latitude: 56.0019,
   longitude: -3.7839,
-  mapPinLeft: '54%',
-  mapPinTop: '67%',
+  mapPinLeft: '57.6%',
+  mapPinTop: '70.4%',
   badge: 'FALKIRK CONTAINER',
 } as const;
 

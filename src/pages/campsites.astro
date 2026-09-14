@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import CampsiteBookButton from '../components/CampsiteBookButton.astro';
 import CampsiteJournalButton from '../components/CampsiteJournalButton.astro';
-import { CAMPSITE_ROUTES } from '../lib/campsites';
+import { CAMPSITE_ROUTES, cosyConciergeMailto } from '../lib/campsites';
 import { DEPOT } from '../lib/depot';
 
 const cobleland = CAMPSITE_ROUTES.cobleland;
@@ -18,10 +19,10 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
   <!-- Page Header Banner -->
   <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">HOW PITCHING WITH US WORKS</span>
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">COSY HOLIDAYS</span>
       <h1 class="font-display text-3xl md:text-5xl font-black text-white">Recommended Scottish Campsites</h1>
       <p class="text-stone-400 text-sm md:text-base mt-2 max-w-3xl font-light leading-relaxed">
-        We have great working relationships with three sites we know and love — Cobleland, Red Squirrel and Fidden Farm — where setup with us is pitch perfect. Book the campsite directly with them, then send us the booking reference so we can confirm the reservation. Loch Chon and Sallochy are National Park pitches: DIY from the Falkirk container.
+        Cosy Holidays is bookable setup with a partnered campsite — we pitch, they hold the field. Red Squirrel in Glen Coe is where we can do this well, about two hours from Glasgow. The absolute dream is the wild spot in Durness. Cobleland and Fidden Farm sit on the same list. Book the pitch with the campsite, send us the booking reference. Loch Chon and Sallochy are National Park pitches: DIY from the Falkirk container.
       </p>
     </div>
   </div>
@@ -30,14 +31,37 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8 mb-12 max-w-4xl">
-        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Pitching with Cosy Canvas</p>
-        <h2 class="font-display text-2xl font-black text-[#111111] mb-3">Book the field. We bring the canvas.</h2>
+        <h2 class="font-display text-2xl font-black text-[#111111] mb-3 flex items-center gap-2.5">
+          <img src="/favicon.svg" alt="" width="28" height="28" class="h-7 w-7 rounded-md border border-[#F7BA1E] shrink-0" />
+          Cosy Holidays
+        </h2>
         <p class="text-stone-600 text-sm leading-relaxed mb-3">
-          For Cobleland, Red Squirrel and Fidden Farm we only need your campsite booking reference. That lets us confirm the reservation with the site and pitch. You book the pitch directly with the campsite — we do not hold their inventory.
+          Virtual check-in, from wherever you are. <strong>Cosy Concierge</strong> is Trystan — he holds the dates, talks to the campsite, and has the canvas waiting. You arrive to a cosy holiday, not a to-do list.
         </p>
-        <p class="text-stone-600 text-sm leading-relaxed">
-          Loch Chon and Sallochy sit in the National Park, so those stays are DIY from our Falkirk container. Sallochy is a peaceful favourite that does not want to be busy. Loch Chon is precious to the team — a journal post is coming.
+        <p class="text-stone-600 text-sm leading-relaxed mb-4">
+          If your preferred site is not on the map, let us know. Trystan stands ready, and he has not failed yet. Every campsite you ask us to book opens a door for others to follow.
         </p>
+        <a
+          href={cosyConciergeMailto()}
+          class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3 transition-colors"
+        >
+          <i class="fa-solid fa-comments text-[11px]"></i>
+          Cosy Concierge
+        </a>
+        <h3 class="font-display text-lg font-black text-[#111111] mb-2 mt-6 flex items-center gap-2">
+          <img src="/favicon-diy.svg" alt="" width="22" height="22" class="h-[22px] w-[22px] rounded-[4px] border border-[#7D6E23] shrink-0" />
+          DIY
+        </h3>
+        <p class="text-stone-600 text-sm leading-relaxed mb-4">
+          Camping is awesome, and we actually enjoy the setup. If you do too, Scotland is a camper’s dream. Right to Roam across the country, and in summer the National Parks ask for a permit on their busiest lochshores. Come and meet the team for a cosy collection from Falkirk.
+        </p>
+        <a
+          href="/booking?fulfillment=diy"
+          class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3 transition-colors"
+        >
+          <i class="fa-solid fa-warehouse text-[11px]"></i>
+          Book gear now
+        </a>
       </div>
       
       <!-- Side-by-Side Flex Container (Inlined CSS for Guaranteed Desktop Grid) -->
@@ -55,69 +79,72 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
             </div>
             <div class="hidden sm:flex items-center gap-3 text-[11px]">
               <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#F7BA1E] border-2 border-[#111111]"></span> Falkirk container</span>
-              <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#7D6E23] border-2 border-white"></span> Recommended Site</span>
+              <span class="flex items-center gap-1"><img src="/favicon.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[3px] border border-[#F7BA1E]" /> Cosy Holidays</span>
+              <span class="flex items-center gap-1"><img src="/favicon-diy.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[3px] border border-[#7D6E23]" /> DIY</span>
             </div>
           </div>
 
           <!-- Map Container with High-Visibility Pins -->
-          <div class="relative w-full h-[420px] bg-[#FAF8F5] rounded-2xl border border-stone-200 overflow-hidden shadow-inner flex items-center justify-center p-2">
-            <img src="/TCCC Map of Scotland.png" alt="The Cosy Canvas Co. Topographic Contour Map of Scotland" class="w-full h-full object-contain pointer-events-none select-none opacity-95" onerror="this.src='https://placehold.co/800x800/FAF7EE/7D6E23?text=TCCC+Scotland+Contour+Map'"/>
+          <div id="scotlandMap" class="relative w-full h-[420px] bg-[#FAF8F5] rounded-2xl border border-stone-200 overflow-hidden shadow-inner flex items-center justify-center p-2">
+            <div class="relative h-full aspect-square max-w-full">
+            <img src="/TCCC Map of Scotland.png" alt="The Cosy Canvas Co. Topographic Contour Map of Scotland" class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none opacity-95" onerror="this.src='https://placehold.co/800x800/FAF7EE/7D6E23?text=TCCC+Scotland+Contour+Map'"/>
 
             <!-- PIN 1: Falkirk container (Star) -->
             <button type="button" data-pin="falkirk" id="pin-falkirk" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-40" style={`left: ${DEPOT.mapPinLeft}; top: ${DEPOT.mapPinTop};`} title="Falkirk container">
-              <div class="pin-icon w-8 h-8 rounded-full bg-[#F7BA1E] border-2 border-[#111111] flex items-center justify-center text-[#111111] font-black text-xs shadow-2xl map-pin-pulse">
+              <div class="pin-icon w-5 h-5 rounded-full bg-[#F7BA1E] border-2 border-[#111111] flex items-center justify-center text-[#111111] font-black text-[9px] shadow-2xl map-pin-pulse">
                 <i class="fa-solid fa-star"></i>
               </div>
             </button>
 
             <!-- PIN 2: Cobleland Campsite -->
-            <button type="button" data-pin="cobleland" id="pin-cobleland" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 50%; top: 65%;" title="Cobleland Campsite">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl active-map-pin">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="cobleland" id="pin-cobleland" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 52.8%; top: 67.2%;" title="Cobleland · Cosy Holidays">
+              <div class="pin-icon pin-icon--holidays w-5 h-5 rounded-full bg-[#111111] border-2 border-[#F7BA1E] overflow-hidden shadow-xl active-map-pin">
+                <img src="/favicon.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 3: Loch Chon Campsite -->
-            <button type="button" data-pin="lochchon" id="pin-lochchon" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 47%; top: 63%;" title="Loch Chon Campsite">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="lochchon" id="pin-lochchon" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 50.6%; top: 65.4%;" title="Loch Chon · DIY">
+              <div class="pin-icon pin-icon--diy w-5 h-5 rounded-full bg-[#111111] border-2 border-[#7D6E23] overflow-hidden shadow-xl">
+                <img src="/favicon-diy.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 4: Sallochy Campsite -->
-            <button type="button" data-pin="sallochy" id="pin-sallochy" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 44%; top: 66%;" title="Sallochy Campsite">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="sallochy" id="pin-sallochy" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 49.8%; top: 68%;" title="Sallochy · DIY">
+              <div class="pin-icon pin-icon--diy w-5 h-5 rounded-full bg-[#111111] border-2 border-[#7D6E23] overflow-hidden shadow-xl">
+                <img src="/favicon-diy.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 5: Luss Campsite -->
-            <button type="button" data-pin="luss" id="pin-luss" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 43%; top: 68%;" title="Luss Campsite">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="luss" id="pin-luss" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 48.6%; top: 69%;" title="Luss · DIY">
+              <div class="pin-icon pin-icon--diy w-5 h-5 rounded-full bg-[#111111] border-2 border-[#7D6E23] overflow-hidden shadow-xl">
+                <img src="/favicon-diy.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 6: Fidden Farm Campsite (Mull) -->
-            <button type="button" data-pin="fidden" id="pin-fidden" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 32%; top: 59%;" title="Fidden Farm Campsite (Mull)">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="fidden" id="pin-fidden" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 33.8%; top: 57.8%;" title="Fidden Farm · Cosy Holidays">
+              <div class="pin-icon pin-icon--holidays w-5 h-5 rounded-full bg-[#111111] border-2 border-[#F7BA1E] overflow-hidden shadow-xl">
+                <img src="/favicon.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 7: Red Squirrel Campsite (Glencoe) -->
-            <button type="button" data-pin="redsquirrel" id="pin-redsquirrel" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 40%; top: 51%;" title="Red Squirrel Campsite (Glencoe)">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#7D6E23] border-2 border-white flex items-center justify-center text-white text-[11px] shadow-xl">
-                <i class="fa-solid fa-tent"></i>
+            <button type="button" data-pin="redsquirrel" id="pin-redsquirrel" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 43.2%; top: 52.4%;" title="Red Squirrel · Cosy Holidays">
+              <div class="pin-icon pin-icon--holidays w-5 h-5 rounded-full bg-[#111111] border-2 border-[#F7BA1E] overflow-hidden shadow-xl">
+                <img src="/favicon.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
 
             <!-- PIN 8: Durness Coastal Spot -->
-            <button type="button" data-pin="durness" id="pin-durness" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 49%; top: 19%;" title="Durness Coastal Area (NC500)">
-              <div class="pin-icon w-7 h-7 rounded-full bg-[#111111] border-2 border-[#F7BA1E] flex items-center justify-center text-[#F7BA1E] text-[11px] shadow-xl">
-                <i class="fa-solid fa-compass"></i>
+            <button type="button" data-pin="durness" id="pin-durness" class="map-pin-btn absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 z-30" style="left: 45.4%; top: 30.2%;" title="Durness · Cosy Holidays">
+              <div class="pin-icon pin-icon--holidays w-5 h-5 rounded-full bg-[#111111] border-2 border-[#F7BA1E] overflow-hidden shadow-xl">
+                <img src="/favicon.svg" alt="" width="32" height="32" class="w-full h-full pointer-events-none" />
               </div>
             </button>
+            </div>
           </div>
         </div>
 
@@ -137,6 +164,10 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
             </div>
 
             <h3 id="mapCardTitle" class="font-display font-black text-2xl text-[#111111] mb-1">Cobleland Campsite</h3>
+            <p id="mapCardHolidays" class="mb-2 flex items-center gap-2 bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg w-fit">
+              <img src="/favicon.svg" alt="" width="16" height="16" class="h-4 w-4 rounded-[3px] shrink-0" />
+              Cosy Holidays site
+            </p>
             <p id="mapCardRegion" class="text-[#7D6E23] text-xs font-bold mb-3">Gartmore, Stirling • Queen Elizabeth Forest Park</p>
             <p id="mapCardDesc" class="text-stone-600 text-xs leading-relaxed mb-4">
               {cobleland.desc}
@@ -205,6 +236,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={cobleland} />
               <CampsiteJournalButton slug={cobleland.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://www.coblelandcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -240,6 +272,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={redsquirrel} />
               <CampsiteJournalButton slug={redsquirrel.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -275,6 +308,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={fidden} />
               <CampsiteJournalButton slug={fidden.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://fiddenfarm.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -309,6 +343,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={lochchon} />
               <CampsiteJournalButton slug={lochchon.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -343,6 +378,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={sallochy} />
               <CampsiteJournalButton slug={sallochy.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -358,6 +394,9 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
 
         <!-- Campsite 5: Luss -->
         <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="loch">
+          <div class="bg-stone-800 text-[#F7BA1E] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1">
+            {CAMPSITE_ROUTES.luss.badge}
+          </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_glen_Luss.jpg" alt="Luss Campsite" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Luss'"/>
             <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NS 359 932</span>
@@ -370,10 +409,11 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                 <span class="text-[#7D6E23] text-xs font-semibold">Loch Lomond</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Nestled near the historic village of Luss along the west bank of Loch Lomond. Scenic water's-edge pitching with panoramic views across to Ben Lomond.
+                {CAMPSITE_ROUTES.luss.desc}
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={CAMPSITE_ROUTES.luss} />
               <CampsiteJournalButton slug={CAMPSITE_ROUTES.luss.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://www.lusscampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
@@ -388,7 +428,11 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
         </div>
 
         <!-- Campsite 7: Durness Wild Spot -->
-        <div class="campsite-card bg-white rounded-xl overflow-hidden border-2 border-[#F7BA1E]/60 shadow-md flex flex-col" data-region="wild">
+        <div class="campsite-card bg-white rounded-xl overflow-hidden border-2 border-[#F7BA1E] shadow-md flex flex-col" data-region="wild">
+          <div class="bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><img src="/favicon.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[2px] shrink-0" /> {CAMPSITE_ROUTES.durness.badge}</span>
+            <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">WILD</span>
+          </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_durness_wild.jpg" alt="Durness Wild Coastal Spot" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Durness+Wild'"/>
             <span class="absolute top-3 left-3 bg-black/70 text-[#F7BA1E] border border-[#F7BA1E]/40 font-mono text-xs px-2.5 py-1 rounded">SECRET GRID: NC 40* ***</span>
@@ -404,10 +448,11 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                 <span class="text-[#D4A51E] text-xs font-bold">North Coast 500</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Secluded wild coastal headland with panoramic ocean sunset views over Balnakeil cliffs. We keep the exact pitch location private to protect the spot.
+                {CAMPSITE_ROUTES.durness.desc}
               </p>
             </div>
             <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteBookButton site={CAMPSITE_ROUTES.durness} />
               <CampsiteJournalButton slug={CAMPSITE_ROUTES.durness.journalSlug} />
               <div class="flex items-center justify-between text-xs">
                 <a href="https://www.outdooraccess-scotland.scot/" target="_blank" rel="noopener" class="text-[#D4A51E] font-bold hover:underline flex items-center gap-1.5">
@@ -541,6 +586,16 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
     document.getElementById('mapCardImg').src = data.img;
     document.getElementById('mapCardElevation').innerText = data.elevation;
     document.getElementById('mapCardTitle').innerText = data.title;
+    const holidays = document.getElementById('mapCardHolidays');
+    if (holidays) {
+      if (data.badge === 'Cosy Holidays') {
+        holidays.classList.remove('hidden');
+        holidays.classList.add('flex');
+      } else {
+        holidays.classList.add('hidden');
+        holidays.classList.remove('flex');
+      }
+    }
     document.getElementById('mapCardRegion').innerText = data.region;
     document.getElementById('mapCardDesc').innerText = data.desc;
     document.getElementById('mapCardSuitability').innerText = data.suitability;
@@ -650,18 +705,20 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
     color: #4F571A !important;
   }
   .active-map-pin {
-    transform: scale(1.35) !important;
+    transform: scale(1.2) !important;
     border-color: #F7BA1E !important;
+    box-shadow: 0 0 18px rgba(247, 186, 30, 0.9) !important;
+  }
+  .active-map-pin:not(.pin-icon--holidays):not(.pin-icon--diy) {
     background-color: #111111 !important;
     color: #F7BA1E !important;
-    box-shadow: 0 0 18px rgba(247, 186, 30, 0.9) !important;
   }
   .map-pin-btn .pin-icon {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
   .map-pin-btn:hover .pin-icon {
-    transform: scale(1.25) !important;
+    transform: scale(1.15) !important;
   }
   .map-pin-pulse {
     animation: pinPulse 2s infinite;

@@ -58,6 +58,7 @@ export interface BookingRecord {
   kitOps?: KitInspection;
   eventSlug?: string;
   conciergeRequested?: boolean;
+  partnerSiteKey?: string;
 }
 
 export interface BookingLogistics {

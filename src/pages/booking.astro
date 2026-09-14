@@ -1,6 +1,12 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { cosyHolidaysSites } from "../lib/campsites";
+import { getAllBookings } from "../lib/booking-store";
+import { takenDurnessMonthKeys, upcomingDurnessSlots } from "../lib/durness";
+
 const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
+const holidaysSites = cosyHolidaysSites();
+const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBookings()));
 ---
 
 <Layout
@@ -950,6 +956,43 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                             >
                         </div>
 
+                        <div class="mb-4">
+                            <label for="partner-site" class="block text-[11px] font-display font-extrabold uppercase tracking-wider text-stone-600 mb-1.5">
+                                Cosy Holidays partner site
+                            </label>
+                            <select
+                                id="partner-site"
+                                class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                            >
+                                <option value="">Other campsite — add at checkout</option>
+                                {holidaysSites.map((site) => (
+                                    <option value={site.key} data-title={site.title}>{site.destShort}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div id="durness-slot-wrap" class="hidden mb-4 space-y-2">
+                            <p class="text-[11px] text-stone-600 leading-relaxed">
+                                One Cosy Holidays stay a month. Once it is gone, it is gone. April to the first week of September.
+                            </p>
+                            <div id="durness-slot-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2" data-slots={JSON.stringify(durnessSlots)}></div>
+                            <p id="durness-slot-empty" class="hidden text-[11px] font-bold text-[#7D6E23]">The wild Durness months are fully booked.</p>
+                        </div>
+
+                        <div id="partner-concierge-row" class="hidden mb-4 bg-[#111111] text-stone-200 p-3.5 rounded-2xl border border-[#F7BA1E]">
+                            <div class="flex items-start gap-2.5">
+                                <span class="relative shrink-0 mt-0.5">
+                                    <img src="/favicon.svg" alt="" width="22" height="22" class="h-[22px] w-[22px] rounded-[5px]" />
+                                    <i class="fa-solid fa-circle-check text-[#F7BA1E] text-[11px] absolute -right-1.5 -bottom-1.5 bg-[#111111] rounded-full"></i>
+                                </span>
+                                <div>
+                                    <p class="font-display font-extrabold text-[11px] uppercase tracking-wider text-[#F7BA1E]">Partner site complete</p>
+                                    <p class="font-display font-bold text-xs text-white mt-0.5">Cosy Concierge with Trystan</p>
+                                    <p class="text-[10px] text-stone-400 mt-0.5 leading-snug">Included. He holds the dates, talks to the campsite, and has the canvas waiting.</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Total & Deposit Breakdown Box -->
                         <div class="py-4 mb-5 border-y border-stone-200 bg-[#FAF7EE] px-4 rounded-2xl border border-stone-200 space-y-3">
                             <!-- Total Stay Package Value -->
@@ -1141,7 +1184,7 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                         placeholder="e.g. Loch Lomond Holiday Park (Pitch 14) or OS Grid Ref"
                         class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
                     />
-                    <p class="text-[11px] text-stone-500 mt-1">DIY pickup is the Falkirk container. Deluxe: enter the campsite name or pitch.</p>
+                    <p class="text-[11px] text-stone-500 mt-1">DIY pickup is the Falkirk container. Cosy Holidays partner sites are chosen in the booking summary. Deluxe: add a pitch number if you have one.</p>
                 </div>
 
                 <div>
@@ -1242,6 +1285,8 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
             beachtoys: false,
         },
         fulfillment: "deluxe",
+        partnerSiteKey: "",
+        durnessSlotKey: "",
         depositPercent: 50,
         depositAmount: 0,
         securityDeposit: 200,
@@ -1252,6 +1297,101 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
     };
 
     let stripeEmbeddedCheckoutInstance = null;
+
+    function partnerSiteTitle(key) {
+        const option = document.querySelector(`#partner-site option[value="${key}"]`);
+        return option?.getAttribute("data-title") || option?.textContent || "";
+    }
+
+    function addDaysIso(iso, days) {
+        const d = new Date(`${iso}T12:00:00`);
+        d.setDate(d.getDate() + days);
+        return d.toISOString().split("T")[0];
+    }
+
+    function setDateWindow(min, max) {
+        const checkinEl = document.getElementById("checkin-date");
+        const checkoutEl = document.getElementById("checkout-date");
+        if (!checkinEl || !checkoutEl) return;
+        checkinEl.min = min || "";
+        checkinEl.max = max || "";
+        checkoutEl.min = min ? addDaysIso(min, 2) : "";
+        checkoutEl.max = max ? addDaysIso(max, 2) : "";
+    }
+
+    function renderDurnessSlots() {
+        const list = document.getElementById("durness-slot-list");
+        const empty = document.getElementById("durness-slot-empty");
+        if (!list) return;
+        const slots = JSON.parse(list.getAttribute("data-slots") || "[]");
+        list.innerHTML = "";
+        if (!slots.length) {
+            empty?.classList.remove("hidden");
+            return;
+        }
+        empty?.classList.add("hidden");
+        slots.forEach((slot) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.setAttribute("data-slot", slot.key);
+            btn.className = slot.available
+                ? "rounded-xl border-2 border-stone-200 bg-white px-3 py-2 text-left hover:border-[#F7BA1E] transition"
+                : "rounded-xl border-2 border-stone-100 bg-stone-50 px-3 py-2 text-left opacity-60 cursor-not-allowed";
+            btn.disabled = !slot.available;
+            btn.innerHTML = slot.available
+                ? `<span class="block font-display font-extrabold text-[11px] uppercase tracking-wider text-[#111111]">${slot.label}</span><span class="block text-[10px] text-stone-500 mt-0.5">Open</span>`
+                : `<span class="block font-display font-extrabold text-[11px] uppercase tracking-wider text-stone-500">${slot.label}</span><span class="block text-[10px] text-stone-400 mt-0.5">Gone</span>`;
+            if (slot.available) {
+                btn.addEventListener("click", () => applyDurnessSlot(slot));
+            }
+            list.appendChild(btn);
+        });
+    }
+
+    function highlightDurnessSlot(key) {
+        document.querySelectorAll("#durness-slot-list [data-slot]").forEach((btn) => {
+            const active = btn.getAttribute("data-slot") === key && !btn.disabled;
+            btn.classList.toggle("border-[#F7BA1E]", active);
+            btn.classList.toggle("bg-amber-50", active);
+        });
+    }
+
+    function applyDurnessSlot(slot) {
+        bookingState.durnessSlotKey = slot.key;
+        setDateWindow(slot.min, slot.max);
+        const checkinEl = document.getElementById("checkin-date");
+        const checkoutEl = document.getElementById("checkout-date");
+        if (checkinEl) checkinEl.value = slot.min;
+        if (checkoutEl) checkoutEl.value = addDaysIso(slot.min, 2);
+        highlightDurnessSlot(slot.key);
+        updateDates();
+    }
+
+    function applyPartnerSite(key) {
+        bookingState.partnerSiteKey = key || "";
+        bookingState.durnessSlotKey = "";
+        const conciergeRow = document.getElementById("partner-concierge-row");
+        const durnessWrap = document.getElementById("durness-slot-wrap");
+        const campsiteInput = document.getElementById("cust-campsite");
+        if (key) {
+            conciergeRow?.classList.remove("hidden");
+            selectFulfillment("deluxe");
+            if (campsiteInput && !campsiteInput.value.trim()) {
+                campsiteInput.value = partnerSiteTitle(key);
+            } else if (campsiteInput) {
+                campsiteInput.value = partnerSiteTitle(key);
+            }
+        } else {
+            conciergeRow?.classList.add("hidden");
+        }
+        if (key === "durness") {
+            durnessWrap?.classList.remove("hidden");
+            renderDurnessSlots();
+        } else {
+            durnessWrap?.classList.add("hidden");
+            setDateWindow("", "");
+        }
+    }
 
     function changeGuests(delta) {
         let newCount = bookingState.guests + delta;
@@ -1546,6 +1686,14 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
 
     // Modal and Stripe Checkout Logic
     function openCheckoutModal() {
+        if (bookingState.partnerSiteKey === "durness" && !bookingState.durnessSlotKey) {
+            alert("Pick an open Durness month first. One stay a month, and once it is gone, it is gone.");
+            return;
+        }
+        const campsiteInput = document.getElementById("cust-campsite");
+        if (bookingState.partnerSiteKey && campsiteInput && !campsiteInput.value.trim()) {
+            campsiteInput.value = partnerSiteTitle(bookingState.partnerSiteKey);
+        }
         const modal = document.getElementById("checkout-modal");
         const checkin = document.getElementById("checkin-date").value;
         const checkout = document.getElementById("checkout-date").value;
@@ -1581,8 +1729,18 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
         const email = document.getElementById("cust-email").value.trim();
         const phone = document.getElementById("cust-phone").value.trim();
         const address = document.getElementById("cust-address").value.trim();
-        const campsite = document.getElementById("cust-campsite").value.trim();
+        const campsiteInput = document.getElementById("cust-campsite");
+        if (bookingState.partnerSiteKey && campsiteInput && !campsiteInput.value.trim()) {
+            campsiteInput.value = partnerSiteTitle(bookingState.partnerSiteKey);
+        }
+        const campsite = campsiteInput.value.trim();
         const requests = document.getElementById("cust-requests").value.trim();
+
+        if (bookingState.partnerSiteKey === "durness" && !bookingState.durnessSlotKey) {
+            errorBanner.innerText = "Pick an open Durness month in the booking summary. One stay a month — once it is gone, it is gone.";
+            errorBanner.classList.remove("hidden");
+            return;
+        }
 
         if (!name || !email || !phone || !campsite) {
             errorBanner.innerText = "Please fill in all required fields (Name, Email, Phone, and Destination Campsite).";
@@ -1608,6 +1766,8 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                 customerAddress: address,
                 campsiteLocation: campsite,
                 specialRequests: requests,
+                partnerSiteKey: bookingState.partnerSiteKey || "",
+                conciergeRequested: Boolean(bookingState.partnerSiteKey),
             };
 
             const response = await fetch("/api/create-checkout-session", {
@@ -1711,6 +1871,10 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
                 ?.addEventListener("change", () => toggleAddon(key));
         });
 
+        document.getElementById("partner-site")?.addEventListener("change", (event) => {
+            applyPartnerSite(event.target.value);
+        });
+
         // Book button -> Opens customer details modal
         document
             .getElementById("btn-book-now")
@@ -1757,7 +1921,25 @@ const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
 
         updateDates();
         selectBedding("cosy");
-        selectFulfillment("deluxe");
+        const params = new URLSearchParams(window.location.search);
+        const fulfillment = params.get("fulfillment");
+        const campsite = params.get("campsite");
+        selectFulfillment(fulfillment === "diy" ? "diy" : "deluxe");
+        if (campsite) {
+            const campsiteInput = document.getElementById("cust-campsite");
+            if (campsiteInput) campsiteInput.value = campsite;
+            const match = [...document.querySelectorAll("#partner-site option")].find((option) => {
+                if (!option.value) return false;
+                const title = (option.getAttribute("data-title") || "").toLowerCase();
+                const label = (option.textContent || "").trim().toLowerCase();
+                const query = campsite.toLowerCase();
+                return query === title || query === label || query.includes(label) || title.includes(query);
+            });
+            if (match) {
+                document.getElementById("partner-site").value = match.value;
+                applyPartnerSite(match.value);
+            }
+        }
     });
 </script>
 

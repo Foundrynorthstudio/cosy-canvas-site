@@ -1,3 +1,4 @@
+import { COMPANY } from './company';
 import {
   DEPOT,
   estimateVanFuel,
@@ -102,8 +103,8 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     destShort: 'Cobleland',
     region: 'Gartmore, Stirling • Queen Elizabeth Forest Park',
     desc: 'We know Oliver and his team. Always friendly, always keeping the site running smoothly. Full electric hook-up or grass-only pitches, modern clean facilities, a sourdough pizza wagon at the weekend and a newly built covered veranda. The team loves the coffee from the barista machine in the shop. Book the pitch with Cobleland, send us your booking reference, and setup with us is pitch perfect.',
-    suitability: '4M, 5M & 6M · partner site, Deluxe setup',
-    badge: 'Partner site',
+    suitability: '4M, 5M & 6M · Cosy Holidays, bookable setup',
+    badge: 'Cosy Holidays',
     website: 'https://www.coblelandcampsite.co.uk/',
     gridRef: 'NS 539 800',
     miles: 28,
@@ -122,8 +123,8 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     destShort: 'Fidden',
     region: 'Fionnphort, Isle of Mull',
     desc: 'A special place. Remote, and you need the ferry to get there. The beach is hard to describe: pools of crystal-blue water and white sand at the southern tip of Mull. Book Fidden Farm directly, send us your booking reference, and we bring the canvas.',
-    suitability: '4M, 5M & 6M · partner site, Deluxe setup',
-    badge: 'Partner site',
+    suitability: '4M, 5M & 6M · Cosy Holidays, bookable setup',
+    badge: 'Cosy Holidays',
     website: 'https://fiddenfarm.co.uk/',
     gridRef: 'NM 301 214',
     miles: 155,
@@ -182,8 +183,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Luss Campsite',
     destShort: 'Luss',
     region: 'Loch Lomond West Bank',
-    desc: 'Near Luss village on the west bank of Loch Lomond, with views across to Ben Lomond.',
-    suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
+    desc: 'Near Luss village on the west bank of Loch Lomond, with views across to Ben Lomond. DIY from the Falkirk container.',
+    suitability: '4M, 5M & 6M · DIY',
+    badge: 'DIY',
     website: 'https://www.lusscampsite.co.uk/',
     gridRef: 'NS 359 932',
     miles: 44,
@@ -201,9 +203,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Red Squirrel Campsite',
     destShort: 'Red Squirrel',
     region: 'Glen Coe, Lochaber • River Coe woodland',
-    desc: 'Wild camping with hot water and showers. An iconic Glen Coe spot — wild, and wildly popular. The views are spectacular, the drive incredible, and the staff give a real Highland welcome at check-in. Riverside, forest and grass pitches. Book the pitch with Red Squirrel, send us your booking reference, and setup with us is pitch perfect.',
-    suitability: 'Best for 4M (2 guests). Partner site, Deluxe setup',
-    badge: 'Partner site',
+    desc: 'Wild camping with hot water and showers. An iconic Glen Coe spot — wild, and wildly popular. The views are spectacular, the drive incredible, and the staff give a real Highland welcome at check-in. Riverside, forest and grass pitches. About two hours from Glasgow, and a place we can do Cosy Holidays well: book the pitch with Red Squirrel, send us your booking reference, and setup with us is pitch perfect.',
+    suitability: 'Best for 4M (2 guests). Cosy Holidays, bookable setup',
+    badge: 'Cosy Holidays',
     website: 'https://redsquirrelcampsite.co.uk/',
     journalSlug: 'red-squirrel-campsite-glencoe',
     gridRef: 'NN 105 577',
@@ -222,8 +224,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Durness Coastal Spot',
     destShort: 'Durness',
     region: 'Sutherland, NC500 (Wild Spot)',
-    desc: 'Secluded wild coastal headland with panoramic ocean sunset views over Balnakeil cliffs. We keep the exact pitch location private to protect the spot. The map below is the public road into Durness village, not the pitch.',
-    suitability: '4M & 6M Tents (Bespoke Setup Only)',
+    desc: 'Wide sky, the Atlantic, canvas on a headland you cannot drive to. Paradise in Scotland. We train all year on this carry to make the stay magical for you. We only do it once a month, with a thorough clean-up before and after. Trystan on Cosy Concierge makes the walk-in personal. The exact spot stays private.',
+    suitability: '4M & 6M · Cosy Holidays wild setup',
+    badge: 'Cosy Holidays',
     website: 'https://www.outdooraccess-scotland.scot/',
     gridRef: 'NC 40* ***',
     miles: 250,
@@ -235,6 +238,26 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
   }),
 };
 
-export function getCampsiteRoute(key: string): CampsiteRoute | undefined {
-  return CAMPSITE_ROUTES[key];
+export function cosyHolidaysSites(): CampsiteRoute[] {
+  return (['cobleland', 'redsquirrel', 'fidden', 'durness'] as const).map((key) => CAMPSITE_ROUTES[key]);
+}
+
+export function isCosyHolidaysSite(site: CampsiteRoute): boolean {
+  return site.badge === 'Cosy Holidays';
+}
+
+export function cosyConciergeMailto(siteTitle?: string): string {
+  const subject = siteTitle ? `Cosy Concierge · ${siteTitle}` : 'Cosy Concierge';
+  const stayLine = siteTitle
+    ? `I would like to book a Cosy Holidays stay at ${siteTitle}.`
+    : 'I would like help booking a Cosy Holidays stay.';
+  const body = `Hi Trystan,\n\n${stayLine}\n\nDates:\nPreferred site:\nParty size:\n\n`;
+  return `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+export function campsiteBookHref(site: CampsiteRoute): string {
+  if (isCosyHolidaysSite(site)) {
+    return `/booking?campsite=${encodeURIComponent(site.title)}`;
+  }
+  return `/booking?fulfillment=diy&campsite=${encodeURIComponent(site.title)}`;
 }
