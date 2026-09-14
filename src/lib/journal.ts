@@ -75,7 +75,7 @@ export const SEED_POSTS: JournalPost[] = [
     slug: "michelle-rat-race-fort-william",
     title: "Michelle, Danny, and a couple of days at Coast to Coast",
     excerpt:
-      "Morrisons on the way in, a stuffed car, hectic Saturday setup, and pack-up with Michelle and Danny. Plus an NFC Power a Life × Rat Race bottle dropping before Christmas 2026.",
+      "Morrisons on the way in, Saturday undercanvas in the mountains, and pack-up with Michelle and Danny. Plus an NFC Power a Life × Rat Race bottle dropping before Christmas 2026.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
@@ -95,23 +95,21 @@ export const SEED_POSTS: JournalPost[] = [
     keywords:
       "rat race camping scotland, bell tent hire fort william, event glamping scotland, 6m bell tent, cosy canvas journal",
     content: `
-This post is about **Michelle** and **Danny**, and how a couple of days on the [Rat Race](/events/rat-race) Coast to Coast field came together.
+A massive thank you to Michelle and Danny for everything at Rat Race Scotland Coast to Coast 2026 — bring on 2027 ;)
 
 ---
 
-## Saturday: hectic setup
+## Saturday undercanvas in the mountains
 
 The **Morrisons** dash happened on the way to the campsite. The car was already full of kit. Adding the shop made it properly stuffed. That is a lesson you only need once: next year there will be a van.
 
-That is also why click and collect is now a real part of the offering for **Cosy Hotel** guests. Build the shop list, we collect it, and it is in the tent at check-in.
+That could however be an offering to attendees, with click and collect from Morrisons Fort William. Build the shop list, we collect it, and it is in the tent at check-in.
 
 The morning on site was still hectic. Kit out, a 6M to get standing on the organiser’s pop-up campsite, a weather window that would not wait.
 
 When I got there, **Michelle** was there to welcome us. She was amazing. Long in the game — 19 years, due to retire next year having made 20. If we see her again next year, the retirement party at Rat Race Scotland Coast to Coast is on us.
 
-Plenty of introductions from Michelle to the management team for next year, and for other events. Plenty of encouraging feedback. Impressed with what we set up for our guests.
-
-A big thank you to Michelle.
+Lots of introductions from Michelle to the management team for next year, and for other events. Plenty of encouraging feedback. Impressed with what we set up for our guests.
 
 <div class="photo-pair">
 <figure>
@@ -127,7 +125,7 @@ A big thank you to Michelle.
 <div class="photo-pair">
 <figure>
 <img src="/journal/michelle-rat-race/deluxe-kitchen.jpg" alt="Inside the 6M: camp kitchen, table, chairs and a cooler of drinks">
-<figcaption>Kitchen, table, chairs. The deluxe pitch they asked to run again next year.</figcaption>
+<figcaption>Kitchen was requested, but feedback from organisers is no kitchens for next year.</figcaption>
 </figure>
 <figure>
 <img src="/journal/michelle-rat-race/beds-ready.jpg" alt="Airbeds and sleeping bags made up around the centre pole of the 6M bell tent">
@@ -166,7 +164,7 @@ He loved it. Nothing but positive and encouraging. Cheered me on from the sideli
 
 Proper gent. Introductions made on the phone together, emails and phone numbers exchanged. A rising tide floats all boats.
 
-Thank you, Danny.
+A huge thank you to Michelle and Danny, and to the Rat Race team who made those couple of days so easy.
 
 ---
 
@@ -183,7 +181,7 @@ We have had two or three days to gather our thoughts and build the [booking engi
 
 ## Concepts for next year
 
-Watch this space. The pictures below are the vision — Cosy Hotel rooms and an event check-in. The real product will not be wooden-framed furniture. Lightweight, comfy camping gear. Same feeling, less timber. Configurable with or without a gas hob. Projectors and solar as possible add-ons.
+Watch this space. The pictures below are the vision — Cosy Hotel rooms and an event check-in. The real product will not be wooden-framed furniture, but lightweight, comfy camping gear. Same feeling, less timber. Indoor seating, lounge and kitchen so the tent stays liveable when the weather is typically Scottish. No gas hob. Projectors and solar as possible add-ons.
 
 <div class="photo-stack">
 <figure>
@@ -195,8 +193,8 @@ Watch this space. The pictures below are the vision — Cosy Hotel rooms and an 
 <figcaption>Event check-in. Concept for how Cosy Hotel guests arrive on the field.</figcaption>
 </figure>
 <figure>
-<img src="/events/layouts/6m-deluxe-5.svg" alt="6M Deluxe layout for up to five guests">
-<figcaption>6M Deluxe mixer — up to five. The packing we are locking in for 2027.</figcaption>
+<img src="/events/layouts/6m-deluxe-5.svg" alt="6M Deluxe layout for up to six guests">
+<figcaption>6M Deluxe mixer — up to six. The packing we are locking in for 2027.</figcaption>
 </figure>
 </div>
 

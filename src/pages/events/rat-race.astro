@@ -82,7 +82,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   <div class="bg-[#111111]">
     <img
       src={RAT_RACE_2027.photos.deluxeFive}
-      alt="Deluxe 6M laid out for five: kitchen half, table, chairs and airframe beds"
+      alt="Deluxe 6M laid out for five: lounge and kitchen seating with airframe beds"
       class="w-full max-h-56 md:max-h-72 object-cover object-center"
     />
   </div>
@@ -90,13 +90,13 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   <section class="py-14 border-b border-stone-200/80">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 lg:items-stretch">
       <article class="flex flex-col h-full">
-        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">Village setup</p>
-        <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Saturday is the guest night</h2>
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">The night</p>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Saturday night under canvas</h2>
         <p class="text-stone-600 leading-relaxed mb-4">
-          You sleep <strong>Saturday night</strong>. We pitch Friday, you move in Saturday, we pack up on Sunday 12 September — billed for the night you stay. Village setup is in the rate: we are on the field to check you in, show you the tent, and stay close if anything needs a hand.
+          Sleep under canvas in the Scottish Highlands. The local shinty pitch is the perfect place to pitch for the night — a Rat Race village on the Glengarry Shinty Club field. The setup is warm, cosy and ready for your arrival.
         </p>
         <p class="text-stone-600 leading-relaxed mb-4">
-          Booked the Morrisons concierge? We’ll collect the shop and have it at check-in for you when you arrive. These shots are this year’s Deluxe beds on the Rat Race campsite — the Glengarry Shinty Club field.
+          These shots are this year’s beds on that field. If you want the shop waiting too, Morrisons Fort William click and collect can be in the tent at check-in.
         </p>
         <ul class="text-sm text-stone-700 space-y-2 mb-6">
           <li class="flex gap-2"><i class="fa-solid fa-flag-checkered text-[#7D6E23] mt-0.5"></i> Enter the race on the <a class="underline font-semibold" href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer">official Rat Race page</a></li>
@@ -132,7 +132,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   <section id="rr-layouts" class="py-16 border-b border-stone-200/80 bg-white">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">4M and 6M mix</p>
-      <h2 class="font-display text-3xl font-black text-[#111111] mb-3">We pack the village from your headcount</h2>
+      <h2 class="font-display text-3xl font-black text-[#111111] mb-3">We build your tent in the village based on your party size</h2>
       <p class="text-stone-700 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-medium">
         Same price per person in a 4M or a 6M.
       </p>
@@ -144,7 +144,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
               <button type="button" class="rr-layout-pkg px-4 py-2 rounded-full text-xs font-display font-extrabold uppercase tracking-wider" data-pkg="cosy">Cosy</button>
               <button type="button" class="rr-layout-pkg px-4 py-2 rounded-full text-xs font-display font-extrabold uppercase tracking-wider is-on" data-pkg="deluxe">Deluxe +£{DELUXE_ADDON_PER_GUEST}</button>
             </div>
-            <p id="rr-layout-mix" class="font-display font-black text-[#111111] text-xl leading-tight">1 × 6M Deluxe · 5 guests</p>
+            <p id="rr-layout-mix" class="font-display font-black text-[#111111] text-xl leading-tight">1 × 6M Deluxe · 6 guests</p>
             <div>
               <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-layout-guests">Crew size</label>
               <div class="flex items-center gap-3">
@@ -162,9 +162,9 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
               <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">4M Deluxe</span>
               <span class="font-display font-black text-sm">2 guests</span>
             </button>
-            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="deluxe" data-guests="5">
+            <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="deluxe" data-guests="6">
               <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">6M Deluxe</span>
-              <span class="font-display font-black text-sm">Up to 5 guests</span>
+              <span class="font-display font-black text-sm">Up to 6 guests</span>
             </button>
             <button type="button" class="rr-layout-preset rounded-2xl bg-white border border-stone-200 px-3 py-3 text-left hover:border-[#F7BA1E]" data-pkg="cosy" data-guests="2">
               <span class="block text-[10px] uppercase tracking-wider font-bold text-stone-400">4M Cosy</span>
@@ -186,7 +186,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
         <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Mini booking engine</p>
         <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Guests and package</h2>
         <p class="text-stone-600 text-sm leading-relaxed mb-6">
-          Cosy is £{COSY_RATE_PER_GUEST} a guest from two people in a 4M. Deluxe is that plus £{DELUXE_ADDON_PER_GUEST} for airframes and a kitchen camp — 2 in a 4M, up to 5 in a 6M. Same rate in a 4M or a 6M — we pick the mix from your headcount. Setup included. £200 security deposit a tent on a card reader at Saturday check-in. Pay Up is two months now and ten after, interest-free, on a Stripe subscription — Klarna energy, not Klarna.
+          Cosy is £{COSY_RATE_PER_GUEST} a guest from two people in a 4M. Deluxe is that plus £{DELUXE_ADDON_PER_GUEST} for airframes and an indoor lounge and kitchen — 2 in a 4M, up to 6 in a 6M. Same rate in a 4M or a 6M — we pick the mix from your headcount. Setup included. £200 security deposit a tent on a card reader at Saturday check-in. Pay Up is two months now and ten after, interest-free, on a Stripe subscription — Klarna energy, not Klarna.
         </p>
         <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden text-sm text-stone-600">
           <img src={RAT_RACE_2027.photos.morrisons} alt="Morrisons Fort William shop in the Deluxe kitchen half" class="w-full h-44 object-cover" />
@@ -212,7 +212,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
               Last year our American guests asked us to pick up two loaves in Morrisons. Next year you can have yours delivered by Braw Bread.
             </p>
             <p class="text-stone-600 text-sm leading-relaxed">
-              Coast to Coast is a long day out. Athletes need carbs. Braw Bread is naturally leavened sourdough — a country boule with a blistered crust and an open, tangy crumb. Add a dozen thick cookies or a tray of six slow-proved cinnamon rolls if the field is going to ask for more. Plenty of calories for what you burn on the course, waiting in the tent at Saturday check-in.
+              Naturally leavened sourdough: a blistered crust and a tasty, open crumb. Cookies and cinnamon rolls if you want more waiting in the tent at Saturday check-in.
             </p>
             <div class="grid grid-cols-3 gap-2 items-stretch">
               {BRAW_BREAD_MENU.map((item) => (
@@ -260,7 +260,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
             <input type="radio" name="rr-package" value="deluxe" checked class="mt-1" />
             <span>
               <span class="block font-display font-black">Deluxe · +£{DELUXE_ADDON_PER_GUEST}</span>
-              <span class="text-xs text-stone-500">Cosy + airframes and a kitchen camp for the booking party. One kitchen per Deluxe booking.</span>
+              <span class="text-xs text-stone-500">Cosy + airframes, indoor seating, lounge and kitchen. No gas hob.</span>
             </span>
           </label>
         </fieldset>
@@ -406,7 +406,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   function isValidDeluxeGuests(n) {
     if (n < 2 || n > 40) return false;
     if (n === 3) return false;
-    if (n % 5 === 1) return false;
+    if (n % 6 === 1) return false;
     return true;
   }
 
@@ -511,7 +511,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
       minNote.textContent = `${quote.packageLabel} is billed for at least ${quote.minGuests} guests.`;
       minNote.classList.remove('hidden');
     } else if (quote.packageKind === 'deluxe' && quote.requestedGuests !== quote.guests) {
-      minNote.textContent = 'A Deluxe 4M needs two people, so we skip a leftover of one (6 becomes 7, 11 becomes 12).';
+      minNote.textContent = 'A Deluxe 4M needs two people, so we skip a leftover of one (7 becomes 8, 13 becomes 14).';
       minNote.classList.remove('hidden');
     } else {
       minNote.classList.add('hidden');
@@ -641,7 +641,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
 
   const layoutCaps = {
     cosy: { cap6: 10, cap4: 4, min: 2, label: 'Cosy' },
-    deluxe: { cap6: 5, cap4: 2, min: 2, label: 'Deluxe' },
+    deluxe: { cap6: 6, cap4: 2, min: 2, label: 'Deluxe' },
   };
   let layoutPkg = 'deluxe';
   let syncingCrew = false;

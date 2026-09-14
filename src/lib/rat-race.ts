@@ -67,15 +67,15 @@ export const RAT_RACE_PACKAGE_META: Record<
   },
   deluxe: {
     label: 'Deluxe',
-    capacity6: 5,
+    capacity6: 6,
     capacity4: 2,
-    capacity: 5,
+    capacity: 6,
     minGuests: 2,
     guestStep: 1,
     ratePerGuest: COSY_RATE_PER_GUEST + DELUXE_ADDON_PER_GUEST,
     addonPerGuest: DELUXE_ADDON_PER_GUEST,
     summary:
-      `Cosy sleep kit on airframes, plus the kitchen camp: a double-burner hob, gas, kitchen table, seating, and cutlery and crockery for the number of guests on the booking. £${DELUXE_ADDON_PER_GUEST} on top of Cosy.`,
+      `Cosy sleep kit on airframes, plus an indoor lounge and kitchen: seating, table, and a place to sit out typical Scottish weather. No gas hob. £${DELUXE_ADDON_PER_GUEST} on top of Cosy.`,
   },
 };
 
@@ -317,7 +317,7 @@ export function isValidDeluxeGuests(n: number): boolean {
   const guests = Math.round(n);
   if (guests < 2 || guests > MAX_GUESTS) return false;
   if (guests === 3) return false;
-  if (guests % 5 === 1) return false;
+  if (guests % 6 === 1) return false;
   return true;
 }
 
@@ -365,7 +365,7 @@ export function quoteRatRace(input: {
 
   const addons: RatRaceQuoteLine[] = [
     ...(packageKind === 'deluxe'
-      ? [{ title: `${guests} × Deluxe add-on @ £${DELUXE_ADDON_PER_GUEST} (airframes + kitchen camp)`, price: addonSlice }]
+      ? [{ title: `${guests} × Deluxe add-on @ £${DELUXE_ADDON_PER_GUEST} (airframes + indoor lounge and kitchen)`, price: addonSlice }]
       : []),
     ...breadLines,
   ];
