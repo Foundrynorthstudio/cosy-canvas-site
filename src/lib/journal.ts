@@ -73,65 +73,61 @@ export function wordCount(markdown: string): number {
 export const SEED_POSTS: JournalPost[] = [
   {
     slug: "michelle-rat-race-fort-william",
-    title: "Michelle, Danny, and a 6M on a Rat Race field",
+    title: "Michelle, Danny, and a couple of days at Coast to Coast",
     excerpt:
-      "Setup and pack-up with Michelle and Danny on the Coast to Coast field. They could not have been nicer — and the 6M felt like a home, not a pile of bags by a barrier.",
+      "Morrisons on the way in, a stuffed car, hectic Saturday setup, and pack-up with Michelle and Danny. Plus an NFC Power a Life × Rat Race bottle dropping before Christmas 2026.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
       name: "Jeremie",
       role: "Notes from the pitch",
     },
-    date: "12 September 2026",
-    isoDate: "2026-09-12T19:00:00Z",
-    readTime: "6 min read",
+    date: "14 September 2026",
+    isoDate: "2026-09-14T18:00:00Z",
+    readTime: "8 min read",
     featured: true,
     status: "published",
     image: "/journal/michelle-rat-race/6m-on-the-field.jpg",
     imageAlt: "A 6M Cosy Canvas bell tent pitched on the Rat Race event field north of Fort William",
-    seoTitle: "Michelle and Danny at Rat Race: a 6M north of Fort William",
+    seoTitle: "Michelle and Danny at Rat Race Coast to Coast",
     seoDescription:
-      "Meeting Michelle and Danny at Rat Race setup and pack-up: a deluxe 6M on the organiser’s pop-up campsite, and guests who could not have been nicer.",
+      "Coast to Coast with Michelle and Danny, Cosy Hotel concepts for 2027, and a Power a Life × Rat Race NFC bottle dropping before Christmas 2026.",
     keywords:
       "rat race camping scotland, bell tent hire fort william, event glamping scotland, 6m bell tent, cosy canvas journal",
     content: `
-This post is about **Michelle** and **Danny**.
-
-We met them on the [Rat Race](/events/rat-race) Coast to Coast field, just north of Fort William — first at setup, then again at pack-up. They could not have been nicer. Event days are noisy. Changing-room doors, first-aid kits on the wall, people already in the village while you are still counting poles. They kept the whole thing human. Calm when the kit was still a dump. Present when the canvas needed to feel like somewhere you would actually want to sleep after a long course.
-
-That is the job, really — not just getting a tent up, but making it kind. They made it easy to do both.
+This post is about **Michelle** and **Danny**, and how a couple of days on the [Rat Race](/events/rat-race) Coast to Coast field came together.
 
 ---
 
-## Setup
+## Saturday: hectic setup
 
-You start like this. Everything out of the van, stacked against the women’s changing block, Rat Race tape behind you. Groundsheets, airbeds, the 6M in its bag, a cooler, a trolley that has already done too many miles. It looks like chaos. It is just the inventory, waiting.
+The **Morrisons** dash happened on the way to the campsite. The car was already full of kit. Adding the shop made it properly stuffed. That is a lesson you only need once: next year there will be a van.
 
-Michelle and Danny did not flinch at that version of the day. They treated it like the beginning, not the mess. Friendly. Unfussed. The sort of guests you hope for when you have driven north with a cathedral tent and a weather window that will not wait.
+That is also why click and collect is now a real part of the offering for **Cosy Hotel** guests. Build the shop list, we collect it, and it is in the tent at check-in.
+
+The morning on site was still hectic. Kit out, a 6M to get standing on the organiser’s pop-up campsite, a weather window that would not wait.
+
+When I got there, **Michelle** was there to welcome us. She was amazing. Long in the game — 19 years, due to retire next year having made 20. If we see her again next year, the retirement party at Rat Race Scotland Coast to Coast is on us.
+
+Plenty of introductions from Michelle to the management team for next year, and for other events. Plenty of encouraging feedback. Impressed with what we set up for our guests.
+
+A big thank you to Michelle.
 
 <div class="photo-pair">
 <figure>
 <img src="/journal/michelle-rat-race/kit-by-the-barrier.jpg" alt="Hire kit piled on gravel beside a Rat Race barrier and the women’s changing rooms">
-<figcaption>The honest start. Kit by the barrier. This is what “we deliver, we set up” looks like before the canvas goes up.</figcaption>
+<figcaption>The honest start. Kit by the barrier, before the canvas goes up.</figcaption>
 </figure>
 <figure>
 <img src="/journal/michelle-rat-race/6m-door-open.jpg" alt="6M bell tent on the event field with the door open under a grey Highland sky">
-<figcaption>Then the field. Door open, guys out, the weather doing its usual Highland shrug.</figcaption>
+<figcaption>Then the field. Door open, guys out, Highland weather doing its shrug.</figcaption>
 </figure>
 </div>
-
----
-
-## What we actually pitched
-
-This was a **6M** on the event organiser’s pop-up campsite. Inside: kitchen, table and chairs, airframes made up with sleeping bags. The deluxe shape we now know Rat Race want back next year — and the budget shape too, up to ten in a 6M if that is the brief. Today was the lived-in version. Bottles by the cooler. A stove in the corner. Beds in a ring so nobody is sleeping in the doorway.
-
-I can put canvas on grass in my sleep. Making it feel looked-after is different. Michelle and Danny were the difference. The chairs faced each other. The beds were made, not dumped. You could walk in after a finish line and sit down without asking where you were allowed to put your bag.
 
 <div class="photo-pair">
 <figure>
 <img src="/journal/michelle-rat-race/deluxe-kitchen.jpg" alt="Inside the 6M: camp kitchen, table, chairs and a cooler of drinks">
-<figcaption>Kitchen, table, chairs. This is the deluxe pitch — the one they asked to run again next year.</figcaption>
+<figcaption>Kitchen, table, chairs. The deluxe pitch they asked to run again next year.</figcaption>
 </figure>
 <figure>
 <img src="/journal/michelle-rat-race/beds-ready.jpg" alt="Airbeds and sleeping bags made up around the centre pole of the 6M bell tent">
@@ -139,26 +135,82 @@ I can put canvas on grass in my sleep. Making it feel looked-after is different.
 </figure>
 </div>
 
----
-
-## Pack-up
-
-The bit I will remember is not only the white 6M on a green field. It is seeing them again at take-down.
-
-Pack-up is the unglamorous half. Damp guys, bags to fill, a field that wants its grass back. Michelle and Danny were the same people they had been at setup. Patient. Grateful. Still nice when the village was emptying and the work was folding canvas instead of opening a door.
-
-Thank you, both. Properly.
-
 <figure>
 <img src="/journal/michelle-rat-race/6m-on-the-field.jpg" alt="Finished 6M bell tent on the Rat Race field with blue sky and the event village beyond the trees">
-<figcaption>The 6M, done. North of Fort William. Rat Race in the trees. Michelle and Danny in the day, even if they are not in the frame.</figcaption>
+<figcaption>The 6M, done. North of Fort William. Rat Race in the trees.</figcaption>
 </figure>
 
-If you are planning an event village — Rat Race, a festival, a wedding field — this is the work. [Two 6M offerings](/events/rat-race) for next year: budget, up to ten; deluxe, with the kitchen, airframes, table and chairs. The canvas is the easy part. People like Michelle and Danny are why it lands.
+---
+
+## Traders, Belladrum, and Power a Life
+
+We know this world from the other side of the tape as well. Years of attending events as traders. The best case study we have from before Covid is **Belladrum**, with our other company, [Power a Life](https://www.poweralife.com).
+
+PAL is branded merch with a job attached: corporate kit that funds solar lights and education for children in Africa. We took that stall on the road. Belladrum was the year we found market fit — and then the pandemic nearly took it away. Crazy, looking at that vlog now, how much has happened since.
+
+<div class="video-embed">
+<iframe src="https://www.youtube-nocookie.com/embed/BkjhVOjst9E" title="Power a Life at Belladrum Tartan Heart Festival" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>
+
+---
+
+## Day two: pack-up
+
+I had promised Michelle that, given she had on-site security through till Monday, I would leave tear-down until early afternoon so as not to get in the way while the Rat Race team moved the event to the finish line.
+
+A thought for next year, sitting in that stuffed car: if people buy anything from the event evening on the Saturday, but do not want to carry it on the course, we can deliver it to the finish line for onward travel. The van will make that job a lot easier.
+
+When I turned up around 2pm, I met **Danny**. When people say salt of the earth, they mean people like Danny. Ex-army. Huge heart. Loves camping, and gear brands — Berghaus, The North Face, Rab. When I arrived he was testing out the sleep setup left in the tent. Had I known he needed a nap from the night shift, I would have arrived an hour later.
+
+He loved it. Nothing but positive and encouraging. Cheered me on from the sideline as I lugged it all back into the car, and had a coffee from a boiling canteen ready for me at the finish.
+
+Proper gent. Introductions made on the phone together, emails and phone numbers exchanged. A rising tide floats all boats.
+
+Thank you, Danny.
+
+---
+
+## What we have done since
+
+We have had two or three days to gather our thoughts and build the [booking engine](/events/rat-race). We have time before next year to refine it further and make the **Cosy Hotel** offering consistent across tents. Danny spotted a mattress and sleeping bag inconsistency as we swapped kit in and out. Same beds, same bags, same feel in every room.
 
 <div class="journal-cta">
-<a class="journal-btn journal-btn--olive" href="/events/rat-race">Rat Race glamping</a>
-<a class="journal-btn journal-btn--gold" href="/booking">Book Now</a>
+<a class="journal-btn journal-btn--olive" href="/events/rat-race">Book Rat Race 2027</a>
+<a class="journal-btn journal-btn--gold" href="/booking">Book a stay</a>
+</div>
+
+---
+
+## Concepts for next year
+
+Watch this space. The pictures below are the vision — Cosy Hotel rooms and an event check-in. The real product will not be wooden-framed furniture. Lightweight, comfy camping gear. Same feeling, less timber. Configurable with or without a gas hob. Projectors and solar as possible add-ons.
+
+<div class="photo-stack">
+<figure>
+<img src="/journal/michelle-rat-race/concept-6m-family.jpg" alt="Concept cutaway of a 6M Cosy Hotel family tent with beds, kitchen and living area">
+<figcaption>6M Cosy Hotel family layout. Concept — the beds and kitchen will be light camping kit, not wood frames.</figcaption>
+</figure>
+<figure>
+<img src="/journal/michelle-rat-race/concept-event-checkin.jpg" alt="Concept illustration of a Cosy Canvas event check-in canopy on a Highland campsite">
+<figcaption>Event check-in. Concept for how Cosy Hotel guests arrive on the field.</figcaption>
+</figure>
+<figure>
+<img src="/events/layouts/6m-deluxe-5.svg" alt="6M Deluxe layout for up to five guests">
+<figcaption>6M Deluxe mixer — up to five. The packing we are locking in for 2027.</figcaption>
+</figure>
+</div>
+
+---
+
+<div class="journal-pitch">
+<p class="journal-pitch-kicker">Power a Life × Rat Race</p>
+<h2>Tap the bottle. Land on the well.</h2>
+<p>A <strong>Power a Life × Rat Race</strong> bottle, dropping before Christmas 2026. NFC tagged. Scan it with your phone and you land on a <strong>what3words</strong> pin for the well in Zimbabwe your purchase funded. Kit you actually use — solar light and school still attached.</p>
+<p>The ask for 2027 is simple: team up across the Rat Race series and see how many wells the field can fund. We have the laser engraver in house for event merch, and for engraving or personalisation on site.</p>
+<div class="journal-cta">
+<a class="journal-btn journal-btn--gold" href="https://www.poweralife.com" target="_blank" rel="noopener noreferrer">Power a Life</a>
+<a class="journal-btn journal-btn--olive" href="/events/rat-race">Book Coast to Coast 2027</a>
+</div>
 </div>
     `,
   },

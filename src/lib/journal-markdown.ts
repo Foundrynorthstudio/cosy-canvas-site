@@ -6,7 +6,15 @@ marked.setOptions({
 });
 
 function sanitizeHtml(html: string): string {
-  return html
+  const youtube: string[] = [];
+  const withPlaceholders = html.replace(
+    /<iframe\b[^>]*\bsrc="https:\/\/www\.youtube(?:-nocookie)?\.com\/embed\/[A-Za-z0-9_-]+[^"]*"[^>]*>[\s\S]*?<\/iframe>/gi,
+    (match) => {
+      youtube.push(match);
+      return `<!--yt-embed-${youtube.length - 1}-->`;
+    },
+  );
+  let cleaned = withPlaceholders
     .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
     .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, '')
     .replace(/<object[\s\S]*?>[\s\S]*?<\/object>/gi, '')
@@ -14,6 +22,10 @@ function sanitizeHtml(html: string): string {
     .replace(/\son\w+="[^"]*"/gi, '')
     .replace(/\son\w+='[^']*'/gi, '')
     .replace(/javascript:/gi, '');
+  youtube.forEach((embed, index) => {
+    cleaned = cleaned.replace(`<!--yt-embed-${index}-->`, embed);
+  });
+  return cleaned;
 }
 
 export function headingId(text: string): string {
