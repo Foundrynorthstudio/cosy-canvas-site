@@ -1,9 +1,14 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import CampsiteJournalButton from '../components/CampsiteJournalButton.astro';
 import { CAMPSITE_ROUTES } from '../lib/campsites';
 import { DEPOT } from '../lib/depot';
 
 const cobleland = CAMPSITE_ROUTES.cobleland;
+const fidden = CAMPSITE_ROUTES.fidden;
+const lochchon = CAMPSITE_ROUTES.lochchon;
+const sallochy = CAMPSITE_ROUTES.sallochy;
+const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
 ---
 
 <Layout 
@@ -13,16 +18,27 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
   <!-- Page Header Banner -->
   <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">SCOTLAND DIRECTORY & WILD PITCHES</span>
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">HOW PITCHING WITH US WORKS</span>
       <h1 class="font-display text-3xl md:text-5xl font-black text-white">Recommended Scottish Campsites</h1>
-      <p class="text-stone-400 text-sm md:text-base mt-2 max-w-2xl font-light leading-relaxed">
-        Explore our recommended pitch locations across Scotland. Click any pin on our custom contour map or select a site below for the Google road route, typical drive time, and fuel from our Falkirk container.
+      <p class="text-stone-400 text-sm md:text-base mt-2 max-w-3xl font-light leading-relaxed">
+        We have great working relationships with three sites we know and love — Cobleland, Red Squirrel and Fidden Farm — where setup with us is pitch perfect. Book the campsite directly with them, then send us the booking reference so we can confirm the reservation. Loch Chon and Sallochy are National Park pitches: DIY from the Falkirk container.
       </p>
     </div>
   </div>
 
   <section class="py-12 border-b border-stone-200/80 relative z-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="rounded-3xl border border-stone-200 bg-white p-6 sm:p-8 mb-12 max-w-4xl">
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Pitching with Cosy Canvas</p>
+        <h2 class="font-display text-2xl font-black text-[#111111] mb-3">Book the field. We bring the canvas.</h2>
+        <p class="text-stone-600 text-sm leading-relaxed mb-3">
+          For Cobleland, Red Squirrel and Fidden Farm we only need your campsite booking reference. That lets us confirm the reservation with the site and pitch. You book the pitch directly with the campsite — we do not hold their inventory.
+        </p>
+        <p class="text-stone-600 text-sm leading-relaxed">
+          Loch Chon and Sallochy sit in the National Park, so those stays are DIY from our Falkirk container. Sallochy is a peaceful favourite that does not want to be busy. Loch Chon is precious to the team — a journal post is coming.
+        </p>
+      </div>
       
       <!-- Side-by-Side Flex Container (Inlined CSS for Guaranteed Desktop Grid) -->
       <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background-color: #ffffff; border-radius: 1.5rem; padding: 1.5rem; border: 1px solid rgba(229, 231, 235, 0.8); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);" class="mb-12">
@@ -130,9 +146,17 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
           <div class="pt-4 border-t border-stone-200/80 space-y-3">
             <div class="flex items-center justify-between text-xs text-stone-600">
               <span class="font-semibold">Pitch Suitability:</span>
-              <span id="mapCardSuitability" class="font-bold text-[#111111]">Suitable for 4M, 5M & 6M Bell Tents</span>
+              <span id="mapCardSuitability" class="font-bold text-[#111111]">{cobleland.suitability}</span>
             </div>
 
+            <div id="mapCardJournalRow" class="pt-1">
+              <a id="mapCardJournal" href="/journal/red-squirrel-campsite-glencoe" class="hidden w-full text-center bg-[#7D6E23] hover:bg-[#4F571A] text-white font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl transition-colors items-center justify-center gap-1.5">
+                <i class="fa-solid fa-book-open text-[10px]"></i> Read the journal
+              </a>
+              <span id="mapCardJournalSoon" class="w-full text-center bg-stone-100 text-stone-400 font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center gap-1.5">
+                <i class="fa-regular fa-clock text-[10px]"></i> Journal coming
+              </span>
+            </div>
             <div class="flex gap-2 pt-1">
               <a id="mapCardLink" href="https://www.coblelandcampsite.co.uk/" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl transition-colors flex items-center justify-center gap-1">
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Website
@@ -162,7 +186,7 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
         <!-- Campsite 1: Cobleland -->
         <div class="campsite-card bg-white rounded-xl overflow-hidden shadow-md flex flex-col border-2 border-[#F7BA1E] relative" data-region="loch">
           <div class="bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 flex items-center justify-between">
-            <span class="flex items-center gap-1.5"><i class="fa-solid fa-star"></i> FEATURED LOCAL CAMPSITE</span>
+            <span class="flex items-center gap-1.5"><img src="/favicon.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[2px] shrink-0" /> {cobleland.badge}</span>
             <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">{cobleland.drive}</span>
           </div>
           <div class="relative h-48 overflow-hidden">
@@ -177,22 +201,64 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 <span class="text-[#7D6E23] text-xs font-semibold">Gartmore, Stirling</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Our absolute favorite local spot! Idyllic woodland campsite on the banks of the River Forth inside Queen Elizabeth Forest Park.
+                {cobleland.desc}
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://www.coblelandcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="cobleland">
-                Drive from Falkirk &rarr;
-              </button>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={cobleland.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://www.coblelandcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="cobleland">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Campsite 2: Fidden Farm -->
-        <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="highlands">
+        <!-- Campsite 2: Red Squirrel, Glencoe -->
+        <div class="campsite-card bg-white rounded-xl overflow-hidden border-2 border-[#F7BA1E] shadow-md flex flex-col" data-region="highlands">
+          <div class="bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><img src="/favicon.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[2px] shrink-0" /> {redsquirrel.badge}</span>
+            <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">{redsquirrel.drive}</span>
+          </div>
+          <div class="relative h-48 overflow-hidden">
+            <img src="/campsite_red_squirrel.jpg" alt="Two-person tent and stove at Red Squirrel Campsite, Glen Coe" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Red+Squirrel+Glencoe'"/>
+            <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NN 105 577</span>
+            <span class="absolute top-3 right-3 bg-[#7D6E23] text-white text-[10px] font-bold px-2 py-1 rounded">ELEVATION: 50m</span>
+          </div>
+          <div class="p-5 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-display font-bold text-[#111111] text-lg">Red Squirrel Campsite</h3>
+                <span class="text-[#7D6E23] text-xs font-semibold">Glencoe</span>
+              </div>
+              <p class="text-stone-600 text-xs leading-relaxed mb-4">
+                {redsquirrel.desc}
+              </p>
+            </div>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={redsquirrel.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="redsquirrel">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campsite 3: Fidden Farm -->
+        <div class="campsite-card bg-white rounded-xl overflow-hidden border-2 border-[#F7BA1E] shadow-md flex flex-col" data-region="highlands">
+          <div class="bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1 flex items-center justify-between">
+            <span class="flex items-center gap-1.5"><img src="/favicon.svg" alt="" width="14" height="14" class="h-3.5 w-3.5 rounded-[2px] shrink-0" /> {fidden.badge}</span>
+            <span class="text-[9px] bg-[#111111] text-[#F7BA1E] px-2 py-0.5 rounded font-mono">{fidden.drive}</span>
+          </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_fidden_farm.jpg" alt="Fidden Farm Campsite" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Fidden+Farm'"/>
             <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NM 301 214</span>
@@ -205,22 +271,28 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 <span class="text-[#7D6E23] text-xs font-semibold">Isle of Mull</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Spectacular coastal farm setting on the southwestern tip of Mull. Pitch on coastal machair grass next to pink granite outcrops.
+                {fidden.desc}
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://fiddenfarm.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="fidden">
-                Drive from Falkirk &rarr;
-              </button>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={fidden.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://fiddenfarm.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="fidden">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Campsite 3: Loch Chon -->
+        <!-- Campsite 4: Loch Chon -->
         <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="loch">
+          <div class="bg-stone-800 text-[#F7BA1E] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1">
+            {lochchon.badge}
+          </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_loch_chon.jpg" alt="Loch Chon Campsite" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Loch+Chon'"/>
             <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NN 420 051</span>
@@ -233,22 +305,28 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 <span class="text-[#7D6E23] text-xs font-semibold">The Trossachs</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Tucked away in scenic woodland beside picturesque Loch Chon. Tranquil lochside pitching in the heart of Loch Lomond and The Trossachs National Park.
+                {lochchon.desc}
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="lochchon">
-                Drive from Falkirk &rarr;
-              </button>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={lochchon.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="lochchon">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Campsite 4: Sallochy -->
         <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="loch">
+          <div class="bg-stone-800 text-[#F7BA1E] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1">
+            {sallochy.badge}
+          </div>
           <div class="relative h-48 overflow-hidden">
             <img src="/campsite_sallochy.jpg" alt="Sallochy Campsite" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Sallochy'"/>
             <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NS 383 956</span>
@@ -261,16 +339,19 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 <span class="text-[#7D6E23] text-xs font-semibold">East Loch Lomond</span>
               </div>
               <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Beautiful semi-natural oak woodland campsite directly on the eastern shore of Loch Lomond. Uninterrupted loch views and pristine natural surroundings.
+                {sallochy.desc}
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="sallochy">
-                Drive from Falkirk &rarr;
-              </button>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={sallochy.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://www.lochlomond-trossachs.org/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="sallochy">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -292,41 +373,16 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 Nestled near the historic village of Luss along the west bank of Loch Lomond. Scenic water's-edge pitching with panoramic views across to Ben Lomond.
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://www.lusscampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="luss">
-                Drive from Falkirk &rarr;
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Campsite 6: Red Squirrel, Glencoe -->
-        <div class="campsite-card bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col" data-region="highlands">
-          <div class="relative h-48 overflow-hidden">
-            <img src="/campsite_red_squirrel.jpg" alt="Two-person tent and stove at Red Squirrel Campsite, Glen Coe" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/800x500/FAF7EE/7D6E23?text=Red+Squirrel+Glencoe'"/>
-            <span class="absolute top-3 left-3 os-grid-badge text-xs px-2.5 py-1 rounded bg-white/90">OS GRID: NN 105 577</span>
-            <span class="absolute top-3 right-3 bg-[#7D6E23] text-white text-[10px] font-bold px-2 py-1 rounded">ELEVATION: 50m</span>
-          </div>
-          <div class="p-5 flex-1 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <h3 class="font-display font-bold text-[#111111] text-lg">Red Squirrel Campsite</h3>
-                <span class="text-[#7D6E23] text-xs font-semibold">Glencoe</span>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={CAMPSITE_ROUTES.luss.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://www.lusscampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="luss">
+                  Drive from Falkirk &rarr;
+                </button>
               </div>
-              <p class="text-stone-600 text-xs leading-relaxed mb-4">
-                Wooded River Coe pitches under the Glencoe mountains. A belter for two, with a friendly welcome even on a busy Friday. For a 4M bell tent, arrive in daylight at the weekend so you can pick a proper clearing.
-              </p>
-            </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener" class="text-[#7D6E23] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="redsquirrel">
-                Drive from Falkirk &rarr;
-              </button>
             </div>
           </div>
         </div>
@@ -351,13 +407,16 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
                 Secluded wild coastal headland with panoramic ocean sunset views over Balnakeil cliffs. We keep the exact pitch location private to protect the spot.
               </p>
             </div>
-            <div class="pt-4 border-t border-stone-100 flex items-center justify-between text-xs">
-              <a href="https://www.outdooraccess-scotland.scot/" target="_blank" rel="noopener" class="text-[#D4A51E] font-bold hover:underline flex items-center gap-1.5">
-                <i class="fa-solid fa-compass text-[10px]"></i> Outdoor Access Code
-              </a>
-              <button type="button" class="open-dossier-btn text-xs text-[#7D6E23] font-bold hover:underline" data-site="durness">
-                Drive from Falkirk &rarr;
-              </button>
+            <div class="pt-4 border-t border-stone-100 space-y-3">
+              <CampsiteJournalButton slug={CAMPSITE_ROUTES.durness.journalSlug} />
+              <div class="flex items-center justify-between text-xs">
+                <a href="https://www.outdooraccess-scotland.scot/" target="_blank" rel="noopener" class="text-[#D4A51E] font-bold hover:underline flex items-center gap-1.5">
+                  <i class="fa-solid fa-compass text-[10px]"></i> Outdoor Access Code
+                </a>
+                <button type="button" class="open-dossier-btn text-xs text-[#7D6E23] font-bold hover:underline" data-site="durness">
+                  Drive from Falkirk &rarr;
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -419,22 +478,56 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
         </div>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3">
-        <a href={cobleland.mapsUrl} id="modalMapsLink" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-[#111111] hover:bg-stone-800 text-white font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
-          <i class="fa-brands fa-google text-[10px]"></i> Open in Google Maps
-        </a>
-        <a href={cobleland.website} id="modalWebsiteLink" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
-          <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
-        </a>
-        <a href="/booking" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
-          Book Now &rarr;
-        </a>
+      <div class="flex flex-col gap-3">
+        <div id="modalJournalRow">
+          <a id="modalJournalLink" href="/journal/red-squirrel-campsite-glencoe" class="hidden w-full text-center bg-[#7D6E23] hover:bg-[#4F571A] text-white font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors items-center justify-center gap-1.5">
+            <i class="fa-solid fa-book-open text-[10px]"></i> Read the journal
+          </a>
+          <span id="modalJournalSoon" class="w-full text-center bg-stone-100 text-stone-400 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full flex items-center justify-center gap-1.5">
+            <i class="fa-regular fa-clock text-[10px]"></i> Journal coming
+          </span>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href={cobleland.mapsUrl} id="modalMapsLink" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-[#111111] hover:bg-stone-800 text-white font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
+            <i class="fa-brands fa-google text-[10px]"></i> Open in Google Maps
+          </a>
+          <a href={cobleland.website} id="modalWebsiteLink" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
+          </a>
+          <a href="/booking" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
+            Book Now &rarr;
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </Layout>
 
 <script define:vars={{ campsiteMapData: CAMPSITE_ROUTES }}>
+  function applyJournalButtons(data, liveEl, soonEl, rowEl) {
+    if (rowEl) {
+      if (data.key === 'falkirk') {
+        rowEl.classList.add('hidden');
+        return;
+      }
+      rowEl.classList.remove('hidden');
+    }
+    if (data.journalSlug) {
+      if (liveEl) {
+        liveEl.href = `/journal/${data.journalSlug}`;
+        liveEl.classList.remove('hidden');
+        liveEl.classList.add('flex');
+      }
+      soonEl?.classList.add('hidden');
+      soonEl?.classList.remove('flex');
+    } else {
+      liveEl?.classList.add('hidden');
+      liveEl?.classList.remove('flex');
+      soonEl?.classList.remove('hidden');
+      soonEl?.classList.add('flex');
+    }
+  }
+
   function updateMapShowcase(pinKey) {
     const data = campsiteMapData[pinKey];
     if (!data) return;
@@ -452,6 +545,12 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
     document.getElementById('mapCardDesc').innerText = data.desc;
     document.getElementById('mapCardSuitability').innerText = data.suitability;
     document.getElementById('mapCardLink').href = data.website;
+    applyJournalButtons(
+      data,
+      document.getElementById('mapCardJournal'),
+      document.getElementById('mapCardJournalSoon'),
+      document.getElementById('mapCardJournalRow'),
+    );
 
     const btn = document.getElementById('mapCardBtn');
     if (btn) {
@@ -471,6 +570,12 @@ const cobleland = CAMPSITE_ROUTES.cobleland;
     document.getElementById('modalTerrain').innerText = data.terrain;
     document.getElementById('modalFuel').innerText = `${data.fuelOneWay} each way · ${data.fuelRoundTrip}`;
     document.getElementById('modalMapsLink').href = data.mapsUrl;
+    applyJournalButtons(
+      data,
+      document.getElementById('modalJournalLink'),
+      document.getElementById('modalJournalSoon'),
+      document.getElementById('modalJournalRow'),
+    );
     const embed = document.getElementById('modalMapEmbed');
     if (embed) embed.src = data.embedSrc;
     const note = document.getElementById('modalMapNote');

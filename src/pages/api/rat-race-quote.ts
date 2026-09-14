@@ -7,6 +7,7 @@ export const POST: APIRoute = async ({ request }) => {
   const quote = quoteRatRace({
     guests: Number(data.guests) || 5,
     packageKind,
+    brawBread: data.brawBread,
   });
   return new Response(JSON.stringify(quote), { headers: { 'Content-Type': 'application/json' } });
 };

@@ -8,6 +8,7 @@ import {
   RAT_RACE_2027,
   type RatRaceQuote,
 } from '../../lib/rat-race';
+import { brawBreadNote } from '../../lib/braw-bread';
 
 function checkoutMetadata(
   quote: RatRaceQuote,
@@ -64,6 +65,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       guests,
       packageKind,
       conciergeRequested,
+      brawBread,
       customerName,
       customerEmail,
       customerPhone,
@@ -81,7 +83,10 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const kind = isRatRacePackage(packageKind) ? packageKind : 'deluxe';
     const plan = requestedPlan === 'instalment' ? 'instalment' : 'deposit';
-    const quote = pricedForPaymentPlan(quoteRatRace({ guests: Number(guests) || 4, packageKind: kind }), plan);
+    const quote = pricedForPaymentPlan(
+      quoteRatRace({ guests: Number(guests) || 4, packageKind: kind, brawBread }),
+      plan,
+    );
 
     if (plan === 'instalment' && quote.paymentPlan !== 'instalment') {
       return new Response(
@@ -99,6 +104,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       concierge
         ? 'Morrisons Fort William concierge requested. Send order-build instructions after canvas payment. Guest sends the list back; Stripe link for basket + 10% (10% capped at £15). Not in the Rat Race fee.'
         : '',
+      brawBreadNote(quote.brawBread),
       quote.paymentPlan === 'instalment'
         ? `Pay Up: 2 months (£${quote.depositAmount.toFixed(2)}) now, then ${quote.payMonthly.monthlyCount} × £${quote.payMonthly.monthlyAmount.toFixed(2)} on Stripe. Last charge ${quote.balanceDueDate}.`
         : '',

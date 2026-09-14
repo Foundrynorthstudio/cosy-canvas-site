@@ -25,6 +25,10 @@ type LineSource = Pick<
 >;
 
 const ADDON_ICONS: { match: string; icon: string }[] = [
+  { match: 'braw', icon: 'fa-bread-slice' },
+  { match: 'sourdough', icon: 'fa-bread-slice' },
+  { match: 'cookie', icon: 'fa-cookie' },
+  { match: 'cinnamon', icon: 'fa-stroopwafel' },
   { match: 'kitchen', icon: 'fa-kitchen-set' },
   { match: 'living', icon: 'fa-couch' },
   { match: 'lounge', icon: 'fa-couch' },
@@ -70,6 +74,9 @@ function beddingDetail(booking: LineSource): string {
 
 function addonDetail(title: string): string {
   const hay = title.toLowerCase();
+  if (hay.includes('braw') && hay.includes('loaf')) return 'Sourdough boule in the tent at Saturday check-in';
+  if (hay.includes('cookie')) return 'Dozen cookies in the tent at Saturday check-in';
+  if (hay.includes('cinnamon')) return 'Tray of six cinnamon rolls at Saturday check-in';
   if (hay.includes('kitchen')) return 'Gas stove, cookware, kettle, tableware & coolbox';
   if (hay.includes('living') || hay.includes('lounge')) return 'Power, cinema projector, speaker & lights';
   if (hay.includes('wood')) return 'Tent stove, flue, hearth mat & starter basket';

@@ -73,9 +73,9 @@ export function wordCount(markdown: string): number {
 export const SEED_POSTS: JournalPost[] = [
   {
     slug: "michelle-rat-race-fort-william",
-    title: "Michelle, and a 6M on a Rat Race field",
+    title: "Michelle, Danny, and a 6M on a Rat Race field",
     excerpt:
-      "Last night I wrote this hire from a picnic table in Glen Coe. Today the 6M went up north of Fort William — and Michelle was the reason it felt like a home, not a pile of bags by a barrier.",
+      "Setup and pack-up with Michelle and Danny on the Coast to Coast field. They could not have been nicer — and the 6M felt like a home, not a pile of bags by a barrier.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
@@ -89,30 +89,25 @@ export const SEED_POSTS: JournalPost[] = [
     status: "published",
     image: "/journal/michelle-rat-race/6m-on-the-field.jpg",
     imageAlt: "A 6M Cosy Canvas bell tent pitched on the Rat Race event field north of Fort William",
-    seoTitle: "Michelle at Rat Race: a 6M bell tent north of Fort William",
+    seoTitle: "Michelle and Danny at Rat Race: a 6M north of Fort William",
     seoDescription:
-      "First-person notes from Rat Race day: kit by the barrier, a deluxe 6M with kitchen and airbeds, and Michelle, who made the pitch feel like a home.",
+      "Meeting Michelle and Danny at Rat Race setup and pack-up: a deluxe 6M on the organiser’s pop-up campsite, and guests who could not have been nicer.",
     keywords:
       "rat race camping scotland, bell tent hire fort william, event glamping scotland, 6m bell tent, cosy canvas journal",
     content: `
-Last night I was still at [Red Squirrel](/journal/red-squirrel-campsite-glencoe), lamp on, laptop open, writing that tomorrow was a **Rat Race** hire just north of Fort William. That was the plan. This morning the plan became a pile of bags on wet gravel, a barrier with their cat on it, and a field that still had to become a bedroom.
+This post is about **Michelle** and **Danny**.
 
-Michelle was amazing.
+We met them on the [Rat Race](/events/rat-race) Coast to Coast field, just north of Fort William — first at setup, then again at pack-up. They could not have been nicer. Event days are noisy. Changing-room doors, first-aid kits on the wall, people already in the village while you are still counting poles. They kept the whole thing human. Calm when the kit was still a dump. Present when the canvas needed to feel like somewhere you would actually want to sleep after a long course.
 
-I am not going to dress that up. Event days are noisy. Changing-room doors, first-aid kits on the wall, people already in the village while you are still counting poles. She kept the whole thing human. Calm when the kit was still a dump. Present when the canvas needed to feel like somewhere you would actually want to sleep after a long course. That is the job, really — not just getting a tent up, but making it kind.
-
-<figure>
-<img src="/journal/michelle-rat-race/night-before.jpg" alt="Picnic table, lamp, fire and laptop at Red Squirrel the night before the Rat Race hire">
-<figcaption>Friday night at Red Squirrel. The hire was still a kit list. Michelle made Saturday the real thing.</figcaption>
-</figure>
+That is the job, really — not just getting a tent up, but making it kind. They made it easy to do both.
 
 ---
 
-## Bags, then a home
+## Setup
 
 You start like this. Everything out of the van, stacked against the women’s changing block, Rat Race tape behind you. Groundsheets, airbeds, the 6M in its bag, a cooler, a trolley that has already done too many miles. It looks like chaos. It is just the inventory, waiting.
 
-Michelle did not flinch at that version of the day. She treated it like the beginning, not the mess.
+Michelle and Danny did not flinch at that version of the day. They treated it like the beginning, not the mess. Friendly. Unfussed. The sort of guests you hope for when you have driven north with a cathedral tent and a weather window that will not wait.
 
 <div class="photo-pair">
 <figure>
@@ -129,9 +124,9 @@ Michelle did not flinch at that version of the day. She treated it like the begi
 
 ## What we actually pitched
 
-This was a **6M**. Inside: kitchen, table and chairs, airframes made up with sleeping bags. The deluxe shape we now know Rat Race want back next year — and the budget shape too, up to ten in a 6M if that is the brief. Today was the lived-in version. Bottles by the cooler. A stove in the corner. Beds in a ring so nobody is sleeping in the doorway.
+This was a **6M** on the event organiser’s pop-up campsite. Inside: kitchen, table and chairs, airframes made up with sleeping bags. The deluxe shape we now know Rat Race want back next year — and the budget shape too, up to ten in a 6M if that is the brief. Today was the lived-in version. Bottles by the cooler. A stove in the corner. Beds in a ring so nobody is sleeping in the doorway.
 
-I can put canvas on grass in my sleep. Making it feel looked-after is different. Michelle was the difference. The chairs faced each other. The beds were made, not dumped. You could walk in after a finish line and sit down without asking where you were allowed to put your bag.
+I can put canvas on grass in my sleep. Making it feel looked-after is different. Michelle and Danny were the difference. The chairs faced each other. The beds were made, not dumped. You could walk in after a finish line and sit down without asking where you were allowed to put your bag.
 
 <div class="photo-pair">
 <figure>
@@ -146,20 +141,20 @@ I can put canvas on grass in my sleep. Making it feel looked-after is different.
 
 ---
 
-## The bit I will remember
+## Pack-up
 
-By the time the sky opened up, the 6M was the white mark on a green field, Rat Race village in the trees behind it. That photograph is the product shot. It is not the whole story.
+The bit I will remember is not only the white 6M on a green field. It is seeing them again at take-down.
 
-The whole story is Michelle. Showing up for a hire day that starts ugly and ends as somewhere people can laugh and sleep. Holding the mood while I did guy lines and pumps. Treating strangers’ rest as if it mattered — because it does.
+Pack-up is the unglamorous half. Damp guys, bags to fill, a field that wants its grass back. Michelle and Danny were the same people they had been at setup. Patient. Grateful. Still nice when the village was emptying and the work was folding canvas instead of opening a door.
 
-Thank you. Properly.
+Thank you, both. Properly.
 
 <figure>
 <img src="/journal/michelle-rat-race/6m-on-the-field.jpg" alt="Finished 6M bell tent on the Rat Race field with blue sky and the event village beyond the trees">
-<figcaption>The 6M, done. North of Fort William. Rat Race in the trees. Michelle in the day, even if she is not in the frame.</figcaption>
+<figcaption>The 6M, done. North of Fort William. Rat Race in the trees. Michelle and Danny in the day, even if they are not in the frame.</figcaption>
 </figure>
 
-If you are planning an event village — Rat Race, a festival, a wedding field — this is the work. [Two 6M offerings](/events/rat-race) for next year: budget, up to ten; deluxe, with the kitchen, airframes, table and chairs. Loch Fyne want us back too. The canvas is the easy part. People like Michelle are why it lands.
+If you are planning an event village — Rat Race, a festival, a wedding field — this is the work. [Two 6M offerings](/events/rat-race) for next year: budget, up to ten; deluxe, with the kitchen, airframes, table and chairs. The canvas is the easy part. People like Michelle and Danny are why it lands.
 
 <div class="journal-cta">
 <a class="journal-btn journal-btn--olive" href="/events/rat-race">Rat Race glamping</a>
@@ -170,7 +165,7 @@ If you are planning an event village — Rat Race, a festival, a wedding field �
   {
     slug: "red-squirrel-campsite-glencoe",
     title: "Field notes from Red Squirrel: a Friday night in Glen Coe",
-    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my logistics base for a RatRace hire north of Fort William — then Gemini renders of the dream fleet before bed.",
+    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my staging post for a Coast to Coast hire north of Fort William — then Gemini renders of the dream fleet before bed.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
@@ -185,10 +180,10 @@ If you are planning an event village — Rat Race, a festival, a wedding field �
     image: "/campsite_red_squirrel.jpg",
     imageAlt: "Night pitch at Red Squirrel Campsite: two-person tent, stove, and picnic table under the Glen Coe trees",
     seoTitle: "Red Squirrel Campsite Glencoe: Friday Field Notes",
-    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a logistics base, fire cooking, a RatRace hire north of Fort William, and Gemini renders of the Cosy Canvas fleet.",
-    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, vw caddy maxi, audi a4 wrap, camperking scotland, a82 glencoe drive",
+    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a staging post for Coast to Coast, fire cooking, and Gemini renders of the Cosy Canvas fleet.",
+    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, vw caddy maxi, audi a4 wrap, a82 glencoe drive",
     content: `
-I am writing this from a picnic bench at **Red Squirrel Campsite** in Glen Coe, lamp on, stove going, laptop open. Day job: office manager at CamperKing Scotland — Barry’s number one, if you ask him. We are both camping people and both petrolheads, which is a dangerous combination and also the whole point.
+I am writing this from a picnic bench at **Red Squirrel Campsite** in Glen Coe, lamp on, stove going, laptop open. I love camping. I love driving. Put those together on the A82 on a Friday night and that is the whole point.
 
 Tonight is a Cosy Canvas recce wrapped around a customer job. I am here a couple of nights as a base, because tomorrow I head just north of Fort William to pitch a hire for a **RatRace** weekend. One of the mattresses might have a puncture. Fort William shops, first thing.
 
@@ -196,7 +191,11 @@ Tonight is a Cosy Canvas recce wrapped around a customer job. I am here a couple
 
 ## The drive
 
-The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. It is a dream on this road. Power when you want it, four-wheel grip when the A82 gets greasy, comfy enough after a full day in the office, punchy when a gap opens. If I am being greedy — and I am — it could do with a set of all-terrain tyres and smaller rims. We can argue about that another night.
+The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. You get into a state of flow, chewing down miles of twisting A-roads in the Scottish Highlands. You are always going to end up stuck in a convoy behind something — and you need to remember the public buses use this road too. When there is traffic, being in this car is very comfortable. Low down. Just enough hug from the sporty seat. Everything easily within reach with both hands.
+
+It needs next to no input once you are in cruise on an A9. Dial in the speed and go. Tight in every corner. All the power when you want it. The weight of a heavy car, with the grip and the agility still there.
+
+It would definitely benefit from adaptive cruise. And if this is eventually going to be a work car, it definitely needs a lift kit, off-road alloys and tyres. For me that means distance, in comfort, fully loaded with gear. Office and logistics will be in vans.
 
 <div class="photo-pair">
 <figure>
@@ -213,9 +212,9 @@ The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. It is a
 
 ## Two minutes to spare
 
-I rolled in right on closing. The chap on the desk was brilliant — friendly, unfussed, still had time for a late Friday arrival after what was clearly a long day. I know that feeling from CamperKing when the yard is full and the phone will not sit still. Proper Highland hospitality.
+I rolled in right on closing. **Scot** on the desk was delightful — friendly, unfussed, still had time for a late Friday arrival after what was clearly a long day. Friendly the next day as well. We got a proper catch-up. Exchanged war stories about dealing with the public whilst surrounded by Scotland’s magnificence. It reminded us why we were there. He said he would intro me to the owner, **Matt**, and made a point of doing so. Proper gent.
 
-Then I drove the whole site. First time round. A couple of awkward five- and six-point reverses in the dark, trees where you did not want them, pitches already claimed. Found a spot in the end. Grabbed a picnic bench. That is the whole job, really: keep circling until the ground makes sense.
+After check-in, I drove the site a couple of times. A couple of awkward five- and six-point reverses in the dark, trees where you did not want them, pitches already claimed. Found a spot in the end. Grabbed a picnic bench.
 
 <figure>
 <img src="/glencoe-red-squirrel/pitch-night.jpg" alt="Two-person tent, stove and picnic table lit at night in woodland at Red Squirrel Campsite">
@@ -226,9 +225,11 @@ Then I drove the whole site. First time round. A couple of awkward five- and six
 
 ## The tent I actually love
 
-I put up the **Decathlon two-man pop-up**. I absolutely love this tent. Up in two minutes. No guy-line ballet, no headtorch faff. On a night like this, that is the difference between being a nuisance in the car park and sitting down with a cuppa.
+I put up the [**Decathlon two-man pop-up**](https://www.decathlon.co.uk/p/instant-2-person-camping-tent-2-seconds-easy-fresh-and-black/308355/c227c98c340m8553541). I absolutely love this tent. Up in two minutes. No guy-line ballet, no headtorch faff. On a night like this, that is the difference between being a nuisance in the car park and sitting down with a cuppa.
 
-For Cosy Canvas guests the honest note still stands. Red Squirrel is excellent for two people. On a busy Friday I would not have got a **4M bell tent** down easily. The flat, usable clearings go first. Guy lines need room. Come up in daylight, walk the site, and take a pitch while there is still space to stake. Midweek, or a daytime deluxe run from Falkirk, is how you do canvas here properly.
+We keep a [gear list](/gear) of the products we actually use.
+
+For Cosy Canvas **DIY** guests — an honest note. If you are in a rush after work on Friday to collect and hope to be on site in time to grab a spot big enough, it will not happen. Best to arrive early after checkout, while people are packing down. Or have us do it for you, with coordination from the team at Red Squirrel, to grab a scenic spot.
 
 <div class="photo-pair">
 <figure>
@@ -243,11 +244,11 @@ For Cosy Canvas guests the honest note still stands. Red Squirrel is excellent f
 
 ---
 
-## Tomorrow: RatRace, north of Fort William
+## Staging for Coast to Coast
 
-This stay is the staging post. Customer rental, RatRace experience, camp to build just north of Fort William in the morning. If that mattress is punctured I will be in town hunting a replacement before anyone is asking why their bed is a paddling pool.
+This stay is my staging post for the Coast to Coast [Rat Race](/events/rat-race) event. Five American customers have booked TCCC for the night on the event organiser’s pop-up campsite.
 
-That is the work. Hire kit has to be right on the hill, not almost right.
+I am glad I chose Red Squirrel as my base. I have always looked at this site when picking a place to camp, longed to visit, but just never made it till now. I can see me and the family being here in the summer next year. I will be back in September at least, for Rat Race 2027 ;)
 
 <figure>
 <img src="/glencoe-red-squirrel/picnic-table.jpg" alt="Picnic table, lamp and laptop beside the tent and stove at Red Squirrel">
@@ -258,12 +259,12 @@ That is the work. Hire kit has to be right on the hill, not almost right.
 
 ## Why it is on our map
 
-* **Best for:** Two people, a simple tent, or a 4M bell tent if you arrive in daylight — or a logistics overnighter with a laptop and a stove
+* **Best for:** Two people and a simple tent, DIY if you can arrive after checkout, or Deluxe with the Red Squirrel team to hold a scenic pitch
 * **OS grid:** NN 105 577
 * **Drive:** about 2 hours / 108 miles from the Falkirk container via the A82
 * **Book:** [redsquirrelcampsite.co.uk](https://redsquirrelcampsite.co.uk/)
 
-Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full signal, friendly late check-in, and a picnic table that works as a desk. That is why it earns a pin on the [campsites](/campsites) page.
+Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower block, not a holiday park. Full 5G phone signal, friendly late check-in, and a picnic table that works as a desk. That is why it earns a pin on the [campsites](/campsites) page.
 
 <div class="journal-cta">
 <a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>
@@ -274,13 +275,16 @@ Red Squirrel has been camping ground since 1914. It is Glen Coe with a shower bl
 
 ## Not a digital detox
 
-People talk about Glen Coe like you come here to switch off. Fair enough if that is the brief. It is not mine tonight.
+People talk about Glen Coe like you come here to switch off. You can definitely do that, but given the excitement of the day, I made full use of the phone signal.
 
-There is **full 5G** on this pitch. Laptop is fine. Maps are fine. Studio tools are fine. For me, Red Squirrel is the perfect **logistics base** — close enough to tomorrow’s RatRace job, wild enough that you remember why the canvas is worth dragging north, connected enough that you can actually run the business from a picnic table.
+There is **full 5G** on this pitch. Laptop is fine. Maps are fine. Studio tools are fine. For me, Red Squirrel turned into the perfect **logistics base** — close enough to tomorrow’s Rat Race job, wild enough that you remember why the canvas is worth dragging north, connected enough that we could run the business from a picnic table.
 
-Then you close the lid and cook by the fire.
+Then you close the lid and fall asleep to the sound of the river. Bliss.
 
-Paul — founder of Foundry North Studio — calls cooking with a fire what coding with AI is for him. Same headspace. Hands busy, brain sorting the next move, something good coming together if you do not rush it. I get that. Tonight the stove is the compiler.
+<figure>
+<img src="/glencoe-red-squirrel/pitch-night-river.jpg" alt="Night pitch at Red Squirrel: two-man tent, stove, and a picnic table under a tarp in the woods">
+<figcaption>The office, closed. Tent, tarp, stove, river. Bliss.</figcaption>
+</figure>
 
 ---
 
@@ -301,29 +305,15 @@ First up: the wife’s **A4**, wrapped. Contour lines, triangle mark, still a Bl
 </figure>
 </div>
 
-Then the new gift from **Barry** at CamperKing. I am actually very grateful. It is a **2016 VW Touran**, 178,000 miles, moon-miles, dog-shit example of the breed, and it smells awful. The boot, though — huge. For a staging run with kit, mattresses, and a pop-up, that matters more than the perfume.
+Next time I visit, I will be in something more sensible. The A4 is a laugh on the A82 — low, tight, all the power — but it is still her and the kids’ car, and a lift kit and alloys is a conversation I would lose. A van should take the kit.
 
-<figure>
-<img src="/glencoe-red-squirrel/touran-barry.jpg" alt="Black VW Touran with Cosy Canvas wrap, CamperKing plate and roof rack in Glen Coe">
-<figcaption>Barry’s moon-miles Touran, Gemini-spec. ND63 KDU energy. Grateful. The boot is the feature.</figcaption>
-</figure>
+---
 
-The actual dream logistics vehicle is a **LWB Caddy Maxi**. Probably white — they usually are trades vans, and at CKS we already know how to make a white van look mint with the **CKS treatment**: gloss black wheels, gloss-pack bumper and grille insert. For this one I would go swamper — black wheel-arch trims and a cargo roof system. Doors open, bell tents in the background, Highland road still in the legs.
+## Matt, the morning I left
 
-<div class="photo-pair">
-<figure>
-<img src="/glencoe-red-squirrel/caddy-maxi-white.jpg" alt="White VW Caddy Maxi with Cosy Canvas graphics, gloss black wheels and roof cargo, doors open beside bell tents">
-<figcaption>White LWB Caddy Maxi. Trades van, CKS treatment, doors open on the job.</figcaption>
-</figure>
-<figure>
-<img src="/glencoe-red-squirrel/caddy-maxi-black.jpg" alt="Black VW Caddy Maxi with Cosy Canvas contour wrap and loaded roof, Glen Coe behind">
-<figcaption>Or all-black. Same rack, same load-out. I could live with either.</figcaption>
-</figure>
-</div>
+I met **Matt**, the owner, the morning I left. Busy working with the team, getting the facilities cleaned and turned over. Leading from the front. We had a great chat. I explained who we are, what we are up to, and we agreed to keep the conversation going and that together we would make it a great experience for guests.
 
-I love driving the Highland roads in Scotland. That is a huge part of why I am doing this. The canvas is the product. The A82 is the reason it does not feel like a spreadsheet company.
-
-This is tonight, from the bench. Tomorrow is Fort William. If you want the same Glen Coe setup — a pitch at Red Squirrel and canvas delivered from Falkirk — the buttons are the next step.
+If you want a full Cosy setup at Red Squirrel, [book with them first](https://redsquirrelcampsite.co.uk/), then sort out the cosiness with [us](/booking).
 
 <div class="journal-cta">
 <a class="journal-btn journal-btn--olive" href="https://redsquirrelcampsite.co.uk/" target="_blank" rel="noopener noreferrer">Book Red Squirrel</a>

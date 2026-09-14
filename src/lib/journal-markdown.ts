@@ -34,7 +34,11 @@ function addHeadingIds(html: string): string {
 export async function renderJournalMarkdown(markdown: string): Promise<string> {
   const html = await marked.parse(markdown ?? '');
   const withIds = addHeadingIds(typeof html === 'string' ? html : '');
-  return sanitizeHtml(withIds);
+  const withExternal = withIds.replace(
+    /<a href="(https?:[^"]+)"/gi,
+    '<a href="$1" target="_blank" rel="noopener noreferrer"',
+  );
+  return sanitizeHtml(withExternal);
 }
 
 export function extractHeadings(markdown: string): { id: string; text: string }[] {

@@ -8,6 +8,7 @@ import {
   RAT_RACE_EVENT_URL,
   RAT_RACE_PACKAGE_META,
 } from '../../lib/rat-race';
+import { BRAW_BREAD_LOGO, BRAW_BREAD_MARK, BRAW_BREAD_MENU, BRAW_BREAD_URL } from '../../lib/braw-bread';
 
 const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 const initialQuote = quoteRatRace({ guests: 5, packageKind: 'deluxe' });
@@ -101,6 +102,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
           <li class="flex gap-2"><i class="fa-solid fa-flag-checkered text-[#7D6E23] mt-0.5"></i> Enter the race on the <a class="underline font-semibold" href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer">official Rat Race page</a></li>
           <li class="flex gap-2"><i class="fa-solid fa-clipboard-check text-[#7D6E23] mt-0.5"></i> Check-in on the field Saturday — we are onsite</li>
           <li class="flex gap-2"><i class="fa-solid fa-basket-shopping text-[#7D6E23] mt-0.5"></i> Optional Morrisons shop, at check-in when you arrive</li>
+          <li class="flex gap-2"><i class="fa-solid fa-bread-slice text-[#7D6E23] mt-0.5"></i> Optional Braw Bread — sourdough, cookies and cinnamon rolls in the tent</li>
         </ul>
         <img
           src={RAT_RACE_2027.photos.deluxeBeds}
@@ -195,6 +197,43 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
             </p>
           </div>
         </div>
+        <div class="rounded-3xl bg-white border border-stone-200 overflow-hidden text-sm text-stone-600 mt-4">
+          <a
+            href={BRAW_BREAD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center justify-center px-8 py-6 border-b border-stone-100 hover:bg-[#FAF7EE] transition-colors"
+            aria-label="Visit Braw Bread"
+          >
+            <img src={BRAW_BREAD_LOGO} alt="Braw Bread" class="h-14 md:h-16 w-auto" />
+          </a>
+          <div class="p-5 space-y-4">
+            <p class="text-stone-600 text-sm leading-relaxed">
+              Last year our American guests asked us to pick up two loaves in Morrisons. Next year you can have yours delivered by Braw Bread.
+            </p>
+            <p class="text-stone-600 text-sm leading-relaxed">
+              Coast to Coast is a long day out. Athletes need carbs. Braw Bread is naturally leavened sourdough — a country boule with a blistered crust and an open, tangy crumb. Add a dozen thick cookies or a tray of six slow-proved cinnamon rolls if the field is going to ask for more. Plenty of calories for what you burn on the course, waiting in the tent at Saturday check-in.
+            </p>
+            <div class="grid grid-cols-3 gap-2 items-stretch">
+              {BRAW_BREAD_MENU.map((item) => (
+                <div class="rr-braw-tile rounded-2xl border border-stone-200 p-3 flex flex-col h-full text-center" data-braw-row={item.id}>
+                  <p class="font-display font-black text-[11px] leading-tight text-[#111111] min-h-[2.6em]">
+                    {item.name}
+                    {item.id === 'rolls' ? <span class="block font-semibold text-stone-500">Pack of 6</span> : null}
+                  </p>
+                  <div class="mt-auto grid grid-cols-[1.5rem_minmax(0,1fr)_1.5rem] items-center gap-1">
+                    <button type="button" class="rr-braw-minus w-6 h-6 rounded-lg border border-stone-200 text-xs font-bold hover:bg-stone-50" data-braw={item.id} aria-label={`Fewer ${item.name}`}>−</button>
+                    <span class="rr-braw-tile-qty text-center text-[10px] uppercase tracking-wider font-bold text-stone-400 tabular-nums" data-braw-qty={item.id}>Add</span>
+                    <button type="button" class="rr-braw-plus w-6 h-6 rounded-lg border border-stone-200 text-xs font-bold hover:bg-stone-50 justify-self-end" data-braw={item.id} aria-label={`More ${item.name}`}>+</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {BRAW_BREAD_MENU.map((item) => (
+              <input id={`rr-braw-${item.id}`} type="hidden" min="0" max="20" value="0" />
+            ))}
+          </div>
+        </div>
       </div>
 
       <div class="rounded-3xl bg-white border border-stone-200 shadow-xl p-6 sm:p-8 space-y-6">
@@ -235,8 +274,11 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
           <span>Add Morrisons Fort William concierge. We’ll get in touch with order instructions.</span>
         </label>
 
-        <div id="rr-quote" class="rounded-2xl bg-[#111111] text-white p-5 space-y-2 text-sm" data-initial={JSON.stringify(initialQuote)}>
-          <p class="font-mono text-[10px] uppercase tracking-widest text-[#F7BA1E]">Quote</p>
+        <div id="rr-quote" class="rounded-2xl bg-[#111111] text-white p-5 space-y-2 text-sm relative" data-initial={JSON.stringify(initialQuote)}>
+          <div class="flex items-start justify-between gap-3">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-[#F7BA1E]">Quote</p>
+            <img src={BRAW_BREAD_MARK} alt="" class="h-7 w-auto opacity-40 invert pointer-events-none" />
+          </div>
           <p id="rr-quote-tents" class="font-display text-xl font-black">{initialQuote.tentType} · {initialQuote.guests} guests</p>
           <div id="rr-quote-lines" class="space-y-1 text-stone-300 text-xs">
             {initialQuote.lines.map((line) => (
@@ -342,9 +384,9 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   .rr-tent img {
     filter: drop-shadow(0 8px 16px rgb(17 17 17 / 0.08));
   }
-  @keyframes rr-pop {
-    from { opacity: 0; transform: translateY(16px) scale(0.92); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
+  .rr-braw-tile.is-on {
+    border-color: #f7ba1e;
+    background: #faf7ee;
   }
 </style>
 
@@ -432,12 +474,30 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
     if (summary) summary.textContent = `${q.tentType} · Saturday night · ${q.guests} guests · due today £${dueToday(q).toFixed(2)}`;
   }
 
+  function brawBreadOrder() {
+    return {
+      loaf: Number(document.getElementById('rr-braw-loaf')?.value) || 0,
+      cookies: Number(document.getElementById('rr-braw-cookies')?.value) || 0,
+      rolls: Number(document.getElementById('rr-braw-rolls')?.value) || 0,
+    };
+  }
+
+  function setBrawQty(id, n) {
+    const input = document.getElementById(`rr-braw-${id}`);
+    if (!input) return;
+    const next = Math.max(0, Math.min(20, Math.round(Number(n) || 0)));
+    input.value = String(next);
+    const label = document.querySelector(`[data-braw-qty="${id}"]`);
+    if (label) label.textContent = next ? String(next) : 'Add';
+    document.querySelector(`[data-braw-row="${id}"]`)?.classList.toggle('is-on', next > 0);
+  }
+
   async function refreshQuote() {
     guestsInput.value = String(guests());
     const response = await fetch('/api/rat-race-quote', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ guests: guests(), packageKind: packageKind() }),
+      body: JSON.stringify({ guests: guests(), packageKind: packageKind(), brawBread: brawBreadOrder() }),
     });
     quote = await response.json();
     document.getElementById('rr-quote-tents').textContent = `${quote.tentType} · ${quote.guests} guests · Saturday`;
@@ -458,6 +518,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
     }
     guestsInput.min = '2';
     guestsInput.step = '1';
+    ['loaf', 'cookies', 'rolls'].forEach((id) => setBrawQty(id, document.getElementById(`rr-braw-${id}`)?.value));
   }
 
   document.getElementById('rr-guests-minus').addEventListener('click', () => {
@@ -482,6 +543,26 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
   });
   document.querySelectorAll('input[name="rr-pay-plan"]').forEach((el) => {
     el.addEventListener('change', () => renderPayCopy(quote));
+  });
+  document.querySelectorAll('.rr-braw-minus').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-braw');
+      setBrawQty(id, Number(document.getElementById(`rr-braw-${id}`).value) - 1);
+      refreshQuote();
+    });
+  });
+  document.querySelectorAll('.rr-braw-plus').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-braw');
+      setBrawQty(id, Number(document.getElementById(`rr-braw-${id}`).value) + 1);
+      refreshQuote();
+    });
+  });
+  ['loaf', 'cookies', 'rolls'].forEach((id) => {
+    document.getElementById(`rr-braw-${id}`)?.addEventListener('change', () => {
+      setBrawQty(id, document.getElementById(`rr-braw-${id}`).value);
+      refreshQuote();
+    });
   });
 
   const modal = document.getElementById('rr-checkout-modal');
@@ -520,6 +601,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
           guests: guests(),
           packageKind: packageKind(),
           conciergeRequested: document.getElementById('rr-concierge').checked,
+          brawBread: brawBreadOrder(),
           customerName: name,
           customerEmail: email,
           customerPhone: phone,

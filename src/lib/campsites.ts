@@ -18,6 +18,8 @@ export interface CampsiteRoute {
   desc: string;
   suitability: string;
   website: string;
+  badge?: string;
+  journalSlug?: string;
   gridRef: string;
   miles: number;
   minutes: number;
@@ -99,8 +101,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Cobleland Campsite',
     destShort: 'Cobleland',
     region: 'Gartmore, Stirling • Queen Elizabeth Forest Park',
-    desc: 'Our favourite local woodland site on the River Forth inside Queen Elizabeth Forest Park. Flat grass, walking trails, and a short Deluxe run from the Falkirk container.',
-    suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
+    desc: 'We know Oliver and his team. Always friendly, always keeping the site running smoothly. Full electric hook-up or grass-only pitches, modern clean facilities, a sourdough pizza wagon at the weekend and a newly built covered veranda. The team loves the coffee from the barista machine in the shop. Book the pitch with Cobleland, send us your booking reference, and setup with us is pitch perfect.',
+    suitability: '4M, 5M & 6M · partner site, Deluxe setup',
+    badge: 'Partner site',
     website: 'https://www.coblelandcampsite.co.uk/',
     gridRef: 'NS 539 800',
     miles: 28,
@@ -118,8 +121,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Fidden Farm Campsite',
     destShort: 'Fidden',
     region: 'Fionnphort, Isle of Mull',
-    desc: 'Coastal farm on the southwestern tip of Mull. Machair grass, pink granite, and seals. Allow a CalMac crossing from Oban plus the A849 to Fionnphort.',
-    suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
+    desc: 'A special place. Remote, and you need the ferry to get there. The beach is hard to describe: pools of crystal-blue water and white sand at the southern tip of Mull. Book Fidden Farm directly, send us your booking reference, and we bring the canvas.',
+    suitability: '4M, 5M & 6M · partner site, Deluxe setup',
+    badge: 'Partner site',
     website: 'https://fiddenfarm.co.uk/',
     gridRef: 'NM 301 214',
     miles: 155,
@@ -138,8 +142,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Loch Chon Campsite',
     destShort: 'Loch Chon',
     region: 'Kinlochard, The Trossachs',
-    desc: 'Woodland pitching beside Loch Chon in Loch Lomond and The Trossachs National Park.',
-    suitability: 'Suitable for 4M & 5M Bell Tents',
+    desc: 'A precious place for the team, inside Loch Lomond and The Trossachs National Park. DIY only from the Falkirk container — a journal post on this one is coming.',
+    suitability: '4M & 5M · National Park, DIY only',
+    badge: 'DIY · National Park',
     website: 'https://www.lochlomond-trossachs.org/',
     gridRef: 'NN 420 051',
     miles: 35,
@@ -157,8 +162,9 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Sallochy Campsite',
     destShort: 'Sallochy',
     region: 'East Loch Lomond Shore',
-    desc: 'Oak woodland on the eastern shore of Loch Lomond, with loch views and West Highland Way access.',
-    suitability: 'Suitable for 4M, 5M & 6M Bell Tents',
+    desc: 'Hands-down our favourite. National Park, so DIY, and it does not want to be busy — a peaceful oak wood on the east shore of Loch Lomond. Such a special spot is worth the effort.',
+    suitability: '4M, 5M & 6M · National Park, DIY only',
+    badge: 'DIY · National Park',
     website: 'https://www.lochlomond-trossachs.org/',
     gridRef: 'NS 383 956',
     miles: 42,
@@ -195,9 +201,11 @@ export const CAMPSITE_ROUTES: Record<string, CampsiteRoute> = {
     title: 'Red Squirrel Campsite',
     destShort: 'Red Squirrel',
     region: 'Glen Coe, Lochaber • River Coe woodland',
-    desc: 'Twenty-two acres of woodland beside the River Coe, 14 miles south of Fort William. Warm welcome, proper Highland feel. Excellent for two people. On a busy Friday the flat pitches go early — daylight arrival if you are bringing a 4M bell tent.',
-    suitability: 'Best for 4M (2 guests). Larger canvas needs a daylight arrival.',
+    desc: 'Wild camping with hot water and showers. An iconic Glen Coe spot — wild, and wildly popular. The views are spectacular, the drive incredible, and the staff give a real Highland welcome at check-in. Riverside, forest and grass pitches. Book the pitch with Red Squirrel, send us your booking reference, and setup with us is pitch perfect.',
+    suitability: 'Best for 4M (2 guests). Partner site, Deluxe setup',
+    badge: 'Partner site',
     website: 'https://redsquirrelcampsite.co.uk/',
+    journalSlug: 'red-squirrel-campsite-glencoe',
     gridRef: 'NN 105 577',
     miles: 108,
     minutes: 125,

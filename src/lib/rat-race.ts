@@ -1,3 +1,11 @@
+import {
+  brawBreadLines,
+  brawBreadTotal,
+  emptyBrawBreadOrder,
+  parseBrawBreadOrder,
+  type BrawBreadOrder,
+} from './braw-bread';
+
 export const RAT_RACE_EVENT_URL = 'https://www.ratrace.com/events/scotland-coast-to-coast/';
 
 export const RAT_RACE_2027 = {
@@ -169,6 +177,8 @@ export interface RatRaceQuote {
   tentType: string;
   lines: RatRaceQuoteLine[];
   addons: RatRaceQuoteLine[];
+  brawBread: BrawBreadOrder;
+  brawBreadTotal: number;
   beddingTier: string;
   beddingPrice: number;
   fulfillment: string;
@@ -333,7 +343,11 @@ export function stepRatRaceGuests(current: number, delta: number, packageKind: R
   return billedRatRaceGuests(current, packageKind);
 }
 
-export function quoteRatRace(input: { guests: number; packageKind: unknown }): RatRaceQuote {
+export function quoteRatRace(input: {
+  guests: number;
+  packageKind: unknown;
+  brawBread?: unknown;
+}): RatRaceQuote {
   const packageKind = normaliseRatRacePackage(input.packageKind);
   const meta = RAT_RACE_PACKAGE_META[packageKind];
   const requestedGuests = Math.min(MAX_GUESTS, Math.max(1, Math.round(Number(input.guests) || 1)));
@@ -342,13 +356,19 @@ export function quoteRatRace(input: { guests: number; packageKind: unknown }): R
   const nights = RAT_RACE_2027.nights;
   const cosySlice = roundMoney(guests * COSY_RATE_PER_GUEST * nights);
   const addonSlice = roundMoney(guests * meta.addonPerGuest * nights);
-  const stayTotal = roundMoney(cosySlice + addonSlice);
-  const organiserCommissionAmount = roundMoney(stayTotal * RAT_RACE_2027.organiserCommissionRate);
+  const canvasPrice = roundMoney(cosySlice + addonSlice);
+  const brawBread = parseBrawBreadOrder(input.brawBread ?? emptyBrawBreadOrder());
+  const breadLines = brawBreadLines(brawBread);
+  const breadTotal = brawBreadTotal(brawBread);
+  const stayTotal = roundMoney(canvasPrice + breadTotal);
+  const organiserCommissionAmount = roundMoney(canvasPrice * RAT_RACE_2027.organiserCommissionRate);
 
-  const addons: RatRaceQuoteLine[] =
-    packageKind === 'deluxe'
+  const addons: RatRaceQuoteLine[] = [
+    ...(packageKind === 'deluxe'
       ? [{ title: `${guests} × Deluxe add-on @ £${DELUXE_ADDON_PER_GUEST} (airframes + kitchen camp)`, price: addonSlice }]
-      : [];
+      : []),
+    ...breadLines,
+  ];
 
   const lines: RatRaceQuoteLine[] = [
     {
@@ -400,6 +420,8 @@ export function quoteRatRace(input: { guests: number; packageKind: unknown }): R
     tentType: pack.tentType,
     lines,
     addons,
+    brawBread,
+    brawBreadTotal: breadTotal,
     beddingTier:
       packageKind === 'deluxe'
         ? 'Cosy sleep kit on airframes'
@@ -407,7 +429,7 @@ export function quoteRatRace(input: { guests: number; packageKind: unknown }): R
     beddingPrice: 0,
     fulfillment: 'Village pitch Friday, Saturday night for guests, pack up Sunday',
     fulfillmentPrice: 0,
-    canvasPrice: stayTotal,
+    canvasPrice,
     discountRate: 0,
     discountAmount: 0,
     totalRentalPrice: stayTotal,

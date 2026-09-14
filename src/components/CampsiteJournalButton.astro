@@ -1,0 +1,26 @@
+---
+interface Props {
+  slug?: string;
+  size?: 'card' | 'map';
+}
+
+const { slug, size = 'card' } = Astro.props;
+const liveClass =
+  size === 'map'
+    ? 'flex-1 text-center bg-[#7D6E23] hover:bg-[#4F571A] text-white font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl transition-colors flex items-center justify-center gap-1.5'
+    : 'w-full text-center bg-[#7D6E23] hover:bg-[#4F571A] text-white font-display font-bold text-xs uppercase tracking-wider py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5';
+const soonClass =
+  size === 'map'
+    ? 'flex-1 text-center bg-stone-100 text-stone-400 font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl flex items-center justify-center gap-1.5 cursor-default'
+    : 'w-full text-center bg-stone-100 text-stone-400 font-display font-bold text-xs uppercase tracking-wider py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-default';
+---
+
+{slug ? (
+  <a href={`/journal/${slug}`} class={liveClass}>
+    <i class="fa-solid fa-book-open text-[10px]"></i> Read the journal
+  </a>
+) : (
+  <span class={soonClass} title="A field note on this pitch is coming">
+    <i class="fa-regular fa-clock text-[10px]"></i> Journal coming
+  </span>
+)}

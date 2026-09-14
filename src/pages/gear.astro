@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { GEAR_ITEMS } from '../lib/gear';
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
+---
+
+<Layout
+  title="Gear we use | The Cosy Canvas Co."
+  description="The camping kit we actually take ourselves — tents, stoves, and the products we recommend from nights on Scottish pitches."
+  keywords="camping gear we use, decathlon 2 seconds tent, scottish camping kit, cosy canvas gear list"
+  breadcrumbItems={[
+    { name: 'Home', url: siteUrl },
+    { name: 'Gear we use', url: `${siteUrl}/gear` },
+  ]}
+>
+  <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">KIT LIST</span>
+      <h1 class="font-display text-3xl md:text-5xl font-black text-white">Gear we use</h1>
+      <p class="text-stone-400 text-sm md:text-base mt-2 max-w-3xl font-light leading-relaxed">
+        Products we take ourselves on recce nights and logistics runs — not the bell tents we hire. If it is on this list, it has been out in the weather.
+      </p>
+    </div>
+  </div>
+
+  <section class="py-12 md:py-16 relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {GEAR_ITEMS.map((item) => (
+          <article class="bg-white rounded-xl overflow-hidden border border-stone-200 shadow-md flex flex-col">
+            <div class="relative h-48 overflow-hidden">
+              <img src={item.image} alt={item.imageAlt} class="w-full h-full object-cover" />
+              <span class="absolute top-3 left-3 bg-[#111111]/80 text-[#F7BA1E] font-mono text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded">
+                {item.category}
+              </span>
+            </div>
+            <div class="p-5 flex-1 flex flex-col">
+              <p class="text-[#7D6E23] text-xs font-semibold mb-1">{item.maker}</p>
+              <h2 class="font-display font-bold text-[#111111] text-lg mb-2">{item.name}</h2>
+              <p class="text-stone-600 text-xs leading-relaxed mb-4 flex-1">{item.why}</p>
+              {item.usedIn.length > 0 && (
+                <p class="text-[11px] text-stone-500 mb-4">
+                  Seen in{' '}
+                  {item.usedIn.map((story, index) => (
+                    <>
+                      {index > 0 && ', '}
+                      <a href={`/journal/${story.slug}`} class="text-[#7D6E23] font-semibold hover:underline">
+                        {story.title}
+                      </a>
+                    </>
+                  ))}
+                </p>
+              )}
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full text-center bg-[#7D6E23] hover:bg-[#4F571A] text-white font-display font-bold text-xs uppercase tracking-wider py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5"
+              >
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> View product
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
