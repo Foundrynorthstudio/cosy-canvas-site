@@ -7,5 +7,5 @@ Disallow: /studio/
 Disallow: /booking/success
 
 # Sitemaps
-Sitemap: https://cosycanvas.co.uk/sitemap-index.xml
-Sitemap: https://cosycanvas.co.uk/sitemap-journal.xml
+Sitemap: https://cosycanvasco.com/sitemap-index.xml
+Sitemap: https://cosycanvasco.com/sitemap-journal.xml

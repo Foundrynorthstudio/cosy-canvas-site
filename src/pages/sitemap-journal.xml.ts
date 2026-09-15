@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { getAllPosts } from '../lib/journal-store';
 
 export const GET: APIRoute = async ({ site }) => {
-  const origin = site?.origin ?? 'https://cosycanvas.co.uk';
+  const origin = site?.origin ?? 'https://cosycanvasco.com';
   const posts = await getAllPosts();
   const urls = posts
     .map(

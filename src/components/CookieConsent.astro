@@ -1,5 +1,6 @@
 ---
-// Props if needed in future
+const ga4Id = import.meta.env.PUBLIC_GA4_MEASUREMENT_ID || 'G-BSY2KL4GVD';
+const metaPixelId = import.meta.env.PUBLIC_META_PIXEL_ID || '1255005696015025';
 ---
 
 <!-- Cookie Consent Banner -->
@@ -124,9 +125,9 @@
   </div>
 </div>
 
-<script is:inline>
-  const GA4_ID = 'G-BSY2KL4GVD';
-  const META_PIXEL_ID = '1255005696015025';
+<script is:inline define:vars={{ ga4Id, metaPixelId }}>
+  const GA4_ID = ga4Id;
+  const META_PIXEL_ID = metaPixelId;
 
   function getCookieConsent() {
     try {
@@ -160,7 +161,10 @@
     function gtag() { dataLayer.push(arguments); }
     window.gtag = gtag;
     gtag('js', new Date());
-    gtag('config', GA4_ID, { anonymize_ip: true });
+    gtag('config', GA4_ID, {
+      anonymize_ip: true,
+      send_page_view: true,
+    });
     console.log('[Privacy] Google Analytics loaded with user consent.');
   }
 

@@ -21,7 +21,7 @@ const {
   imageAlt = "The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland",
   type = "website",
   keywords = "bell tent hire scotland, glamping hire scotland, luxury camping scotland, bell tent rental edinburgh, bell tent rental glasgow, loch lomond glamping, nc500 bell tent hire, camping gear rental scotland, event bell tents scotland, wedding glamping village",
-  canonicalUrl = Astro.url.href,
+  canonicalUrl,
   robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
   publishedTime,
   modifiedTime,
@@ -32,10 +32,12 @@ const {
 import '../styles/global.css';
 import CookieConsent from '../components/CookieConsent.astro';
 import { DEPOT, depotWhat3Words } from '../lib/depot';
+import { COMPANY } from '../lib/company';
 
-const siteUrl = Astro.site ? Astro.site.origin : "https://cosycanvas.co.uk";
+const siteUrl = Astro.site ? Astro.site.origin : "https://cosycanvasco.com";
+const pathCanonical = `${siteUrl}${Astro.url.pathname === "/" ? "/" : Astro.url.pathname.replace(/\/$/, "")}`;
 const fullImageUrl = image.startsWith("http") ? image : `${siteUrl}${image.startsWith("/") ? "" : "/"}${image}`;
-const cleanCanonical = canonicalUrl.split("?")[0]; // ensure canonical is clean without tracking params
+const cleanCanonical = (canonicalUrl || pathCanonical).split("?")[0];
 
 // Default Organization & LocalBusiness JSON-LD Schema
 const defaultLocalBusinessSchema = {
@@ -47,7 +49,7 @@ const defaultLocalBusinessSchema = {
   "logo": `${siteUrl}/TCCC%20Horizontal%20Logo.png`,
   "image": fullImageUrl,
   "description": "Hassle-free luxury bell tent hire, glamping setups, and camping gear rental delivered and pitched across Scotland.",
-  "telephone": "+44 7700 900123",
+  "telephone": COMPANY.phone,
   "email": "hello@cosycanvasco.com",
   "priceRange": "££",
   "address": {

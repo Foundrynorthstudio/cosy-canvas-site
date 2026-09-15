@@ -10,7 +10,7 @@ function xmlEscape(value: string): string {
 }
 
 export const GET: APIRoute = async ({ site }) => {
-  const origin = site?.origin ?? 'https://cosycanvas.co.uk';
+  const origin = site?.origin ?? 'https://cosycanvasco.com';
   const posts = await getAllPosts();
   const items = posts
     .map((post) => {

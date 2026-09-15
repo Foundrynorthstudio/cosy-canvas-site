@@ -17,7 +17,7 @@ const regularArticles = featuredArticle
   ? posts.filter((article) => article.slug !== featuredArticle.slug)
   : posts;
 
-const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvas.co.uk';
+const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
 const requestedCategory = Astro.url.searchParams.get('category') || 'all';
 
 const collectionSchema = {
