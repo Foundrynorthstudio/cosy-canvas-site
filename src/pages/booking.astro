@@ -147,28 +147,59 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                                         >(Min 2 Nights)</span
                                     >
                                 </label>
-                                <div class="grid grid-cols-2 gap-2">
+                                <div class="grid grid-cols-2 gap-2 relative" id="stay-date-wrap">
                                     <div>
                                         <span
                                             class="text-[10px] uppercase font-bold text-stone-400 block mb-1"
                                             >Check-In</span
                                         >
-                                        <input
-                                            type="date"
-                                            id="checkin-date"
-                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 focus:border-[#F7BA1E] focus:outline-none"
-                                        />
+                                        <input type="hidden" id="checkin-date" />
+                                        <button
+                                            type="button"
+                                            id="checkin-date-btn"
+                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 text-left hover:border-[#F7BA1E] focus:border-[#F7BA1E] focus:outline-none"
+                                        >
+                                            Choose date
+                                        </button>
                                     </div>
                                     <div>
                                         <span
                                             class="text-[10px] uppercase font-bold text-stone-400 block mb-1"
                                             >Check-Out</span
                                         >
-                                        <input
-                                            type="date"
-                                            id="checkout-date"
-                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 focus:border-[#F7BA1E] focus:outline-none"
-                                        />
+                                        <input type="hidden" id="checkout-date" />
+                                        <button
+                                            type="button"
+                                            id="checkout-date-btn"
+                                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-2.5 text-xs font-bold text-stone-800 text-left hover:border-[#F7BA1E] focus:border-[#F7BA1E] focus:outline-none"
+                                        >
+                                            Choose date
+                                        </button>
+                                    </div>
+                                    <div
+                                        id="stay-calendar"
+                                        class="hidden absolute left-0 right-0 top-full mt-2 z-40 bg-white border border-stone-200 rounded-2xl shadow-2xl p-3 sm:p-4"
+                                    >
+                                        <div class="flex items-center justify-between mb-3">
+                                            <button type="button" id="stay-cal-prev" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F7BA1E] text-stone-700 hover:text-[#111111] flex items-center justify-center" aria-label="Previous month">
+                                                <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                            </button>
+                                            <p id="stay-cal-title" class="font-display font-extrabold text-sm text-[#111111]"></p>
+                                            <button type="button" id="stay-cal-next" class="w-8 h-8 rounded-full bg-stone-100 hover:bg-[#F7BA1E] text-stone-700 hover:text-[#111111] flex items-center justify-center" aria-label="Next month">
+                                                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                            </button>
+                                        </div>
+                                        <div class="grid grid-cols-7 gap-1 mb-1">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">M</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">T</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">W</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">T</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">F</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">S</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-stone-400 text-center">S</span>
+                                        </div>
+                                        <div id="stay-cal-grid" class="grid grid-cols-7 gap-1"></div>
+                                        <p id="stay-cal-hint" class="mt-3 text-[10px] text-stone-500 font-medium">Select check-in, then check-out. Your stay nights light up in yellow.</p>
                                     </div>
                                 </div>
                                 <div
@@ -1369,6 +1400,130 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
         return d.toISOString().split("T")[0];
     }
 
+    function formatStayLabel(iso) {
+        if (!iso) return "Choose date";
+        return new Date(`${iso}T12:00:00`).toLocaleDateString("en-GB", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    }
+
+    let stayCalMonth = new Date();
+    stayCalMonth.setDate(1);
+    let stayPick = "start";
+
+    function stayIso(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
+    }
+
+    function mondayIndex(jsDay) {
+        return (jsDay + 6) % 7;
+    }
+
+    function syncStayDateButtons() {
+        const inVal = document.getElementById("checkin-date")?.value;
+        const outVal = document.getElementById("checkout-date")?.value;
+        const inBtn = document.getElementById("checkin-date-btn");
+        const outBtn = document.getElementById("checkout-date-btn");
+        if (inBtn) inBtn.textContent = formatStayLabel(inVal);
+        if (outBtn) outBtn.textContent = formatStayLabel(outVal);
+        const hint = document.getElementById("stay-cal-hint");
+        if (hint && inVal && outVal) {
+            const nights = Math.max(2, Math.round((new Date(`${outVal}T12:00:00`) - new Date(`${inVal}T12:00:00`)) / 86400000));
+            hint.textContent = `${nights} night stay highlighted in yellow — from ${formatStayLabel(inVal)} to ${formatStayLabel(outVal)}.`;
+        }
+    }
+
+    function renderStayCalendar() {
+        const grid = document.getElementById("stay-cal-grid");
+        const title = document.getElementById("stay-cal-title");
+        if (!grid || !title) return;
+        const checkin = document.getElementById("checkin-date")?.value || "";
+        const checkout = document.getElementById("checkout-date")?.value || "";
+        const min = document.getElementById("checkin-date")?.min || "";
+        const max = document.getElementById("checkout-date")?.max || "";
+        title.textContent = stayCalMonth.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+
+        const year = stayCalMonth.getFullYear();
+        const month = stayCalMonth.getMonth();
+        const first = new Date(year, month, 1);
+        const startPad = mondayIndex(first.getDay());
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        grid.innerHTML = "";
+
+        for (let i = 0; i < startPad; i += 1) {
+            const blank = document.createElement("span");
+            blank.className = "h-9";
+            grid.appendChild(blank);
+        }
+
+        for (let day = 1; day <= daysInMonth; day += 1) {
+            const date = new Date(year, month, day);
+            const iso = stayIso(date);
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.textContent = String(day);
+            const disabled = Boolean((min && iso < min) || (max && iso > max));
+            const isStart = iso === checkin;
+            const isEnd = iso === checkout;
+            const inRange = checkin && checkout && iso > checkin && iso < checkout;
+            btn.disabled = disabled;
+            btn.className = "h-9 rounded-lg text-[11px] font-bold transition";
+            if (disabled) {
+                btn.className += " text-stone-300 cursor-not-allowed";
+            } else if (isStart || isEnd) {
+                btn.className += " bg-[#F7BA1E] text-[#111111] shadow-sm";
+            } else if (inRange) {
+                btn.className += " bg-[#FAF7EE] text-[#7D6E23] ring-1 ring-[#F7BA1E]/40";
+            } else {
+                btn.className += " text-stone-700 hover:bg-stone-100";
+            }
+            btn.addEventListener("click", () => pickStayDay(iso));
+            grid.appendChild(btn);
+        }
+        syncStayDateButtons();
+    }
+
+    function pickStayDay(iso) {
+        const checkinEl = document.getElementById("checkin-date");
+        const checkoutEl = document.getElementById("checkout-date");
+        if (!checkinEl || !checkoutEl) return;
+        if (stayPick === "start" || !checkinEl.value) {
+            checkinEl.value = iso;
+            const minOut = addDaysIso(iso, 2);
+            checkoutEl.value = checkoutEl.value && checkoutEl.value >= minOut ? checkoutEl.value : minOut;
+            stayPick = "end";
+        } else {
+            if (iso <= checkinEl.value) {
+                checkinEl.value = iso;
+                checkoutEl.value = addDaysIso(iso, 2);
+            } else {
+                checkoutEl.value = iso;
+            }
+            stayPick = "start";
+        }
+        updateDates();
+        renderStayCalendar();
+    }
+
+    function openStayCalendar(which) {
+        stayPick = which === "end" ? "end" : "start";
+        const iso = which === "end"
+            ? document.getElementById("checkout-date")?.value
+            : document.getElementById("checkin-date")?.value;
+        if (iso) {
+            const [y, m] = iso.split("-").map(Number);
+            stayCalMonth = new Date(y, m - 1, 1);
+        }
+        document.getElementById("stay-calendar")?.classList.remove("hidden");
+        renderStayCalendar();
+    }
+
     function setDateWindow(min, max) {
         const checkinEl = document.getElementById("checkin-date");
         const checkoutEl = document.getElementById("checkout-date");
@@ -1376,7 +1531,8 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
         checkinEl.min = min || "";
         checkinEl.max = max || "";
         checkoutEl.min = min ? addDaysIso(min, 2) : "";
-        checkoutEl.max = max ? addDaysIso(max, 2) : "";
+        checkoutEl.max = max || "";
+        renderStayCalendar();
     }
 
     function renderDurnessSlots() {
@@ -1523,6 +1679,7 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
             document.getElementById("nights-badge").innerText =
                 `${diffDays} Nights Stay`;
             calcTotal();
+            renderStayCalendar();
         }
     }
 
@@ -1899,13 +2056,22 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
             .getElementById("btn-guest-plus")
             ?.addEventListener("click", () => changeGuests(1));
 
-        // Date inputs
-        document
-            .getElementById("checkin-date")
-            ?.addEventListener("change", updateDates);
-        document
-            .getElementById("checkout-date")
-            ?.addEventListener("change", updateDates);
+        document.getElementById("checkin-date-btn")?.addEventListener("click", () => openStayCalendar("start"));
+        document.getElementById("checkout-date-btn")?.addEventListener("click", () => openStayCalendar("end"));
+        document.getElementById("stay-cal-prev")?.addEventListener("click", () => {
+            stayCalMonth.setMonth(stayCalMonth.getMonth() - 1);
+            renderStayCalendar();
+        });
+        document.getElementById("stay-cal-next")?.addEventListener("click", () => {
+            stayCalMonth.setMonth(stayCalMonth.getMonth() + 1);
+            renderStayCalendar();
+        });
+        document.addEventListener("click", (event) => {
+            const wrap = document.getElementById("stay-date-wrap");
+            const cal = document.getElementById("stay-calendar");
+            if (!wrap || !cal || cal.classList.contains("hidden")) return;
+            if (!wrap.contains(event.target)) cal.classList.add("hidden");
+        });
 
         // Bedding cards
         document.querySelectorAll(".bedding-card").forEach((card) => {
@@ -1988,9 +2154,12 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
         if (checkinEl && checkoutEl) {
             checkinEl.value = tomorrow.toISOString().split("T")[0];
             checkoutEl.value = checkout.toISOString().split("T")[0];
+            const [y, m] = checkinEl.value.split("-").map(Number);
+            stayCalMonth = new Date(y, m - 1, 1);
         }
 
         updateDates();
+        renderStayCalendar();
         selectBedding("cosy");
         const params = new URLSearchParams(window.location.search);
         const fulfillment = params.get("fulfillment");
@@ -2021,6 +2190,10 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
         background: rgba(125, 110, 35, 0.08) !important;
         border: 1px dashed #7d6e23 !important;
         color: #4f571a !important;
+    }
+    #stay-calendar button:focus-visible {
+        outline: 2px solid #F7BA1E;
+        outline-offset: 1px;
     }
 </style>
 
