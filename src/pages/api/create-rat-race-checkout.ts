@@ -142,7 +142,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     const session =
       quote.paymentPlan === 'instalment'
         ? await stripe.checkout.sessions.create({
-            ui_mode: 'embedded',
+            ui_mode: 'embedded_page',
             mode: 'subscription',
             payment_method_types: ['card'],
             customer_email: customerEmail,
@@ -179,7 +179,7 @@ export const POST: APIRoute = async ({ request, url }) => {
             metadata,
           })
         : await stripe.checkout.sessions.create({
-            ui_mode: 'embedded',
+            ui_mode: 'embedded_page',
             payment_method_types: ['card'],
             customer_email: customerEmail,
             line_items: [

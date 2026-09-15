@@ -347,14 +347,21 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
       <div class="bg-[#FAF7EE] border-b border-stone-200 px-6 py-3 text-xs font-bold" id="rr-modal-summary"></div>
       <div id="rr-modal-error" class="hidden mx-6 mt-4 bg-red-50 border border-red-200 text-red-800 text-xs rounded-xl p-3"></div>
       <div id="rr-modal-step-details" class="p-6 space-y-3">
-        <input id="rr-name" placeholder="Lead guest name *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
-        <input id="rr-email" type="email" placeholder="Email *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
-        <input id="rr-phone" type="tel" placeholder="Phone *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
-        <input id="rr-address" placeholder="Billing address" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
-        <textarea id="rr-notes" rows="3" placeholder="Crew notes, allergies, shopping-list timing" class="w-full rounded-2xl border border-stone-300 p-3 text-sm"></textarea>
-        <button type="button" id="rr-pay" class="w-full rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3">
+        <form id="rr-guest-form" autocomplete="on" class="space-y-3">
+        <input id="rr-name" name="name" autocomplete="name" placeholder="Lead guest name *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-email" name="email" type="email" autocomplete="email" placeholder="Email *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-phone" name="tel" type="tel" autocomplete="tel" placeholder="Phone *" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-address-line1" name="address-line1" autocomplete="address-line1" placeholder="Address line 1" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <input id="rr-address-line2" name="address-line2" autocomplete="address-line2" placeholder="Address line 2 (optional)" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+        <div class="grid grid-cols-2 gap-3">
+          <input id="rr-address-city" name="address-level2" autocomplete="address-level2" placeholder="Town / city" class="w-full rounded-2xl border border-stone-300 p-3 text-sm" />
+          <input id="rr-address-postcode" name="postal-code" autocomplete="postal-code" placeholder="Postcode" class="w-full rounded-2xl border border-stone-300 p-3 text-sm uppercase" />
+        </div>
+        <textarea id="rr-notes" rows="3" autocomplete="off" placeholder="Crew notes, allergies, shopping-list timing" class="w-full rounded-2xl border border-stone-300 p-3 text-sm"></textarea>
+        <button type="submit" id="rr-pay" class="w-full rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3">
           Continue to Stripe
         </button>
+        </form>
       </div>
       <div id="rr-modal-step-payment" class="hidden p-6">
         <div id="rr-stripe-loading" class="py-10 text-center text-sm">Connecting to Stripe…</div>
@@ -580,7 +587,8 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
   document.getElementById('rr-open-checkout').addEventListener('click', openModal);
   document.getElementById('rr-close-modal').addEventListener('click', closeModal);
 
-  document.getElementById('rr-pay').addEventListener('click', async () => {
+  document.getElementById('rr-guest-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
     const errorEl = document.getElementById('rr-modal-error');
     errorEl.classList.add('hidden');
     const name = document.getElementById('rr-name').value.trim();
@@ -605,7 +613,12 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
           customerName: name,
           customerEmail: email,
           customerPhone: phone,
-          customerAddress: document.getElementById('rr-address').value.trim(),
+          customerAddress: [
+            document.getElementById('rr-address-line1').value.trim(),
+            document.getElementById('rr-address-line2').value.trim(),
+            document.getElementById('rr-address-city').value.trim(),
+            document.getElementById('rr-address-postcode').value.trim().toUpperCase(),
+          ].filter(Boolean).join(', '),
           specialRequests: document.getElementById('rr-notes').value.trim(),
           paymentPlan: paymentPlan(),
         }),
@@ -627,7 +640,9 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
       }
       const pk = modal.getAttribute('data-stripe-pk') || '';
       const stripe = window.Stripe(pk);
-      stripeCheckout = await stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
+      stripeCheckout = stripe.createEmbeddedCheckoutPage
+        ? await stripe.createEmbeddedCheckoutPage({ clientSecret: data.clientSecret })
+        : await stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
       document.getElementById('rr-stripe-loading').classList.add('hidden');
       stripeCheckout.mount('#rr-stripe-embedded-checkout');
     } catch (err) {

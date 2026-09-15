@@ -1120,6 +1120,7 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                     Please provide your contact information and campsite destination for pitching logistics and booking confirmation.
                 </p>
 
+                <form id="checkout-guest-form" autocomplete="on" class="space-y-5">
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>
                         <label for="cust-name" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
@@ -1128,6 +1129,8 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                         <input
                             type="text"
                             id="cust-name"
+                            name="name"
+                            autocomplete="name"
                             required
                             placeholder="e.g. Fiona MacLeod"
                             class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
@@ -1140,6 +1143,8 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                         <input
                             type="email"
                             id="cust-email"
+                            name="email"
+                            autocomplete="email"
                             required
                             placeholder="fiona@example.com"
                             class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
@@ -1147,31 +1152,83 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                     </div>
                 </div>
 
-                <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="cust-phone" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
+                        Phone Number <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="tel"
+                        id="cust-phone"
+                        name="tel"
+                        autocomplete="tel"
+                        required
+                        placeholder="e.g. 07700 900123"
+                        class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                    />
+                </div>
+
+                <fieldset class="space-y-4">
+                    <legend class="block text-xs font-display font-black uppercase tracking-wider text-stone-700">Billing / home address</legend>
                     <div>
-                        <label for="cust-phone" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
-                            Phone Number <span class="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="tel"
-                            id="cust-phone"
-                            required
-                            placeholder="e.g. +44 7700 900123"
-                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
-                        />
-                    </div>
-                    <div>
-                        <label for="cust-address" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
-                            Billing / Home Address
-                        </label>
+                        <label for="cust-address-line1" class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-stone-500">Address line 1</label>
                         <input
                             type="text"
-                            id="cust-address"
-                            placeholder="Street, City, Postcode"
+                            id="cust-address-line1"
+                            name="address-line1"
+                            autocomplete="address-line1"
+                            placeholder="House number and street"
                             class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
                         />
                     </div>
-                </div>
+                    <div>
+                        <label for="cust-address-line2" class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-stone-500">Address line 2</label>
+                        <input
+                            type="text"
+                            id="cust-address-line2"
+                            name="address-line2"
+                            autocomplete="address-line2"
+                            placeholder="Flat, building (optional)"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        />
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="cust-address-city" class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-stone-500">Town / city</label>
+                            <input
+                                type="text"
+                                id="cust-address-city"
+                                name="address-level2"
+                                autocomplete="address-level2"
+                                placeholder="e.g. Falkirk"
+                                class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                            />
+                        </div>
+                        <div>
+                            <label for="cust-address-postcode" class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-stone-500">Postcode</label>
+                            <input
+                                type="text"
+                                id="cust-address-postcode"
+                                name="postal-code"
+                                autocomplete="postal-code"
+                                placeholder="e.g. FK2 0XX"
+                                class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none uppercase"
+                            />
+                        </div>
+                    </div>
+                    <div>
+                        <label for="cust-address-country" class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 text-stone-500">Country</label>
+                        <select
+                            id="cust-address-country"
+                            name="country"
+                            autocomplete="country"
+                            class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
+                        >
+                            <option value="GB" selected>United Kingdom</option>
+                            <option value="IE">Ireland</option>
+                            <option value="other">Elsewhere</option>
+                        </select>
+                    </div>
+                </fieldset>
 
                 <div>
                     <label for="cust-campsite" class="block text-xs font-display font-black uppercase tracking-wider mb-1.5 text-stone-700">
@@ -1180,7 +1237,9 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                     <input
                         type="text"
                         id="cust-campsite"
+                        name="campsite"
                         required
+                        autocomplete="off"
                         placeholder="e.g. Loch Lomond Holiday Park (Pitch 14) or OS Grid Ref"
                         class="w-full bg-stone-50 border-2 border-stone-200 rounded-xl p-3 text-xs font-bold text-stone-900 focus:border-[#F7BA1E] focus:outline-none"
                     />
@@ -1203,7 +1262,7 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
 
                 <div class="pt-2">
                     <button
-                        type="button"
+                        type="submit"
                         id="btn-proceed-to-payment"
                         class="w-full bg-[#111111] text-[#F7BA1E] py-4 rounded-2xl font-display font-extrabold hover:bg-stone-800 transition uppercase tracking-wider text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 group cursor-pointer"
                     >
@@ -1212,6 +1271,7 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
                         <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     </button>
                 </div>
+                </form>
             </div>
 
             <!-- STEP 2: Stripe Embedded Checkout -->
@@ -1728,7 +1788,15 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
         const name = document.getElementById("cust-name").value.trim();
         const email = document.getElementById("cust-email").value.trim();
         const phone = document.getElementById("cust-phone").value.trim();
-        const address = document.getElementById("cust-address").value.trim();
+        const address = [
+            document.getElementById("cust-address-line1").value.trim(),
+            document.getElementById("cust-address-line2").value.trim(),
+            document.getElementById("cust-address-city").value.trim(),
+            document.getElementById("cust-address-postcode").value.trim().toUpperCase(),
+            document.getElementById("cust-address-country").value === "GB"
+                ? "United Kingdom"
+                : document.getElementById("cust-address-country").selectedOptions[0]?.text || "",
+        ].filter(Boolean).join(", ");
         const campsiteInput = document.getElementById("cust-campsite");
         if (bookingState.partnerSiteKey && campsiteInput && !campsiteInput.value.trim()) {
             campsiteInput.value = partnerSiteTitle(bookingState.partnerSiteKey);
@@ -1802,9 +1870,9 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
 
             if (typeof window.Stripe === "function" && pk && !pk.startsWith("pk_test_placeholder")) {
                 const stripe = window.Stripe(pk);
-                const checkout = await stripe.initEmbeddedCheckout({
-                    clientSecret: data.clientSecret,
-                });
+                const checkout = stripe.createEmbeddedCheckoutPage
+                    ? await stripe.createEmbeddedCheckoutPage({ clientSecret: data.clientSecret })
+                    : await stripe.initEmbeddedCheckout({ clientSecret: data.clientSecret });
                 document.getElementById("stripe-loading").classList.add("hidden");
                 checkout.mount("#stripe-embedded-checkout");
                 stripeEmbeddedCheckoutInstance = checkout;
@@ -1893,8 +1961,11 @@ const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBook
 
         // Proceed to Payment button inside modal
         document
-            .getElementById("btn-proceed-to-payment")
-            ?.addEventListener("click", handleProceedToPayment);
+            .getElementById("checkout-guest-form")
+            ?.addEventListener("submit", (e) => {
+                e.preventDefault();
+                handleProceedToPayment();
+            });
 
         // Back to details button inside modal
         document
