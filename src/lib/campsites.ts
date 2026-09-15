@@ -39,8 +39,8 @@ export interface CampsiteRoute {
 function routeStats(miles: number, minutes: number, ferry = false) {
   const fuel = estimateVanFuel(miles);
   const driveCore = ferry
-    ? `FERRY + ${formatDriveMinutes(minutes)} FROM FALKIRK`
-    : `${formatDriveMinutes(minutes)} FROM FALKIRK`;
+    ? `FERRY + ${formatDriveMinutes(minutes)} FROM THE COSY DEPOT`
+    : `${formatDriveMinutes(minutes)} FROM THE COSY DEPOT`;
   const distance = ferry
     ? `${miles} miles road + CalMac ferry (${formatDriveMinutes(minutes)} driving)`
     : `${miles} miles (${formatDriveMinutes(minutes).toLowerCase()} typical drive)`;
@@ -253,6 +253,14 @@ export function cosyConciergeMailto(siteTitle?: string): string {
     : 'I would like help booking a Cosy Holidays stay.';
   const body = `Hi Trystan,\n\n${stayLine}\n\nDates:\nPreferred site:\nParty size:\n\n`;
   return `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+export function isDiyPitchSite(site: CampsiteRoute): boolean {
+  return Boolean(site.badge && /DIY/i.test(site.badge));
+}
+
+export function campsiteBookLabel(site: CampsiteRoute): string {
+  return isDiyPitchSite(site) ? 'Book gear now' : 'Book now';
 }
 
 export function campsiteBookHref(site: CampsiteRoute): string {

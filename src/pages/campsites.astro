@@ -73,9 +73,9 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
             <div>
               <h2 class="font-display font-bold text-base text-[#111111] flex items-center gap-2">
                 <i class="fa-solid fa-map-location-dot text-[#F7BA1E]"></i>
-                <span>Interactive Scottish Contour Map</span>
+                <span>The DIYers' Map</span>
               </h2>
-              <p class="text-stone-500 text-[11px]">Click any pin for road time, fuel, and Google Maps from Falkirk</p>
+              <p class="text-stone-500 text-[11px]">Drive times and fuel from the Cosy Depot in Falkirk — for anyone about to hit the road.</p>
             </div>
             <div class="hidden sm:flex items-center gap-3 text-[11px]">
               <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-[#F7BA1E] border-2 border-[#111111]"></span> Falkirk container</span>
@@ -168,6 +168,10 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               <img src="/favicon.svg" alt="" width="16" height="16" class="h-4 w-4 rounded-[3px] shrink-0" />
               Cosy Holidays site
             </p>
+            <p id="mapCardDiy" class="mb-2 hidden items-center gap-2 bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-lg w-fit">
+              <img src="/favicon-diy.svg" alt="" width="16" height="16" class="h-4 w-4 rounded-[3px] shrink-0 border border-[#7D6E23]" />
+              DIY pitch — we don't set up here
+            </p>
             <p id="mapCardRegion" class="text-[#7D6E23] text-xs font-bold mb-3">Gartmore, Stirling • Queen Elizabeth Forest Park</p>
             <p id="mapCardDesc" class="text-stone-600 text-xs leading-relaxed mb-4">
               {cobleland.desc}
@@ -192,10 +196,13 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
               <a id="mapCardLink" href="https://www.coblelandcampsite.co.uk/" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3 rounded-xl transition-colors flex items-center justify-center gap-1">
                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Website
               </a>
-              <button type="button" id="mapCardBtn" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-sm">
-                Drive from Falkirk &rarr;
-              </button>
+              <a id="mapCardCta" href="/booking" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3 rounded-xl transition-all shadow-sm">
+                Book now
+              </a>
             </div>
+            <button type="button" id="mapCardBtn" class="w-full text-center text-xs font-medium text-stone-600 hover:text-[#111111] py-1">
+              Drive from the Cosy Depot →
+            </button>
           </div>
         </div>
 
@@ -243,7 +250,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="cobleland">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -279,7 +286,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="redsquirrel">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -315,7 +322,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="fidden">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -350,7 +357,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="lochchon">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -385,7 +392,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="sallochy">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -420,7 +427,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-stone-600 hover:text-[#111111] font-medium" data-site="luss">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -459,7 +466,7 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
                   <i class="fa-solid fa-compass text-[10px]"></i> Outdoor Access Code
                 </a>
                 <button type="button" class="open-dossier-btn text-xs text-[#7D6E23] font-bold hover:underline" data-site="durness">
-                  Drive from Falkirk &rarr;
+                  Drive from the Cosy Depot &rarr;
                 </button>
               </div>
             </div>
@@ -539,8 +546,8 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
           <a href={cobleland.website} id="modalWebsiteLink" target="_blank" rel="noopener" class="flex-1 text-center bg-stone-100 hover:bg-stone-200 text-stone-800 font-display font-bold text-xs uppercase tracking-wider py-3.5 rounded-full transition-colors flex items-center justify-center gap-1.5">
             <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Visit Website
           </a>
-          <a href="/booking" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
-            Book Now &rarr;
+          <a href="/booking" id="modalBookLink" class="flex-1 text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 rounded-full transition-all shadow-md">
+            Book now →
           </a>
         </div>
       </div>
@@ -587,13 +594,25 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
     document.getElementById('mapCardElevation').innerText = data.elevation;
     document.getElementById('mapCardTitle').innerText = data.title;
     const holidays = document.getElementById('mapCardHolidays');
+    const diyBadge = document.getElementById('mapCardDiy');
+    const isHolidays = data.badge === 'Cosy Holidays';
+    const isDiy = Boolean(data.badge && /DIY/i.test(data.badge));
     if (holidays) {
-      if (data.badge === 'Cosy Holidays') {
+      if (isHolidays) {
         holidays.classList.remove('hidden');
         holidays.classList.add('flex');
       } else {
         holidays.classList.add('hidden');
         holidays.classList.remove('flex');
+      }
+    }
+    if (diyBadge) {
+      if (isDiy) {
+        diyBadge.classList.remove('hidden');
+        diyBadge.classList.add('flex');
+      } else {
+        diyBadge.classList.add('hidden');
+        diyBadge.classList.remove('flex');
       }
     }
     document.getElementById('mapCardRegion').innerText = data.region;
@@ -606,6 +625,19 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
       document.getElementById('mapCardJournalSoon'),
       document.getElementById('mapCardJournalRow'),
     );
+
+    const cta = document.getElementById('mapCardCta');
+    if (cta) {
+      if (data.badge === 'Cosy Holidays') {
+        cta.href = `/booking?campsite=${encodeURIComponent(data.title)}`;
+        cta.textContent = 'Book now';
+      } else {
+        cta.href = data.key === 'falkirk'
+          ? '/booking?fulfillment=diy'
+          : `/booking?fulfillment=diy&campsite=${encodeURIComponent(data.title)}`;
+        cta.textContent = 'Book gear now';
+      }
+    }
 
     const btn = document.getElementById('mapCardBtn');
     if (btn) {
@@ -620,6 +652,18 @@ const redsquirrel = CAMPSITE_ROUTES.redsquirrel;
     document.getElementById('modalElevation').innerText = data.elevation;
     document.getElementById('modalSuitability').innerText = data.suitability;
     document.getElementById('modalWebsiteLink').href = data.website;
+    const modalBook = document.getElementById('modalBookLink');
+    if (modalBook) {
+      if (data.badge === 'Cosy Holidays') {
+        modalBook.href = `/booking?campsite=${encodeURIComponent(data.title)}`;
+        modalBook.textContent = 'Book now →';
+      } else {
+        modalBook.href = data.key === 'falkirk'
+          ? '/booking?fulfillment=diy'
+          : `/booking?fulfillment=diy&campsite=${encodeURIComponent(data.title)}`;
+        modalBook.textContent = 'Book gear now →';
+      }
+    }
     document.getElementById('modalDistance').innerText = data.distance;
     document.getElementById('modalRouteDesc').innerText = data.routeDesc;
     document.getElementById('modalTerrain').innerText = data.terrain;

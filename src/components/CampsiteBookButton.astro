@@ -1,5 +1,5 @@
 ---
-import { campsiteBookHref, isCosyHolidaysSite, type CampsiteRoute } from '../lib/campsites';
+import { campsiteBookHref, campsiteBookLabel, isCosyHolidaysSite, isDiyPitchSite, type CampsiteRoute } from '../lib/campsites';
 
 interface Props {
   site: CampsiteRoute;
@@ -7,23 +7,27 @@ interface Props {
 
 const { site } = Astro.props;
 const holidays = isCosyHolidaysSite(site);
+const diy = isDiyPitchSite(site);
 const href = campsiteBookHref(site);
+const label = campsiteBookLabel(site);
 ---
 
 <a
   href={href}
   class="w-full text-center bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-2.5 rounded-xl transition-colors flex items-center justify-center gap-1.5"
-  title={holidays ? 'Cosy Concierge with Trystan' : 'DIY from the Falkirk container'}
+  title={holidays ? 'Cosy Concierge with Trystan' : 'DIY kit from the Cosy Depot'}
 >
   {holidays ? (
     <i class="fa-solid fa-comments text-[10px]"></i>
   ) : (
     <i class="fa-solid fa-warehouse text-[10px]"></i>
   )}
-  Book now
+  {label}
 </a>
 <p class="text-[10px] text-stone-500 text-center leading-snug">
-  {holidays
-    ? 'Cosy Concierge — Trystan coordinates the stay.'
-    : 'DIY from Falkirk with the Cosy team.'}
+  {diy
+    ? 'Collect kit in Falkirk — we cannot pitch this site for you.'
+    : holidays
+      ? 'Cosy Concierge — Trystan coordinates the stay.'
+      : 'DIY from Falkirk with the Cosy team.'}
 </p>
