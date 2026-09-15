@@ -180,6 +180,7 @@ export const POST: APIRoute = async ({ request, url }) => {
           })
         : await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
+            mode: 'payment',
             payment_method_types: ['card'],
             customer_email: customerEmail,
             line_items: [
