@@ -12,6 +12,7 @@ export async function createBalancePayUrl(booking: BookingRecord, origin: string
   if (!stripe || booking.remainingBalance <= 0) return '';
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
+    allow_promotion_codes: true,
     customer_email: booking.customerEmail,
     success_url: `${origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/`,

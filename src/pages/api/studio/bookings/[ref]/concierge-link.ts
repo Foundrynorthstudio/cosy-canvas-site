@@ -26,6 +26,7 @@ export const POST: APIRoute = async ({ params, request, url }) => {
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
+    allow_promotion_codes: true,
     customer_email: booking.customerEmail,
     success_url: `${url.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${url.origin}/events/rat-race`,

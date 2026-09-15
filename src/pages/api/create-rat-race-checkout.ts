@@ -144,6 +144,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         ? await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
             mode: 'subscription',
+            allow_promotion_codes: true,
             payment_method_types: ['card'],
             customer_email: customerEmail,
             line_items: [
@@ -181,6 +182,7 @@ export const POST: APIRoute = async ({ request, url }) => {
         : await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',
             mode: 'payment',
+            allow_promotion_codes: true,
             payment_method_types: ['card'],
             customer_email: customerEmail,
             line_items: [
