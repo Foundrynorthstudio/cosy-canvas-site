@@ -162,6 +162,6 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
   document.getElementById('delete-btn')?.addEventListener('click', async () => {
     if (!confirm('Delete this story permanently?')) return;
     const res = await fetch(`/api/studio/posts/${slug}`, { method: 'DELETE' });
-    if (res.ok) window.location.href = '/studio';
+    if (res.ok) window.location.href = '/studio/journal';
   });
 </script>
