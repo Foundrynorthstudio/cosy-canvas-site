@@ -15,6 +15,20 @@
   background-attachment: fixed !important;
 }
 
+/* Cosy Studio — light ops desk surfaces */
+.studio-panel {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(125, 110, 35, 0.14);
+  box-shadow: 0 8px 30px -12px rgba(17, 17, 17, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.studio-tile {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(125, 110, 35, 0.12);
+  box-shadow: 0 4px 18px -8px rgba(17, 17, 17, 0.1);
+}
+
 .os-grid-badge {
   font-family: 'Courier New', Courier, monospace;
   letter-spacing: 0.08em;

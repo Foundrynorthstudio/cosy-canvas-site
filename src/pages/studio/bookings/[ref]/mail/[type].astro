@@ -31,45 +31,45 @@ const sentLabel = lastSent
 <StudioLayout title={`${meta.label} · ${booking.bookingRef}`}>
   <StudioNav active="emails" />
   <div class="max-w-6xl mx-auto px-4 py-8">
-    <a href={`/studio/bookings/${booking.bookingRef}`} class="text-xs text-stone-400 hover:text-[#F7BA1E]">← {booking.bookingRef}</a>
+    <a href={`/studio/bookings/${booking.bookingRef}`} class="text-xs text-stone-500 hover:text-[#7D6E23]">← {booking.bookingRef}</a>
     <div class="flex flex-wrap items-end justify-between gap-4 mt-3 mb-8">
       <div>
-        <p class="font-mono text-[#F7BA1E] text-sm">{meta.label}</p>
-        <h1 class="font-display text-3xl font-black">To {booking.customerName}</h1>
-        <p class="text-stone-400 text-sm mt-1">{composed.to} · {ruleSummary(settings.rules[type])} · {sentLabel}</p>
+        <p class="font-mono text-[#7D6E23] text-sm">{meta.label}</p>
+        <h1 class="font-display text-3xl font-black text-[#111111]">To {booking.customerName}</h1>
+        <p class="text-stone-500 text-sm mt-1">{composed.to} · {ruleSummary(settings.rules[type])} · {sentLabel}</p>
         {type === 'kitHandover' && (
           <p class="text-[11px] text-stone-500 mt-2">
             Guests get a Download kit list button. You can also download the PDF from the booking gear desk.
           </p>
         )}
       </div>
-      <a href="/studio/emails" class="text-xs uppercase tracking-wider font-bold text-stone-400 hover:text-white">Edit master template</a>
+      <a href="/studio/emails" class="text-xs uppercase tracking-wider font-bold text-stone-500 hover:text-[#111111]">Edit master template</a>
     </div>
 
     <div class="grid lg:grid-cols-2 gap-6">
-      <form id="mail-form" class="space-y-3 rounded-3xl border border-white/10 p-6 bg-white/[0.03]">
-        <label class="text-xs text-stone-400 block">
+      <form id="mail-form" class="space-y-3 studio-panel rounded-3xl p-6">
+        <label class="text-xs text-stone-500 block">
           Header title
-          <input name="headline" value={composed.headline} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+          <input name="headline" value={composed.headline} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
         </label>
-        <label class="text-xs text-stone-400 block">
+        <label class="text-xs text-stone-500 block">
           Subject
-          <input name="subject" value={composed.subject} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+          <input name="subject" value={composed.subject} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
         </label>
-        <label class="text-xs text-stone-400 block">
+        <label class="text-xs text-stone-500 block">
           Body
-          <textarea name="body" rows="18" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white font-mono leading-relaxed">{composed.body}</textarea>
+          <textarea name="body" rows="18" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111] font-mono leading-relaxed">{composed.body}</textarea>
         </label>
         <div class="flex flex-wrap gap-3">
           <button class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">Send to guest</button>
-          <button type="button" id="reset" class="rounded-full border border-white/15 text-xs uppercase tracking-wider font-bold px-5 py-3">Reset to template</button>
+          <button type="button" id="reset" class="rounded-full border border-stone-200 text-xs uppercase tracking-wider font-bold px-5 py-3 text-stone-600 hover:text-[#111111]">Reset to template</button>
         </div>
-        <p id="mail-status" class="text-xs text-stone-400"></p>
+        <p id="mail-status" class="text-xs text-stone-500"></p>
       </form>
 
       <div>
         <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold mb-3">Preview</p>
-        <iframe id="preview" title="Email preview" class="w-full min-h-[720px] rounded-3xl bg-white border border-white/10" srcdoc={composed.html}></iframe>
+        <iframe id="preview" title="Email preview" class="w-full min-h-[720px] rounded-3xl bg-white border border-stone-200 shadow-sm" srcdoc={composed.html}></iframe>
       </div>
     </div>
   </div>

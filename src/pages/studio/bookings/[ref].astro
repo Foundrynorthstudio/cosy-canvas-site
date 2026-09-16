@@ -47,26 +47,32 @@ const mailSettings = await getMailSettings();
 <StudioLayout title={`${booking.bookingRef} · Bookings`}>
   <StudioNav active="bookings" />
   <div class="max-w-6xl mx-auto px-4 py-8">
-    <a href="/studio/bookings" class="text-xs text-stone-400 hover:text-[#F7BA1E]">← All bookings</a>
+    <a href="/studio/bookings" class="text-xs text-stone-500 hover:text-[#F7BA1E]">← All bookings</a>
     <div class="flex flex-wrap items-end justify-between gap-4 mt-3 mb-8">
       <div>
         <p class="font-mono text-[#F7BA1E] text-sm">{booking.bookingRef}</p>
         <h1 class="font-display text-3xl font-black">{booking.customerName}</h1>
-        <p class="text-stone-400 text-sm mt-1">{booking.checkinDate} → {booking.checkoutDate} · {booking.campsiteLocation}</p>
+        <p class="text-stone-500 text-sm mt-1">{booking.checkinDate} → {booking.checkoutDate} · {booking.campsiteLocation}</p>
       </div>
-      <span class="text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full bg-white/10">{statusLabel(status)}</span>
+      <span class:list={[
+        'text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full',
+        status === 'paid_in_full' && 'bg-emerald-100 text-emerald-800',
+        status === 'balance_due' && 'bg-amber-100 text-amber-800',
+        status === 'refunded' && 'bg-red-100 text-red-800',
+        status === 'confirmed' && 'bg-stone-100 text-stone-700',
+      ]}>{statusLabel(status)}</span>
     </div>
 
-    <section class="rounded-3xl border border-white/10 bg-white/[0.03] p-6 mb-6">
+    <section class="studio-panel rounded-3xl p-6 mb-6">
       <div class="mb-5">
         <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Booking summary</p>
         <h2 class="font-display text-2xl font-black">What they booked</h2>
-        <p class="text-stone-400 text-sm mt-1">{booking.guests} guests · {booking.nights} nights · {booking.campsiteLocation}</p>
+        <p class="text-stone-500 text-sm mt-1">{booking.guests} guests · {booking.nights} nights · {booking.campsiteLocation}</p>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {
           lineItems.filter((item) => item.kind !== 'addon').map((item) => (
-            <article class="rounded-2xl border border-white/10 bg-[#111111] p-4">
+            <article class="studio-tile rounded-2xl p-4">
               <div class="flex items-start justify-between gap-3">
                 <div class="flex items-start gap-3">
                   <span class="w-9 h-9 rounded-xl bg-[#F7BA1E]/15 text-[#F7BA1E] flex items-center justify-center shrink-0">
@@ -101,7 +107,7 @@ const mailSettings = await getMailSettings();
                     </span>
                     <div>
                       <h3 class="font-display font-black text-sm">{item.title}</h3>
-                      <p class="text-[11px] text-stone-400 mt-0.5">{item.detail}</p>
+                      <p class="text-[11px] text-stone-500 mt-0.5">{item.detail}</p>
                     </div>
                   </div>
                   <p class="font-mono text-[#F7BA1E] text-xs shrink-0">{formatGbp(item.price)}</p>
@@ -114,39 +120,39 @@ const mailSettings = await getMailSettings();
     </section>
 
     <div class="grid lg:grid-cols-3 gap-6 mb-6">
-      <form id="edit-form" class="lg:col-span-2 space-y-4 rounded-3xl border border-white/10 p-6 bg-white/[0.03]">
+      <form id="edit-form" class="lg:col-span-2 space-y-4 studio-panel rounded-3xl p-6">
         <h2 class="font-display font-black text-lg">Customer & stay</h2>
         <div class="grid sm:grid-cols-2 gap-3">
-          <label class="text-xs text-stone-400">Name<input name="customerName" value={booking.customerName} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Email<input name="customerEmail" value={booking.customerEmail} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Phone<input name="customerPhone" value={booking.customerPhone} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Guests<input name="guests" type="number" value={booking.guests} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Check-in<input name="checkinDate" value={booking.checkinDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Check-out<input name="checkoutDate" value={booking.checkoutDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400 sm:col-span-2">Address<input name="customerAddress" value={booking.customerAddress} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400 sm:col-span-2">Campsite / pitch<input name="campsiteLocation" value={booking.campsiteLocation} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Tent<input name="tentType" value={booking.tentType} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Nights<input name="nights" type="number" value={booking.nights} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Bedding<input name="beddingTier" value={booking.beddingTier} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Fulfillment<input name="fulfillment" value={booking.fulfillment} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Balance remaining (£)<input name="remainingBalance" type="number" step="0.01" value={booking.remainingBalance} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400">Balance due date<input name="balanceDueDate" value={booking.balanceDueDate} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" /></label>
-          <label class="text-xs text-stone-400 sm:col-span-2">Guest notes<textarea name="specialRequests" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{booking.specialRequests}</textarea></label>
-          <label class="text-xs text-stone-400 sm:col-span-2">Internal notes<textarea name="internalNotes" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{booking.internalNotes}</textarea></label>
+          <label class="text-xs text-stone-500">Name<input name="customerName" value={booking.customerName} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Email<input name="customerEmail" value={booking.customerEmail} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Phone<input name="customerPhone" value={booking.customerPhone} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Guests<input name="guests" type="number" value={booking.guests} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Check-in<input name="checkinDate" value={booking.checkinDate} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Check-out<input name="checkoutDate" value={booking.checkoutDate} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500 sm:col-span-2">Address<input name="customerAddress" value={booking.customerAddress} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500 sm:col-span-2">Campsite / pitch<input name="campsiteLocation" value={booking.campsiteLocation} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Tent<input name="tentType" value={booking.tentType} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Nights<input name="nights" type="number" value={booking.nights} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Bedding<input name="beddingTier" value={booking.beddingTier} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Fulfillment<input name="fulfillment" value={booking.fulfillment} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Balance remaining (£)<input name="remainingBalance" type="number" step="0.01" value={booking.remainingBalance} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500">Balance due date<input name="balanceDueDate" value={booking.balanceDueDate} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" /></label>
+          <label class="text-xs text-stone-500 sm:col-span-2">Guest notes<textarea name="specialRequests" rows="2" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]">{booking.specialRequests}</textarea></label>
+          <label class="text-xs text-stone-500 sm:col-span-2">Internal notes<textarea name="internalNotes" rows="2" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]">{booking.internalNotes}</textarea></label>
         </div>
         <button class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">Save changes</button>
-        <p id="save-status" class="text-xs text-stone-400"></p>
+        <p id="save-status" class="text-xs text-stone-500"></p>
       </form>
 
       <div class="space-y-4">
-        <div class="rounded-3xl border border-white/10 p-5 bg-white/[0.03] text-sm">
+        <div class="studio-panel rounded-3xl p-5 text-sm">
           <h2 class="font-display font-black mb-3">Money</h2>
           <ul class="space-y-2 mb-4">
             {
               lineItems.map((item) => (
-                <li class="flex items-start justify-between gap-3 border-b border-white/5 pb-2">
+                <li class="flex items-start justify-between gap-3 border-b border-stone-100 pb-2">
                   <span>
-                    <span class="block text-stone-200">{item.title}</span>
+                    <span class="block text-stone-700">{item.title}</span>
                     <span class="block text-[11px] text-stone-500">{item.detail}</span>
                   </span>
                   <span class="font-mono text-xs text-[#F7BA1E] shrink-0">{item.price === 0 ? 'Free' : formatGbp(item.price)}</span>
@@ -157,25 +163,25 @@ const mailSettings = await getMailSettings();
           <p class="font-semibold">Stay total <span class="float-right">{formatGbp(booking.totalRentalPrice)}</span></p>
           <p class="clear-both pt-2">Paid so far <span class="float-right">{formatGbp(booking.totalPaidToday)}</span></p>
           <p>{isRatRaceBooking(booking) ? 'Security at check-in' : 'Security hold'} <span class="float-right">{formatGbp(booking.securityDeposit)}</span></p>
-          <p class="text-stone-300">Kit keep from deposit <span class="float-right" id="money-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</span></p>
+          <p class="text-stone-600">Kit keep from deposit <span class="float-right" id="money-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</span></p>
           <p class="text-[#F7BA1E]">Leftover deposit to refund <span class="float-right" id="money-deposit-refund">{charges.depositReady ? formatGbp(charges.depositRefund) : '—'}</span></p>
-          <p class="text-amber-300">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
+          <p class="text-amber-700">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
           {booking.paymentPlan === 'instalment' ? (
-            <p class="text-[11px] text-stone-400 mt-1">
+            <p class="text-[11px] text-stone-500 mt-1">
               Pay Up · {booking.instalmentCount || 10} × {formatGbp(booking.instalmentMonthly || 0)} on Stripe. Last {booking.balanceDueDate || '—'}
             </p>
           ) : null}
           <p class="text-stone-500">Refunded <span class="float-right">{formatGbp(booking.amountRefunded)}</span></p>
           <form id="refund-form" class="mt-4 flex gap-2">
-            <input id="refund-amount" name="amount" type="number" step="0.01" placeholder="Refund £" value={charges.depositReady ? charges.depositRefund : ''} disabled={!charges.depositReady} class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm disabled:opacity-40" />
-            <button id="refund-button" disabled={!charges.depositReady} class="rounded-full bg-white/10 px-4 text-xs font-bold uppercase tracking-wider disabled:opacity-40">Refund</button>
+            <input id="refund-amount" name="amount" type="number" step="0.01" placeholder="Refund £" value={charges.depositReady ? charges.depositRefund : ''} disabled={!charges.depositReady} class="flex-1 rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm disabled:opacity-40" />
+            <button id="refund-button" disabled={!charges.depositReady} class="rounded-full bg-stone-100 px-4 text-xs font-bold uppercase tracking-wider disabled:opacity-40">Refund</button>
           </form>
           {booking.conciergeRequested || booking.specialRequests?.toLowerCase().includes('morrisons') ? (
-            <form id="concierge-form" class="mt-5 pt-4 border-t border-white/10 space-y-2">
+            <form id="concierge-form" class="mt-5 pt-4 border-t border-stone-200 space-y-2">
               <p class="text-xs font-bold uppercase tracking-wider text-[#F7BA1E]">Morrisons concierge</p>
-              <p class="text-[11px] text-stone-400">Basket value. Stripe link for basket + 10%, with the 10% capped at £15.</p>
+              <p class="text-[11px] text-stone-500">Basket value. Stripe link for basket + 10%, with the 10% capped at £15.</p>
               <div class="flex gap-2">
-                <input id="concierge-basket" type="number" step="0.01" min="0.01" placeholder="Basket £" class="flex-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm" />
+                <input id="concierge-basket" type="number" step="0.01" min="0.01" placeholder="Basket £" class="flex-1 rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" />
                 <button class="rounded-full bg-[#F7BA1E] text-[#111111] px-4 text-xs font-extrabold uppercase tracking-wider">Send link</button>
               </div>
               <p id="concierge-status" class="text-[11px] text-stone-500"></p>
@@ -190,7 +196,7 @@ const mailSettings = await getMailSettings();
           </p>
         </div>
 
-        <div class="rounded-3xl border border-white/10 p-5 bg-white/[0.03] space-y-3">
+        <div class="studio-panel rounded-3xl p-5 space-y-3">
           <div class="flex items-center justify-between gap-3">
             <h2 class="font-display font-black">Emails</h2>
             <a href="/studio/emails" class="text-[10px] uppercase tracking-wider text-stone-500 hover:text-[#F7BA1E]">Rules</a>
@@ -204,11 +210,11 @@ const mailSettings = await getMailSettings();
                   href={`/studio/bookings/${booking.bookingRef}/mail/${type}`}
                   class:list={[
                     'block rounded-xl border px-3 py-3 hover:border-[#F7BA1E] transition',
-                    hidden ? 'border-white/5 opacity-50' : 'border-white/10',
+                    hidden ? 'border-stone-100 opacity-50' : 'border-stone-200',
                   ]}
                 >
                   <span class="flex items-center justify-between gap-2">
-                    <span class="text-sm font-semibold text-white">{MAIL_META[type].label}</span>
+                    <span class="text-sm font-semibold text-[#111111]">{MAIL_META[type].label}</span>
                     <span class="text-[10px] uppercase tracking-wider text-stone-500">{sent ? 'Sent' : 'Draft'}</span>
                   </span>
                   <span class="block text-[11px] text-stone-500 mt-1">{ruleSummary(mailSettings.rules[type])}</span>
@@ -230,7 +236,7 @@ const mailSettings = await getMailSettings();
         <div>
           <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Load sheet</p>
           <h2 class="font-display text-2xl font-black">{kit.loadVerb}</h2>
-          <p class="text-stone-400 text-sm mt-1">Only the tent, bedding and extras they added at booking.</p>
+          <p class="text-stone-500 text-sm mt-1">Only the tent, bedding and extras they added at booking.</p>
         </div>
         <div class="flex flex-wrap gap-2">
           <a
@@ -241,7 +247,7 @@ const mailSettings = await getMailSettings();
           </a>
           <a
             href={`/api/studio/bookings/${booking.bookingRef}/kit-handover.pdf`}
-            class="rounded-full border border-white/20 text-stone-200 font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
+            class="rounded-full border border-stone-300 text-stone-700 font-display font-extrabold text-xs uppercase tracking-wider px-4 py-2"
           >
             Download kit list
           </a>
@@ -258,7 +264,7 @@ const mailSettings = await getMailSettings();
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {
           kit.groups.map((group) => (
-            <article class="rounded-2xl bg-[#111111] border border-white/10 p-4">
+            <article class="studio-tile rounded-2xl p-4">
               <div class="flex items-center gap-2 mb-3">
                 <span class="w-8 h-8 rounded-lg bg-[#F7BA1E]/20 text-[#F7BA1E] flex items-center justify-center">
                   <i class={`fa-solid ${group.icon} text-sm`} />
@@ -267,7 +273,7 @@ const mailSettings = await getMailSettings();
               </div>
               <ul class="space-y-2">
                 {group.lines.map((line) => (
-                  <li class="flex items-start justify-between gap-3 text-sm border-b border-white/5 pb-2">
+                  <li class="flex items-start justify-between gap-3 text-sm border-b border-stone-100 pb-2">
                     <span>
                       {line.label}
                       {line.detail && <span class="block text-[11px] text-stone-500">{line.detail}</span>}
@@ -283,23 +289,23 @@ const mailSettings = await getMailSettings();
 
       {
         deluxe && (
-          <form id="logistics-form" class="mt-6 rounded-2xl bg-[#111111] border border-white/10 p-5 space-y-3">
+          <form id="logistics-form" class="mt-6 studio-tile rounded-2xl p-5 space-y-3">
             <div>
               <p class="text-[11px] uppercase tracking-wider text-[#F7BA1E] font-bold">Deluxe logistics</p>
               <h3 class="font-display font-black text-lg">Pitch location</h3>
-              <p class="text-stone-400 text-xs mt-1">Where the crew actually pitches. Guests still book the site themselves.</p>
+              <p class="text-stone-500 text-xs mt-1">Where the crew actually pitches. Guests still book the site themselves.</p>
             </div>
-            <p class="text-sm text-stone-300">
+            <p class="text-sm text-stone-600">
               <span class="text-stone-500 text-[11px] uppercase tracking-wider font-bold block">Campsite</span>
               {booking.campsiteLocation}
             </p>
-            <label class="text-xs text-stone-400 block">
+            <label class="text-xs text-stone-500 block">
               Pitch / plot
-              <input name="pitchDetail" value={logistics.pitchDetail} placeholder="e.g. Pitch 14, riverbank, left of showers" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+              <input name="pitchDetail" value={logistics.pitchDetail} placeholder="e.g. Pitch 14, riverbank, left of showers" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
             </label>
-            <label class="text-xs text-stone-400 block">
+            <label class="text-xs text-stone-500 block">
               Pitch What3Words
-              <input name="pitchW3w" value={logistics.pitchW3w} placeholder="filled.count.soap" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+              <input name="pitchW3w" value={logistics.pitchW3w} placeholder="filled.count.soap" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
             </label>
             {
               pitchW3wUrl && (
@@ -308,11 +314,11 @@ const mailSettings = await getMailSettings();
                 </a>
               )
             }
-            <label class="text-xs text-stone-400 block">
+            <label class="text-xs text-stone-500 block">
               Access / parking / how to find it
-              <textarea name="accessNotes" rows="2" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">{logistics.accessNotes}</textarea>
+              <textarea name="accessNotes" rows="2" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]">{logistics.accessNotes}</textarea>
             </label>
-            <button class="rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save pitch logistics</button>
+            <button class="rounded-full bg-stone-100 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save pitch logistics</button>
             <p id="logistics-status" class="text-xs text-stone-500"></p>
           </form>
         )
@@ -323,13 +329,13 @@ const mailSettings = await getMailSettings();
           <div>
             <p class="text-[11px] uppercase tracking-wider text-[#F7BA1E] font-bold">Gear desk</p>
             <h3 class="font-display font-black text-lg">Check-out / check-in</h3>
-            <p class="text-stone-400 text-xs mt-1 max-w-2xl">
-              Tick each piece as you take it off the container shelf, then press <strong class="text-stone-200">Check gear out</strong>. The guest gets a short email with a button to download their kit list. Return tests stay separate: every item starts on Test, and the deposit cannot be refunded until every return row is Pass or Fail / damaged.
+            <p class="text-stone-500 text-xs mt-1 max-w-2xl">
+              Tick each piece as you take it off the container shelf, then press <strong class="text-[#111111]">Check gear out</strong>. The guest gets a short email with a button to download their kit list. Return tests stay separate: every item starts on Test, and the deposit cannot be refunded until every return row is Pass or Fail / damaged.
             </p>
           </div>
-          <label class="text-xs text-stone-400">
+          <label class="text-xs text-stone-500">
             Checked by
-            <input name="checkedBy" placeholder="Your name" class="mt-1 rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+            <input name="checkedBy" placeholder="Your name" class="mt-1 rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
           </label>
         </div>
         <p class="text-[11px] text-stone-500">
@@ -337,9 +343,9 @@ const mailSettings = await getMailSettings();
           · Outbound: {inspection.outboundAt ? `checked out ${new Date(inspection.outboundAt).toLocaleString('en-GB')} (${inspection.outboundBy})` : 'not checked out yet'}
           · Return: {inspection.inboundAt ? `checked in ${new Date(inspection.inboundAt).toLocaleString('en-GB')} (${inspection.inboundBy})` : 'not checked in yet'}
         </p>
-        <div class="overflow-x-auto rounded-2xl border border-white/10">
+        <div class="overflow-x-auto rounded-2xl border border-stone-200 bg-white/70">
           <table class="w-full text-left text-xs min-w-[720px]">
-            <thead class="bg-black/40 text-stone-500 uppercase tracking-wider">
+            <thead class="bg-stone-100 text-stone-500 uppercase tracking-wider">
               <tr>
                 <th class="p-3 font-bold">Kit</th>
                 <th class="p-3 font-bold">Test</th>
@@ -356,19 +362,19 @@ const mailSettings = await getMailSettings();
                   const row = inspectionBySku.get(item.sku);
                   return (
                     <tr
-                      class="kit-row border-t border-white/5 align-top"
+                      class="kit-row border-t border-stone-100 align-top"
                       data-sku={item.sku}
                       data-label={item.label}
                       data-replacement={item.replacement}
                       data-has-photo={row?.photoName ? '1' : ''}
                     >
                       <td class="p-3">
-                        <span class="block text-stone-200 font-semibold">{item.label}</span>
+                        <span class="block text-stone-700 font-semibold">{item.label}</span>
                         <span class="text-stone-500">{item.groupTitle} · {item.qty}</span>
                         <input type="hidden" name="sku" value={item.sku} />
                       </td>
-                      <td class="p-3 text-stone-400 max-w-[14rem]">{item.test}</td>
-                      <td class="p-3 font-mono text-stone-400">{formatKitMoney(item.cost)}</td>
+                      <td class="p-3 text-stone-500 max-w-[14rem]">{item.test}</td>
+                      <td class="p-3 font-mono text-stone-500">{formatKitMoney(item.cost)}</td>
                       <td class="p-3 font-mono text-[#F7BA1E]">{formatKitMoney(item.replacement)}</td>
                       <td class="p-3">
                         <label class="inline-flex items-center gap-2 cursor-pointer select-none">
@@ -378,20 +384,20 @@ const mailSettings = await getMailSettings();
                             class="kit-picked h-5 w-5 accent-[#F7BA1E]"
                             checked={Boolean(row?.picked)}
                           />
-                          <span class="text-stone-300">From shelf</span>
+                          <span class="text-stone-600">From shelf</span>
                         </label>
                       </td>
                       <td class="p-3">
-                        <select name={`in-${item.sku}`} class="kit-inbound w-full rounded-lg bg-[#1a1a1a] border border-stone-700 px-2 py-1.5 text-white">
+                        <select name={`in-${item.sku}`} class="kit-inbound w-full rounded-lg bg-white border border-stone-200 px-2 py-1.5 text-[#111111]">
                           <option value="test" selected={(row?.inbound || 'test') === 'test'}>Test</option>
                           <option value="pass" selected={row?.inbound === 'pass'}>Pass</option>
                           <option value="fail" selected={row?.inbound === 'fail'}>Fail / damaged</option>
                         </select>
                       </td>
                       <td class="p-3 min-w-[12rem]">
-                        <input name={`note-${item.sku}`} value={row?.note || ''} placeholder="Required if fail: puncture, missing bag…" class="w-full rounded-lg bg-[#1a1a1a] border border-stone-700 px-2 py-1.5 text-white" />
+                        <input name={`note-${item.sku}`} value={row?.note || ''} placeholder="Required if fail: puncture, missing bag…" class="w-full rounded-lg bg-white border border-stone-200 px-2 py-1.5 text-[#111111]" />
                         <div class={`kit-fail-extra mt-2 space-y-1 ${(row?.inbound || 'test') === 'fail' ? '' : 'hidden'}`}>
-                          <input type="file" accept="image/*" name={`photo-${item.sku}`} class="kit-photo-input block w-full text-[11px] text-stone-400" />
+                          <input type="file" accept="image/*" name={`photo-${item.sku}`} class="kit-photo-input block w-full text-[11px] text-stone-500" />
                           {
                             row?.photoName ? (
                               <a href={kitPhotoPath(booking.bookingRef, item.sku)} target="_blank" rel="noreferrer" class="kit-photo-link text-[11px] text-[#F7BA1E] font-bold">
@@ -411,10 +417,10 @@ const mailSettings = await getMailSettings();
           </table>
         </div>
         <div class="grid sm:grid-cols-3 gap-3">
-          <div class="rounded-2xl border border-white/10 p-4">
+          <div class="studio-tile rounded-2xl p-4">
             <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold">Replacement bill</p>
             <p class="font-display font-black text-xl mt-1" id="kit-bill-total">{formatGbp(charges.total)}</p>
-            <ul id="kit-bill-lines" class="mt-2 space-y-1 text-[11px] text-stone-400">
+            <ul id="kit-bill-lines" class="mt-2 space-y-1 text-[11px] text-stone-500">
               {
                 charges.lines.length === 0 ? (
                   <li id="kit-bill-empty">Nothing billed yet.</li>
@@ -429,18 +435,18 @@ const mailSettings = await getMailSettings();
               }
             </ul>
           </div>
-          <div class="rounded-2xl border border-white/10 p-4">
+          <div class="studio-tile rounded-2xl p-4">
             <p class="text-[11px] uppercase tracking-wider text-stone-500 font-bold">Keep from £{booking.securityDeposit} deposit</p>
             <p class="font-display font-black text-xl mt-1" id="kit-deposit-keep">{charges.depositReady ? formatGbp(charges.depositKeep) : '—'}</p>
             <p class="text-[11px] text-stone-500 mt-1">Refund leftover <span id="kit-deposit-refund-copy">{charges.depositReady ? formatGbp(charges.depositRefund) : '—'}</span>.</p>
           </div>
-          <div class="rounded-2xl border border-amber-500/30 p-4">
-            <p class="text-[11px] uppercase tracking-wider text-amber-200 font-bold">If kit exceeds deposit</p>
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <p class="text-[11px] uppercase tracking-wider text-amber-800 font-bold">If kit exceeds deposit</p>
             <p class="font-display font-black text-xl mt-1" id="kit-extra-owed">{charges.depositReady ? formatGbp(charges.extraOwed) : '—'}</p>
             <p class="text-[11px] text-stone-500 mt-1">Invoice the guest separately if this is above £0.</p>
           </div>
         </div>
-        <p id="kit-deposit-gate" class="text-xs text-stone-400">
+        <p id="kit-deposit-gate" class="text-xs text-stone-500">
           {charges.depositReady
             ? 'All return tests complete. Deposit figures above are ready for refund.'
             : charges.allTested
@@ -448,17 +454,17 @@ const mailSettings = await getMailSettings();
               : 'Items still on Test — deposit is not ready for payment processing.'}
         </p>
         <div class="flex flex-wrap gap-2">
-          <button name="kitAction" value="save" class="rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save tests</button>
+          <button name="kitAction" value="save" class="rounded-full bg-stone-100 px-4 py-2 text-xs font-bold uppercase tracking-wider">Save tests</button>
           <button id="kit-checkout-button" name="kitAction" value="checkout" disabled={!shelfReady} class="rounded-full bg-[#F7BA1E] text-[#111111] px-4 py-2 text-xs font-extrabold uppercase tracking-wider disabled:opacity-40">Check gear out</button>
           <button name="kitAction" value="checkin" class="rounded-full border border-[#F7BA1E]/50 text-[#F7BA1E] px-4 py-2 text-xs font-extrabold uppercase tracking-wider">Check gear in</button>
           <a
             href={`/api/studio/bookings/${booking.bookingRef}/kit-handover.pdf`}
-            class="rounded-full border border-white/20 text-stone-200 px-4 py-2 text-xs font-extrabold uppercase tracking-wider"
+            class="rounded-full border border-stone-300 text-stone-700 px-4 py-2 text-xs font-extrabold uppercase tracking-wider"
           >
             Download kit list
           </a>
         </div>
-        <p id="kit-ops-status" class="text-xs text-stone-400"></p>
+        <p id="kit-ops-status" class="text-xs text-stone-500"></p>
       </form>
     </section>
   </div>

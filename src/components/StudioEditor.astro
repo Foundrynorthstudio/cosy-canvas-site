@@ -16,12 +16,12 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
   <div class="max-w-6xl mx-auto px-4 py-8">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <a href="/studio/journal" class="text-xs text-stone-400 hover:text-[#F7BA1E]">← All stories</a>
-        <h1 class="font-display text-3xl font-black mt-2">{isEdit ? 'Edit story' : 'New story'}</h1>
+        <a href="/studio/journal" class="text-xs text-stone-500 hover:text-[#7D6E23]">← All stories</a>
+        <h1 class="font-display text-3xl font-black mt-2 text-[#111111]">{isEdit ? 'Edit story' : 'New story'}</h1>
       </div>
       {
         isEdit && (
-          <button id="delete-btn" type="button" class="text-xs uppercase tracking-wider text-red-400 hover:text-red-300">
+          <button id="delete-btn" type="button" class="text-xs uppercase tracking-wider text-red-600 hover:text-red-700">
             Delete
           </button>
         )
@@ -32,34 +32,34 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
       <div class="lg:col-span-3 space-y-5">
         <label class="block">
           <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Title</span>
-          <input name="title" required value={post?.title ?? ''} class="mt-2 w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3 text-lg text-white focus:border-[#F7BA1E] focus:outline-none" />
+          <input name="title" required value={post?.title ?? ''} class="mt-2 w-full rounded-2xl bg-white border border-stone-200 px-4 py-3 text-lg text-[#111111] focus:border-[#F7BA1E] focus:outline-none" />
         </label>
         <label class="block">
           <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Excerpt</span>
-          <textarea name="excerpt" required rows="3" class="mt-2 w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3 text-sm text-white focus:border-[#F7BA1E] focus:outline-none">{post?.excerpt ?? ''}</textarea>
+          <textarea name="excerpt" required rows="3" class="mt-2 w-full rounded-2xl bg-white border border-stone-200 px-4 py-3 text-sm text-[#111111] focus:border-[#F7BA1E] focus:outline-none">{post?.excerpt ?? ''}</textarea>
         </label>
         <label class="block">
           <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Body (Markdown)</span>
-          <textarea name="content" required rows="22" class="mt-2 w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3 text-sm text-stone-100 font-mono leading-relaxed focus:border-[#F7BA1E] focus:outline-none">{post?.content ?? ''}</textarea>
+          <textarea name="content" required rows="22" class="mt-2 w-full rounded-2xl bg-white border border-stone-200 px-4 py-3 text-sm text-[#111111] font-mono leading-relaxed focus:border-[#F7BA1E] focus:outline-none">{post?.content ?? ''}</textarea>
         </label>
       </div>
 
       <div class="lg:col-span-2 space-y-5">
-        <div class="rounded-3xl border border-white/10 p-5 space-y-4 bg-white/[0.03]">
+        <div class="studio-panel rounded-3xl p-5 space-y-4">
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Status</span>
-            <select name="status" class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm">
+            <select name="status" class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]">
               <option value="draft" selected={post?.status !== 'published'}>Draft</option>
               <option value="published" selected={post?.status === 'published'}>Published</option>
             </select>
           </label>
-          <label class="flex items-center gap-3 text-sm">
-            <input type="checkbox" name="featured" checked={post?.featured} />
+          <label class="flex items-center gap-3 text-sm text-stone-700">
+            <input type="checkbox" name="featured" checked={post?.featured} class="accent-[#F7BA1E]" />
             Featured on the journal homepage
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Category</span>
-            <select name="category" class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm">
+            <select name="category" class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]">
               {Object.entries(CATEGORY_LABELS).map(([id, label]) => (
                 <option value={id} selected={post?.category === id}>{label}</option>
               ))}
@@ -67,46 +67,46 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Publish date</span>
-            <input type="datetime-local" name="isoDate" value={isoValue} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input type="datetime-local" name="isoDate" value={isoValue} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
         </div>
 
-        <div class="rounded-3xl border border-white/10 p-5 space-y-4 bg-white/[0.03]">
+        <div class="studio-panel rounded-3xl p-5 space-y-4">
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Hero image URL</span>
-            <input name="image" value={post?.image ?? '/cosy_canvas_hero_coastal_pitch.jpg'} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="image" value={post?.image ?? '/cosy_canvas_hero_coastal_pitch.jpg'} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Image alt text</span>
-            <input name="imageAlt" value={post?.imageAlt ?? ''} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="imageAlt" value={post?.imageAlt ?? ''} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Author</span>
-            <input name="authorName" value={post?.author.name ?? 'The Cosy Canvas Co.'} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="authorName" value={post?.author.name ?? 'The Cosy Canvas Co.'} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Author role</span>
-            <input name="authorRole" value={post?.author.role ?? 'Scottish Bell Tent Specialists'} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="authorRole" value={post?.author.role ?? 'Scottish Bell Tent Specialists'} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
         </div>
 
-        <div class="rounded-3xl border border-white/10 p-5 space-y-4 bg-white/[0.03]">
-          <p class="text-[11px] uppercase tracking-widest text-[#F7BA1E] font-bold">SEO</p>
+        <div class="studio-panel rounded-3xl p-5 space-y-4">
+          <p class="text-[11px] uppercase tracking-widest text-[#7D6E23] font-bold">SEO</p>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">SEO title</span>
-            <input name="seoTitle" value={post?.seoTitle ?? ''} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="seoTitle" value={post?.seoTitle ?? ''} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Meta description</span>
-            <textarea name="seoDescription" maxlength="160" rows="3" class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm">{post?.seoDescription ?? ''}</textarea>
+            <textarea name="seoDescription" maxlength="160" rows="3" class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]">{post?.seoDescription ?? ''}</textarea>
           </label>
           <label class="block">
             <span class="text-[11px] uppercase tracking-widest text-stone-500 font-bold">Keywords</span>
-            <input name="keywords" value={post?.keywords ?? ''} class="mt-2 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2.5 text-sm" />
+            <input name="keywords" value={post?.keywords ?? ''} class="mt-2 w-full rounded-xl bg-white border border-stone-200 px-3 py-2.5 text-sm text-[#111111]" />
           </label>
         </div>
 
-        <p id="form-status" class="text-xs text-stone-400 min-h-4"></p>
+        <p id="form-status" class="text-xs text-stone-500 min-h-4"></p>
         <button type="submit" class="w-full rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5">
           {isEdit ? 'Save story' : 'Publish to studio'}
         </button>

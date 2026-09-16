@@ -23,42 +23,42 @@ const peekMap = buildBookingPeekMap(bookings);
   <div class="max-w-7xl mx-auto px-4 py-10 space-y-10">
     <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
       <div>
-        <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
-        <h1 class="font-display text-3xl md:text-4xl font-black mt-1">Bookings calendar</h1>
-        <p class="text-stone-400 text-sm mt-2">
+        <p class="text-[#7D6E23] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
+        <h1 class="font-display text-3xl md:text-4xl font-black mt-1 text-[#111111]">Bookings calendar</h1>
+        <p class="text-stone-500 text-sm mt-2">
           {bookings.length} stays on file · {dueCount} with a balance due · click a stay tile for a quick ops summary
         </p>
       </div>
-      <button id="remind-all" class="rounded-full border border-[#F7BA1E]/40 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 self-start">
+      <button id="remind-all" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] bg-white/80 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 self-start hover:bg-[#F7BA1E]/10">
         Run scheduled emails
       </button>
     </div>
 
     {
       bookings.length === 0 ? (
-        <div class="rounded-3xl border border-dashed border-white/15 p-12 text-center text-stone-400">
-          <p class="font-display text-xl font-black text-white mb-2">No bookings yet</p>
+        <div class="studio-panel rounded-3xl border-dashed p-12 text-center text-stone-500">
+          <p class="font-display text-xl font-black text-[#111111] mb-2">No bookings yet</p>
           <p class="text-sm">Paid checkouts appear here automatically, with confirmation, welcome pack, and DIY guide emails.</p>
         </div>
       ) : (
         <>
           <section>
             <div class="flex items-center justify-between gap-3 mb-4">
-              <h2 class="font-display text-lg font-black">Fleet needed (peak concurrent)</h2>
+              <h2 class="font-display text-lg font-black text-[#111111]">Fleet needed (peak concurrent)</h2>
               <p class="text-[11px] text-stone-500 max-w-md text-right hidden sm:block">
                 Peak = most of that kit out on any one night. Stock to the peak; unit-nights show overall pressure.
               </p>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
               {calendar.metrics.map((metric) => (
-                <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] to-white/[0.02] p-4 min-h-[7.5rem] flex flex-col">
+                <div class="studio-tile rounded-3xl p-4 min-h-[7.5rem] flex flex-col">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="w-9 h-9 rounded-2xl bg-[#F7BA1E]/15 text-[#F7BA1E] flex items-center justify-center">
+                    <span class="w-9 h-9 rounded-2xl bg-[#F7BA1E]/20 text-[#7D6E23] flex items-center justify-center">
                       <i class={`fa-solid ${metric.icon}`}></i>
                     </span>
-                    <span class="font-display text-2xl font-black text-white">{metric.peak}</span>
+                    <span class="font-display text-2xl font-black text-[#111111]">{metric.peak}</span>
                   </div>
-                  <p class="font-display font-bold text-sm text-white mt-3 leading-tight">{metric.label}</p>
+                  <p class="font-display font-bold text-sm text-[#111111] mt-3 leading-tight">{metric.label}</p>
                   <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-auto pt-2">
                     {metric.bookings} stay{metric.bookings === 1 ? '' : 's'} · {metric.unitNights} unit-nights
                   </p>
@@ -67,29 +67,29 @@ const peekMap = buildBookingPeekMap(bookings);
             </div>
           </section>
 
-          <section class="rounded-3xl border border-white/10 bg-white/[0.03] overflow-hidden">
-            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/10">
+          <section class="studio-panel rounded-3xl overflow-hidden">
+            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-stone-200">
               <a
                 href={`/studio/bookings?month=${calendar.prev}`}
-                class="w-9 h-9 rounded-full border border-white/15 text-stone-300 hover:text-white hover:border-[#F7BA1E]/50 flex items-center justify-center"
+                class="w-9 h-9 rounded-full border border-stone-200 text-stone-500 hover:text-[#111111] hover:border-[#F7BA1E]/60 flex items-center justify-center bg-white"
                 aria-label="Previous month"
               >
                 <i class="fa-solid fa-chevron-left text-xs"></i>
               </a>
               <div class="text-center">
-                <h2 class="font-display text-xl font-black">{calendar.label}</h2>
+                <h2 class="font-display text-xl font-black text-[#111111]">{calendar.label}</h2>
                 <p class="text-[11px] text-stone-500">{calendar.stayCount} stay{calendar.stayCount === 1 ? '' : 's'} this month</p>
               </div>
               <a
                 href={`/studio/bookings?month=${calendar.next}`}
-                class="w-9 h-9 rounded-full border border-white/15 text-stone-300 hover:text-white hover:border-[#F7BA1E]/50 flex items-center justify-center"
+                class="w-9 h-9 rounded-full border border-stone-200 text-stone-500 hover:text-[#111111] hover:border-[#F7BA1E]/60 flex items-center justify-center bg-white"
                 aria-label="Next month"
               >
                 <i class="fa-solid fa-chevron-right text-xs"></i>
               </a>
             </div>
 
-            <div class="grid grid-cols-7 border-b border-white/10 text-[10px] uppercase tracking-widest text-stone-500">
+            <div class="grid grid-cols-7 border-b border-stone-200 text-[10px] uppercase tracking-widest text-stone-500">
               {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
                 <div class="px-2 py-2 text-center">{d}</div>
               ))}
@@ -99,15 +99,15 @@ const peekMap = buildBookingPeekMap(bookings);
               {calendar.days.map((day) => (
                 <div
                   class:list={[
-                    'min-h-[7.5rem] sm:min-h-[9.5rem] border-r border-b border-white/5 p-1.5 sm:p-2',
+                    'min-h-[7.5rem] sm:min-h-[9.5rem] border-r border-b border-stone-100 p-1.5 sm:p-2',
                     !day.inMonth && 'opacity-35',
-                    day.stays.length > 0 && 'bg-[#F7BA1E]/[0.04]',
+                    day.stays.length > 0 && 'bg-[#F7BA1E]/[0.06]',
                   ]}
                 >
                   <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="text-[11px] font-bold text-stone-400">{day.day}</span>
+                    <span class="text-[11px] font-bold text-stone-500">{day.day}</span>
                     {day.stays.length > 0 && (
-                      <span class="text-[9px] font-mono text-[#F7BA1E]">{day.stays.length}</span>
+                      <span class="text-[9px] font-mono text-[#7D6E23]">{day.stays.length}</span>
                     )}
                   </div>
                   <div class="space-y-1.5">
@@ -143,7 +143,7 @@ const peekMap = buildBookingPeekMap(bookings);
           </section>
 
           <section>
-            <h2 class="font-display text-lg font-black mb-4">All stays</h2>
+            <h2 class="font-display text-lg font-black mb-4 text-[#111111]">All stays</h2>
             <div class="grid md:grid-cols-2 gap-4">
               {upcoming.map((booking) => {
                 const status = deriveBookingStatus(booking);
@@ -151,39 +151,39 @@ const peekMap = buildBookingPeekMap(bookings);
                 return (
                   <button
                     type="button"
-                    class="rr-stay-peek text-left rounded-3xl border border-white/10 bg-white/[0.03] hover:border-[#F7BA1E]/40 hover:bg-white/[0.05] transition-colors p-5 block w-full"
+                    class="rr-stay-peek text-left studio-panel rounded-3xl hover:border-[#F7BA1E]/50 transition-colors p-5 block w-full"
                     data-ref={booking.bookingRef}
                   >
                     <div class="flex items-start justify-between gap-3">
                       <div>
-                        <p class="font-display font-black text-lg text-white">{booking.customerName}</p>
+                        <p class="font-display font-black text-lg text-[#111111]">{booking.customerName}</p>
                         <p class="text-stone-500 text-xs mt-1">{booking.bookingRef} · {booking.customerEmail}</p>
                       </div>
                       <span class:list={[
                         'text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full shrink-0',
-                        status === 'paid_in_full' && 'bg-emerald-500/15 text-emerald-300',
-                        status === 'balance_due' && 'bg-amber-500/15 text-amber-300',
-                        status === 'refunded' && 'bg-red-500/15 text-red-300',
-                        status === 'confirmed' && 'bg-white/10 text-stone-200',
+                        status === 'paid_in_full' && 'bg-emerald-100 text-emerald-800',
+                        status === 'balance_due' && 'bg-amber-100 text-amber-800',
+                        status === 'refunded' && 'bg-red-100 text-red-800',
+                        status === 'confirmed' && 'bg-stone-100 text-stone-700',
                       ]}>
                         {statusLabel(status)}
                       </span>
                     </div>
-                    <p class="text-sm text-stone-300 mt-3">
+                    <p class="text-sm text-stone-600 mt-3">
                       {booking.checkinDate} → {booking.checkoutDate}
                       <span class="text-stone-500"> · {booking.guests} guests</span>
                     </p>
                     <p class="text-xs text-stone-500 mt-1 truncate">{booking.campsiteLocation}</p>
                     <div class="flex flex-wrap gap-2 mt-4">
                       {icons.map((item) => (
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[10px] text-stone-300">
-                          <i class={`fa-solid ${item.icon} text-[#F7BA1E]`}></i>
+                        <span class="inline-flex items-center gap-1.5 rounded-full bg-stone-50 border border-stone-200 px-2.5 py-1 text-[10px] text-stone-600">
+                          <i class={`fa-solid ${item.icon} text-[#7D6E23]`}></i>
                           {item.label}
                         </span>
                       ))}
                     </div>
                     {booking.remainingBalance > 0 && (
-                      <p class="text-[11px] text-amber-300 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
+                      <p class="text-[11px] text-amber-700 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
                     )}
                   </button>
                 );
@@ -196,59 +196,59 @@ const peekMap = buildBookingPeekMap(bookings);
     <p id="status" class="text-xs text-stone-500"></p>
   </div>
 
-  <div id="stay-peek" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" aria-hidden="true">
-    <div class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-[#161616] shadow-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="peek-name">
+  <div id="stay-peek" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm" aria-hidden="true">
+    <div class="relative w-full max-w-lg rounded-3xl border border-stone-200 bg-white shadow-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="peek-name">
       <div id="peek-accent" class="h-1.5 w-full bg-[#F7BA1E]"></div>
       <div class="p-6 space-y-5">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-[#F7BA1E] font-mono text-[10px] uppercase tracking-widest font-bold" id="peek-ref"></p>
-            <h2 class="font-display text-2xl font-black text-white mt-1" id="peek-name"></h2>
+            <p class="text-[#7D6E23] font-mono text-[10px] uppercase tracking-widest font-bold" id="peek-ref"></p>
+            <h2 class="font-display text-2xl font-black text-[#111111] mt-1" id="peek-name"></h2>
             <p class="text-stone-500 text-xs mt-1" id="peek-contact"></p>
           </div>
-          <button type="button" id="peek-close" class="w-9 h-9 rounded-full bg-white/5 text-stone-300 hover:text-white" aria-label="Close">
+          <button type="button" id="peek-close" class="w-9 h-9 rounded-full bg-stone-100 text-stone-500 hover:text-[#111111]" aria-label="Close">
             <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <span id="peek-status" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-white/10 text-stone-200"></span>
-          <span id="peek-fulfillment" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-[#F7BA1E]/15 text-[#F7BA1E]"></span>
+          <span id="peek-status" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-stone-100 text-stone-700"></span>
+          <span id="peek-fulfillment" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-[#F7BA1E]/20 text-[#7D6E23]"></span>
         </div>
 
         <div class="grid grid-cols-2 gap-3 text-xs">
-          <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3">
+          <div class="rounded-2xl bg-stone-50 border border-stone-200 p-3">
             <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Stay</p>
-            <p class="text-white font-bold" id="peek-dates"></p>
-            <p class="text-stone-400 mt-1" id="peek-guests"></p>
+            <p class="text-[#111111] font-bold" id="peek-dates"></p>
+            <p class="text-stone-500 mt-1" id="peek-guests"></p>
           </div>
-          <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3">
+          <div class="rounded-2xl bg-stone-50 border border-stone-200 p-3">
             <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Canvas</p>
-            <p class="text-white font-bold" id="peek-tent"></p>
-            <p class="text-stone-400 mt-1 truncate" id="peek-bedding"></p>
+            <p class="text-[#111111] font-bold" id="peek-tent"></p>
+            <p class="text-stone-500 mt-1 truncate" id="peek-bedding"></p>
           </div>
         </div>
 
-        <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3 text-xs">
+        <div class="rounded-2xl bg-stone-50 border border-stone-200 p-3 text-xs">
           <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Location</p>
-          <p class="text-stone-200" id="peek-location"></p>
+          <p class="text-stone-700" id="peek-location"></p>
         </div>
 
         <div>
           <div class="flex items-center justify-between gap-2 mb-2">
             <p class="text-stone-500 uppercase tracking-wider text-[10px] font-bold">Kit load</p>
-            <p class="text-[#F7BA1E] text-xs font-bold" id="peek-kit-total"></p>
+            <p class="text-[#7D6E23] text-xs font-bold" id="peek-kit-total"></p>
           </div>
           <div id="peek-kit" class="flex flex-wrap gap-2"></div>
         </div>
 
-        <p id="peek-balance" class="hidden text-amber-300 text-xs font-bold"></p>
+        <p id="peek-balance" class="hidden text-amber-700 text-xs font-bold"></p>
 
         <div class="flex flex-wrap gap-3 pt-1">
           <a id="peek-open" href="/studio/bookings" class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
             Open full booking
           </a>
-          <button type="button" id="peek-dismiss" class="rounded-full border border-white/15 text-stone-300 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 hover:text-white">
+          <button type="button" id="peek-dismiss" class="rounded-full border border-stone-200 text-stone-600 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 hover:text-[#111111] hover:border-stone-300">
             Keep on calendar
           </button>
         </div>
@@ -290,16 +290,16 @@ const peekMap = buildBookingPeekMap(bookings);
     const status = document.getElementById('peek-status');
     status.textContent = data.statusLabel;
     status.className = 'text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full ';
-    if (data.status === 'paid_in_full') status.className += 'bg-emerald-500/15 text-emerald-300';
-    else if (data.status === 'balance_due') status.className += 'bg-amber-500/15 text-amber-300';
-    else if (data.status === 'refunded') status.className += 'bg-red-500/15 text-red-300';
-    else status.className += 'bg-white/10 text-stone-200';
+    if (data.status === 'paid_in_full') status.className += 'bg-emerald-100 text-emerald-800';
+    else if (data.status === 'balance_due') status.className += 'bg-amber-100 text-amber-800';
+    else if (data.status === 'refunded') status.className += 'bg-red-100 text-red-800';
+    else status.className += 'bg-stone-100 text-stone-700';
 
     const kit = document.getElementById('peek-kit');
     kit.innerHTML = (data.kit || [])
       .map(
         (item) =>
-          `<span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[11px] text-stone-200"><i class="fa-solid ${item.icon} text-[#F7BA1E]"></i>${item.label}${item.qty > 1 ? ` ×${item.qty}` : ''}</span>`,
+          `<span class="inline-flex items-center gap-1.5 rounded-full bg-stone-50 border border-stone-200 px-2.5 py-1 text-[11px] text-stone-700"><i class="fa-solid ${item.icon} text-[#7D6E23]"></i>${item.label}${item.qty > 1 ? ` ×${item.qty}` : ''}</span>`,
       )
       .join('');
 

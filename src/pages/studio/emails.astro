@@ -24,13 +24,13 @@ const triggers: { value: MailTrigger; label: string }[] = [
   <div class="max-w-6xl mx-auto px-4 py-10">
     <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
       <div>
-        <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em]">Guest comms</p>
-        <h1 class="font-display text-3xl font-black mt-1">Automated emails</h1>
-        <p class="text-stone-400 text-sm mt-2 max-w-2xl">
+        <p class="text-[#7D6E23] font-mono text-xs uppercase tracking-[0.25em]">Guest comms</p>
+        <h1 class="font-display text-3xl font-black mt-1 text-[#111111]">Automated emails</h1>
+        <p class="text-stone-500 text-sm mt-2 max-w-2xl">
           Edit the master copy for each auto email, then set when it should send. Open any booking to preview the filled-in version, tweak it, and send.
         </p>
       </div>
-      <button id="run-scheduled" class="rounded-full border border-[#F7BA1E]/40 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+      <button id="run-scheduled" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] bg-white/80 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 hover:bg-[#F7BA1E]/10">
         Run scheduled sends now
       </button>
     </div>
@@ -46,22 +46,22 @@ const triggers: { value: MailTrigger; label: string }[] = [
           const template = settings.templates[type];
           const meta = MAIL_META[type];
           return (
-            <section class="rounded-3xl border border-white/10 bg-white/[0.03] p-6" data-type={type}>
+            <section class="studio-panel rounded-3xl p-6" data-type={type}>
               <div class="flex flex-wrap items-start justify-between gap-3 mb-5">
                 <div>
-                  <h2 class="font-display text-xl font-black">{meta.label}</h2>
-                  <p class="text-stone-400 text-sm mt-1">{meta.blurb}</p>
-                  <p class="text-[11px] text-[#F7BA1E] mt-2">{ruleSummary(rule)}</p>
+                  <h2 class="font-display text-xl font-black text-[#111111]">{meta.label}</h2>
+                  <p class="text-stone-500 text-sm mt-1">{meta.blurb}</p>
+                  <p class="text-[11px] text-[#7D6E23] mt-2">{ruleSummary(rule)}</p>
                 </div>
-                <label class="text-xs flex items-center gap-2">
+                <label class="text-xs flex items-center gap-2 text-stone-600">
                   <input type="checkbox" name={`${type}-enabled`} checked={rule.enabled} class="accent-[#F7BA1E]" />
                   Auto send
                 </label>
               </div>
               <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
-                <label class="text-xs text-stone-400 sm:col-span-2">
+                <label class="text-xs text-stone-500 sm:col-span-2">
                   When
-                  <select name={`${type}-trigger`} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white">
+                  <select name={`${type}-trigger`} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]">
                     {triggers.map((option) => (
                       <option value={option.value} selected={rule.trigger === option.value}>
                         {option.label}
@@ -69,11 +69,11 @@ const triggers: { value: MailTrigger; label: string }[] = [
                     ))}
                   </select>
                 </label>
-                <label class="text-xs text-stone-400">
+                <label class="text-xs text-stone-500">
                   Days before check-in
-                  <input name={`${type}-daysBefore`} type="number" min="1" value={rule.daysBefore} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+                  <input name={`${type}-daysBefore`} type="number" min="1" value={rule.daysBefore} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
                 </label>
-                <div class="text-xs text-stone-400 space-y-2 pt-6">
+                <div class="text-xs text-stone-600 space-y-2 pt-6">
                   <label class="flex items-center gap-2"><input type="checkbox" name={`${type}-onlyDiy`} checked={rule.onlyDiy} class="accent-[#F7BA1E]" /> DIY bookings only</label>
                   <label class="flex items-center gap-2"><input type="checkbox" name={`${type}-requireBalance`} checked={rule.requireBalance} class="accent-[#F7BA1E]" /> Only if balance due</label>
                   {type === 'confirmation' && (
@@ -81,24 +81,24 @@ const triggers: { value: MailTrigger; label: string }[] = [
                   )}
                 </div>
               </div>
-              <label class="text-xs text-stone-400 block mb-3">
+              <label class="text-xs text-stone-500 block mb-3">
                 Header title
-                <input name={`${type}-headline`} value={template.headline} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+                <input name={`${type}-headline`} value={template.headline} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
               </label>
-              <label class="text-xs text-stone-400 block mb-3">
+              <label class="text-xs text-stone-500 block mb-3">
                 Subject
-                <input name={`${type}-subject`} value={template.subject} class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white" />
+                <input name={`${type}-subject`} value={template.subject} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" />
               </label>
-              <label class="text-xs text-stone-400 block">
+              <label class="text-xs text-stone-500 block">
                 Body (HTML, placeholders filled per booking)
-                <textarea name={`${type}-body`} rows="12" class="mt-1 w-full rounded-xl bg-[#1a1a1a] border border-stone-700 px-3 py-2 text-sm text-white font-mono leading-relaxed">{template.body}</textarea>
+                <textarea name={`${type}-body`} rows="12" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111] font-mono leading-relaxed">{template.body}</textarea>
               </label>
             </section>
           );
         })
       }
       <button class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3">Save templates & rules</button>
-      <p id="save-status" class="text-xs text-stone-400"></p>
+      <p id="save-status" class="text-xs text-stone-500"></p>
     </form>
   </div>
 </StudioLayout>
