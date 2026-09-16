@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import GuestReviews from '../components/GuestReviews.astro';
 import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
 ---
 
@@ -227,60 +228,5 @@ import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
     </div>
   </section>
 
-  <!-- Customer Testimonials Section -->
-  <section class="py-16 bg-transparent border-b border-stone-200/80">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center max-w-2xl mx-auto mb-12">
-        <span class="text-[#7D6E23] font-mono text-xs uppercase tracking-widest block mb-1">LOVED BY COSY ADVENTURERS</span>
-        <h2 class="font-display text-2xl md:text-3xl font-extrabold text-[#111111]">What Our Guests Say</h2>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="light-card rounded-2xl p-6 flex flex-col justify-between bg-white/90">
-          <div>
-            <div class="text-[#F7BA1E] text-sm mb-3">
-              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="text-stone-600 text-xs leading-relaxed italic mb-4">
-              "Trystan and his team really got us out of a fix! Fast setup, incredible accommodation, and seamless collection. We will definitely book again without hesitation."
-            </p>
-          </div>
-          <div class="border-t pt-3 border-stone-100 flex items-center justify-between text-xs">
-            <span class="font-bold text-[#111111]">Annie</span>
-            <span class="text-stone-400">Loch Lomond Stay</span>
-          </div>
-        </div>
-
-        <div class="light-card rounded-2xl p-6 flex flex-col justify-between bg-white/90">
-          <div>
-            <div class="text-[#F7BA1E] text-sm mb-3">
-              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="text-stone-600 text-xs leading-relaxed italic mb-4">
-              "The set up was perfect when we arrived and collection afterwards was just as smooth. Made the whole trip so much easier and more enjoyable!"
-            </p>
-          </div>
-          <div class="border-t pt-3 border-stone-100 flex items-center justify-between text-xs">
-            <span class="font-bold text-[#111111]">Rhys L.</span>
-            <span class="text-stone-400">Coastal Sutherland Stay</span>
-          </div>
-        </div>
-
-        <div class="light-card rounded-2xl p-6 flex flex-col justify-between bg-white/90">
-          <div>
-            <div class="text-[#F7BA1E] text-sm mb-3">
-              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-            </div>
-            <p class="text-stone-600 text-xs leading-relaxed italic mb-4">
-              "Dealing with the company from initial inquiry to setup was completely effortless. The kids loved watching movies in the tent!"
-            </p>
-          </div>
-          <div class="border-t pt-3 border-stone-100 flex items-center justify-between text-xs">
-            <span class="font-bold text-[#111111]">Donna R.</span>
-            <span class="text-stone-400">Falkirk Garden Sleepover</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <GuestReviews />
 </Layout>
