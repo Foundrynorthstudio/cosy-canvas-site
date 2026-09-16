@@ -180,7 +180,7 @@ export function bookingFleetDemand(booking: BookingRecord): Record<FleetKey, num
   return demand;
 }
 
-function shortTent(tentType: string): string {
+export function shortTent(tentType: string): string {
   const multi = tentType.match(/^(\d+)\s*[×x]\s*(\d+\s*M)/i);
   if (multi) return `${multi[1]}×${multi[2].replace(/\s+/g, '')}`;
   const single = tentType.match(/(\d+\s*M)/i);
@@ -458,6 +458,116 @@ export interface YearCapacity {
 }
 
 /** Seasonal capacity map: guest-nights per month (summer should peak). */
+export interface BookingSearchField {
+  id: string;
+  label: string;
+  value: string;
+}
+
+export interface BookingSearchDoc {
+  ref: string;
+  name: string;
+  email: string;
+  phone: string;
+  checkin: string;
+  checkout: string;
+  tent: string;
+  location: string;
+  status: string;
+  statusLabel: string;
+  balanceDue: number;
+  total: number;
+  delivery: boolean;
+  guests: number;
+  nights: number;
+  bookingUrl: string;
+  packListUrl: string;
+  fields: BookingSearchField[];
+}
+
+function pushSearchField(fields: BookingSearchField[], id: string, label: string, value: string | number | undefined | null) {
+  const text = String(value ?? '').trim();
+  if (!text) return;
+  fields.push({ id, label, value: text });
+}
+
+/** Full-text ops search index for Studio bookings desk. */
+export function buildBookingSearchIndex(bookings: BookingRecord[]): BookingSearchDoc[] {
+  return bookings.map((booking) => {
+    const status = deriveBookingStatus(booking);
+    const diy = isDiyFulfillment(booking.fulfillment);
+    const demand = bookingFleetDemand(booking);
+    const fields: BookingSearchField[] = [];
+
+    pushSearchField(fields, 'ref', 'Booking ref', booking.bookingRef);
+    pushSearchField(fields, 'name', 'Guest', booking.customerName);
+    pushSearchField(fields, 'email', 'Email', booking.customerEmail);
+    pushSearchField(fields, 'phone', 'Phone', booking.customerPhone);
+    pushSearchField(fields, 'address', 'Address', booking.customerAddress);
+    pushSearchField(fields, 'location', 'Campsite', booking.campsiteLocation);
+    pushSearchField(fields, 'checkin', 'Check-in', booking.checkinDate);
+    pushSearchField(fields, 'checkout', 'Check-out', booking.checkoutDate);
+    pushSearchField(fields, 'guests', 'Guests', `${booking.guests} guests`);
+    pushSearchField(fields, 'nights', 'Nights', `${booking.nights} nights`);
+    pushSearchField(fields, 'tent', 'Tent', booking.tentType);
+    pushSearchField(fields, 'bedding', 'Bedding', booking.beddingTier);
+    pushSearchField(fields, 'fulfillment', 'Fulfillment', booking.fulfillment);
+    pushSearchField(fields, 'mode', diy ? 'DIY' : 'Delivery', diy ? 'DIY depot pickup' : 'Delivery & pitching');
+    pushSearchField(fields, 'status', 'Status', statusLabel(status));
+    pushSearchField(fields, 'balance', 'Balance due', booking.remainingBalance > 0.01 ? `£${booking.remainingBalance.toFixed(2)}` : 'Settled');
+    pushSearchField(fields, 'total', 'Booking total', `£${booking.totalRentalPrice.toFixed(2)}`);
+    pushSearchField(fields, 'deposit', 'Deposit paid', `£${booking.totalPaidToday.toFixed(2)}`);
+    pushSearchField(fields, 'security', 'Security hold', `£${booking.securityDeposit.toFixed(2)}`);
+    pushSearchField(fields, 'balanceDate', 'Balance due date', booking.balanceDueDate);
+    pushSearchField(fields, 'requests', 'Guest notes', booking.specialRequests);
+    pushSearchField(fields, 'notes', 'Internal notes', booking.internalNotes);
+    pushSearchField(fields, 'pitch', 'Pitch', booking.logistics?.pitchDetail);
+    pushSearchField(fields, 'w3w', 'what3words', booking.logistics?.pitchW3w);
+    pushSearchField(fields, 'access', 'Access notes', booking.logistics?.accessNotes);
+    pushSearchField(fields, 'event', 'Event', booking.eventSlug);
+    pushSearchField(fields, 'partner', 'Partner site', booking.partnerSiteKey);
+    pushSearchField(fields, 'stripe', 'Stripe session', booking.stripeSessionId);
+    pushSearchField(fields, 'plan', 'Payment plan', booking.paymentPlan);
+
+    booking.addons.forEach((addon, index) => {
+      pushSearchField(fields, `addon-${index}`, 'Add-on', addon.title);
+    });
+
+    (Object.keys(FLEET_META) as FleetKey[]).forEach((key) => {
+      if (demand[key] > 0) {
+        pushSearchField(fields, `kit-${key}`, 'Kit', `${FLEET_META[key].label} ×${demand[key]}`);
+      }
+    });
+
+    if (booking.remainingBalance > 0.01) {
+      pushSearchField(fields, 'due-tag', 'Payment', 'balance due unpaid outstanding');
+    } else if (status === 'paid_in_full') {
+      pushSearchField(fields, 'paid-tag', 'Payment', 'paid in full settled');
+    }
+
+    return {
+      ref: booking.bookingRef,
+      name: booking.customerName,
+      email: booking.customerEmail,
+      phone: booking.customerPhone,
+      checkin: booking.checkinDate,
+      checkout: booking.checkoutDate,
+      tent: shortTent(booking.tentType),
+      location: booking.campsiteLocation,
+      status,
+      statusLabel: statusLabel(status),
+      balanceDue: booking.remainingBalance,
+      total: booking.totalRentalPrice,
+      delivery: !diy,
+      guests: booking.guests,
+      nights: booking.nights,
+      bookingUrl: `/studio/bookings/${encodeURIComponent(booking.bookingRef)}`,
+      packListUrl: `/studio/bookings/${encodeURIComponent(booking.bookingRef)}/pack-list`,
+      fields,
+    };
+  });
+}
+
 export function buildYearCapacity(bookings: BookingRecord[], year: number): YearCapacity {
   const guestNights = Array.from({ length: 12 }, () => 0);
   const stays = Array.from({ length: 12 }, () => 0);

@@ -7,6 +7,7 @@ import { buildBookingLineItems, formatGbp } from '../../../lib/booking-lines';
 import { MAIL_META, MAIL_TYPES, ruleSummary, sentAt } from '../../../lib/booking-mail';
 import { getMailSettings } from '../../../lib/booking-mail-settings';
 import { getBookingByRef } from '../../../lib/booking-store';
+import { guestProfileHref } from '../../../lib/guest-crm';
 import { isRatRaceBooking } from '../../../lib/rat-race';
 import { formatKitMoney } from '../../../lib/kit-catalog';
 import {
@@ -25,6 +26,8 @@ const booking = ref ? await getBookingByRef(ref) : undefined;
 if (!booking) {
   return Astro.redirect('/studio/bookings');
 }
+
+const guestHref = booking.customerEmail ? guestProfileHref(booking.customerEmail) : '';
 
 const status = deriveBookingStatus(booking);
 const kit = buildKitManifest(booking);
@@ -53,6 +56,11 @@ const mailSettings = await getMailSettings();
         <p class="font-mono text-[#F7BA1E] text-sm">{booking.bookingRef}</p>
         <h1 class="font-display text-3xl font-black">{booking.customerName}</h1>
         <p class="text-stone-500 text-sm mt-1">{booking.checkinDate} → {booking.checkoutDate} · {booking.campsiteLocation}</p>
+        {guestHref && (
+          <a href={guestHref} class="inline-flex items-center gap-1.5 mt-2 text-[11px] uppercase tracking-wider font-bold text-[#7D6E23] hover:text-[#111111]">
+            <i class="fa-solid fa-user"></i> Guest profile
+          </a>
+        )}
       </div>
       <span class:list={[
         'text-[11px] uppercase tracking-wider font-bold px-3 py-1 rounded-full',

@@ -5,6 +5,7 @@ import { deriveBookingStatus, statusLabel } from '../../../lib/booking';
 import {
   bookingLoadIcons,
   buildBookingPeekMap,
+  buildBookingSearchIndex,
   buildOpsCalendar,
   buildYearCapacity,
   parseMonthParam,
@@ -18,23 +19,78 @@ const calendar = buildOpsCalendar(bookings, year, month);
 const yearCapacity = buildYearCapacity(bookings, year);
 const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.checkinDate));
 const peekMap = buildBookingPeekMap(bookings);
+const searchIndex = buildBookingSearchIndex(bookings);
 const STAY_YELLOW = '#F7BA1E';
 ---
 
 <StudioLayout title="Bookings · Cosy Studio">
   <StudioNav active="bookings" />
-  <div class="max-w-7xl mx-auto px-4 py-10 space-y-10">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-      <div>
-        <p class="text-[#7D6E23] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
-        <h1 class="font-display text-3xl md:text-4xl font-black mt-1 text-[#111111]">Bookings calendar</h1>
-        <p class="text-stone-500 text-sm mt-2">
-          {bookings.length} stays on file · {dueCount} with a balance due · click a stay tile for a quick ops summary
-        </p>
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-8">
+    <div class="space-y-5">
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+        <div>
+          <p class="text-[#7D6E23] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
+          <h1 class="font-display text-3xl md:text-4xl font-black mt-1 text-[#111111]">Bookings calendar</h1>
+          <p class="text-stone-500 text-sm mt-2">
+            {bookings.length} stays on file · {dueCount} with a balance due · search guests, refs, pitches, kit, notes
+          </p>
+        </div>
+        <button id="remind-all" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] bg-white/80 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 self-start hover:bg-[#F7BA1E]/10">
+          Run scheduled emails
+        </button>
       </div>
-      <button id="remind-all" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] bg-white/80 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 self-start hover:bg-[#F7BA1E]/10">
-        Run scheduled emails
-      </button>
+
+      <div id="ops-search" class="relative z-40">
+        <label for="ops-search-input" class="sr-only">Search bookings</label>
+        <div class="studio-panel rounded-[1.75rem] p-2 sm:p-2.5 border-[#F7BA1E]/35 shadow-sm focus-within:border-[#F7BA1E] focus-within:ring-2 focus-within:ring-[#F7BA1E]/30 transition">
+          <div class="flex items-center gap-3 px-3 sm:px-4">
+            <span class="w-10 h-10 rounded-2xl bg-[#F7BA1E] text-[#111111] flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </span>
+            <input
+              id="ops-search-input"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Search guests, emails, refs, campsites, pitches, 4M/5M/6M, Starlink, balance due…"
+              class="flex-1 min-w-0 bg-transparent border-0 py-3.5 text-base sm:text-lg text-[#111111] placeholder:text-stone-400 focus:outline-none focus:ring-0"
+            />
+            <kbd id="ops-search-kbd" class="hidden sm:inline-flex items-center gap-1 rounded-lg border border-[#7D6E23]/20 bg-[#FAF7EE] px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-stone-500">
+              ⌘K
+            </kbd>
+            <button
+              type="button"
+              id="ops-search-clear"
+              class="hidden w-9 h-9 rounded-full text-stone-400 hover:text-[#111111] hover:bg-stone-100"
+              aria-label="Clear search"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          id="ops-search-panel"
+          class="hidden absolute left-0 right-0 mt-2 rounded-3xl border border-[#7D6E23]/20 bg-[#FAF7EE]/98 shadow-2xl overflow-hidden backdrop-blur-sm"
+          role="listbox"
+          aria-label="Search results"
+        >
+          <div class="px-4 py-3 border-b border-[#7D6E23]/15 flex items-center justify-between gap-3">
+            <p id="ops-search-meta" class="text-[11px] text-stone-600"></p>
+            <p class="text-[10px] uppercase tracking-wider font-bold text-stone-400">Enter opens · Esc closes</p>
+          </div>
+          <div id="ops-search-results" class="max-h-[min(28rem,70vh)] overflow-y-auto divide-y divide-[#7D6E23]/10"></div>
+          <div id="ops-search-empty" class="hidden px-5 py-10 text-center">
+            <p class="font-display font-black text-[#111111]">No matches</p>
+            <p class="text-sm text-stone-500 mt-1">Try a name, CC-ref, campsite, tent size, add-on, or “balance due”.</p>
+          </div>
+          <div class="px-4 py-2.5 border-t border-[#7D6E23]/15 bg-[#EFE8DA]/80">
+            <p class="text-[10px] text-stone-500 leading-relaxed">
+              Searches guest details, booking refs, dates, campsites & pitches, tent sizes, bedding, add-ons & kit, fulfillment, payment status, balances, guest notes, and internal ops notes.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     {
@@ -222,17 +278,74 @@ const STAY_YELLOW = '#F7BA1E';
                 </div>
               </section>
 
-              <section>
-                <h2 class="font-display text-lg font-black mb-4 text-[#111111]">All stays</h2>
-                <div class="grid md:grid-cols-2 gap-4">
+              <section id="stays-desk">
+                <div class="flex flex-col gap-4 mb-4">
+                  <div class="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <h2 class="font-display text-lg font-black text-[#111111]">All stays</h2>
+                      <p id="stays-filter-meta" class="text-[11px] text-stone-600 mt-1">
+                        {upcoming.length} stay{upcoming.length === 1 ? '' : 's'}
+                      </p>
+                    </div>
+                    <label class="flex items-center gap-2 text-[11px] text-stone-600">
+                      <span class="uppercase tracking-wider font-bold text-stone-500">Sort</span>
+                      <select
+                        id="stays-sort"
+                        class="rounded-full border border-[#7D6E23]/25 bg-white/90 text-[#111111] text-xs font-bold px-3 py-2 focus:outline-none focus:border-[#F7BA1E]"
+                      >
+                        <option value="checkin-asc">Check-in · soonest</option>
+                        <option value="checkin-desc">Check-in · latest</option>
+                        <option value="checkout-asc">Check-out · soonest</option>
+                        <option value="balance-desc">Balance due · highest</option>
+                        <option value="balance-asc">Balance due · lowest</option>
+                        <option value="total-desc">Booking total · highest</option>
+                        <option value="paid-first">Paid in full first</option>
+                        <option value="due-first">Balance due first</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div id="stays-filters" class="flex flex-wrap gap-2" role="tablist" aria-label="Stay filters">
+                    {[
+                      { id: 'all', label: 'All stays' },
+                      { id: 'checkins-week', label: 'This week check-ins' },
+                      { id: 'checkouts-week', label: 'This week check-outs' },
+                      { id: 'next-6', label: 'Next 6 check-ins' },
+                      { id: 'balance-due', label: 'Balance due' },
+                      { id: 'paid', label: 'Paid in full' },
+                    ].map((filter, index) => (
+                      <button
+                        type="button"
+                        role="tab"
+                        data-filter={filter.id}
+                        aria-selected={index === 0 ? 'true' : 'false'}
+                        class:list={[
+                          'stays-filter-btn rounded-full px-3.5 py-2 text-[11px] font-extrabold uppercase tracking-wider border transition-colors',
+                          index === 0
+                            ? 'bg-[#F7BA1E] border-[#F7BA1E] text-[#111111]'
+                            : 'bg-white/80 border-[#7D6E23]/25 text-stone-600 hover:border-[#F7BA1E]/60 hover:text-[#111111]',
+                        ]}
+                      >
+                        {filter.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div id="stays-grid" class="grid md:grid-cols-2 gap-4">
                   {upcoming.map((booking) => {
                     const status = deriveBookingStatus(booking);
                     const icons = bookingLoadIcons(booking);
                     return (
                       <button
                         type="button"
-                        class="rr-stay-peek text-left studio-panel rounded-3xl hover:border-[#F7BA1E]/50 transition-colors p-5 block w-full"
+                        class="rr-stay-peek stay-card text-left studio-panel rounded-3xl hover:border-[#F7BA1E]/50 transition-colors p-5 block w-full"
                         data-ref={booking.bookingRef}
+                        data-checkin={booking.checkinDate}
+                        data-checkout={booking.checkoutDate}
+                        data-balance={String(booking.remainingBalance)}
+                        data-total={String(booking.totalRentalPrice)}
+                        data-status={status}
                       >
                         <div class="flex items-start justify-between gap-3">
                           <div>
@@ -262,13 +375,23 @@ const STAY_YELLOW = '#F7BA1E';
                             </span>
                           ))}
                         </div>
-                        {booking.remainingBalance > 0 && (
-                          <p class="text-[11px] text-amber-700 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
-                        )}
+                        <div class="flex flex-wrap items-center justify-between gap-2 mt-3">
+                          <p class="text-[11px] text-stone-500">
+                            Booking total £{booking.totalRentalPrice.toFixed(2)}
+                          </p>
+                          {booking.remainingBalance > 0 ? (
+                            <p class="text-[11px] text-amber-700 font-bold">£{booking.remainingBalance.toFixed(2)} balance due</p>
+                          ) : (
+                            <p class="text-[11px] text-emerald-700 font-semibold">Settled</p>
+                          )}
+                        </div>
                       </button>
                     );
                   })}
                 </div>
+                <p id="stays-empty" class="hidden text-sm text-stone-500 py-8 text-center">
+                  No stays match this view.
+                </p>
               </section>
             </div>
           </div>
@@ -339,10 +462,12 @@ const STAY_YELLOW = '#F7BA1E';
   </div>
 
   <script id="stay-peek-data" type="application/json" is:inline set:html={JSON.stringify(peekMap)}></script>
+  <script id="ops-search-data" type="application/json" is:inline set:html={JSON.stringify(searchIndex)}></script>
 </StudioLayout>
 
 <script>
   const peekData = JSON.parse(document.getElementById('stay-peek-data')?.textContent || '{}');
+  const searchDocs = JSON.parse(document.getElementById('ops-search-data')?.textContent || '[]');
   const overlay = document.getElementById('stay-peek');
 
   function closePeek() {
@@ -410,7 +535,10 @@ const STAY_YELLOW = '#F7BA1E';
     if (event.target === overlay) closePeek();
   });
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closePeek();
+    if (event.key === 'Escape') {
+      if (overlay && !overlay.classList.contains('hidden')) closePeek();
+      else closeSearchPanel();
+    }
   });
 
   document.getElementById('remind-all')?.addEventListener('click', async () => {
@@ -420,4 +548,387 @@ const STAY_YELLOW = '#F7BA1E';
     const json = await res.json();
     if (status) status.textContent = res.ok ? `Sent ${json.sent} scheduled email${json.sent === 1 ? '' : 's'}.` : (json.error || 'Failed');
   });
+
+  /* ── Ops search ─────────────────────────────────────────────── */
+  const searchInput = document.getElementById('ops-search-input');
+  const searchPanel = document.getElementById('ops-search-panel');
+  const searchResults = document.getElementById('ops-search-results');
+  const searchEmpty = document.getElementById('ops-search-empty');
+  const searchMeta = document.getElementById('ops-search-meta');
+  const searchClear = document.getElementById('ops-search-clear');
+  const searchRoot = document.getElementById('ops-search');
+  let searchActiveIndex = -1;
+
+  function normalizeSearch(value) {
+    return String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/£/g, '')
+      .replace(/[^a-z0-9+@.\/\s-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  function tokenizeQuery(query) {
+    return normalizeSearch(query).split(' ').filter(Boolean);
+  }
+
+  function fieldMatches(fieldValue, token) {
+    return normalizeSearch(fieldValue).includes(token);
+  }
+
+  function scoreDoc(doc, tokens) {
+    if (!tokens.length) return null;
+    const matched = [];
+    let score = 0;
+
+    for (const token of tokens) {
+      let tokenHit = false;
+      for (const field of doc.fields) {
+        if (!fieldMatches(field.value, token)) continue;
+        tokenHit = true;
+        if (!matched.some((item) => item.id === field.id)) matched.push(field);
+
+        const normValue = normalizeSearch(field.value);
+        if (field.id === 'ref' && normValue === token) score += 120;
+        else if (field.id === 'ref' && normValue.includes(token)) score += 80;
+        else if (field.id === 'name' && normValue.startsWith(token)) score += 70;
+        else if (field.id === 'name') score += 50;
+        else if (field.id === 'email' || field.id === 'phone') score += 45;
+        else if (field.id === 'location' || field.id === 'pitch') score += 40;
+        else if (field.id === 'tent' || field.id.startsWith('kit-') || field.id.startsWith('addon-')) score += 35;
+        else if (field.id === 'notes' || field.id === 'requests') score += 25;
+        else score += 15;
+      }
+      if (!tokenHit) return null;
+    }
+
+    if (doc.checkin) {
+      const days = Math.abs(Date.parse(doc.checkin) - Date.now()) / 86400000;
+      if (Number.isFinite(days)) score += Math.max(0, 20 - days / 30);
+    }
+
+    return { doc, score, matched: matched.slice(0, 4) };
+  }
+
+  function statusClass(status) {
+    if (status === 'paid_in_full') return 'bg-emerald-100 text-emerald-800';
+    if (status === 'balance_due') return 'bg-amber-100 text-amber-800';
+    if (status === 'refunded') return 'bg-red-100 text-red-800';
+    return 'bg-stone-100 text-stone-700';
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderSearchResults(hits) {
+    if (!searchResults || !searchEmpty || !searchMeta) return;
+
+    if (!hits.length) {
+      searchResults.innerHTML = '';
+      searchEmpty.classList.remove('hidden');
+      searchMeta.textContent = '0 matches';
+      searchActiveIndex = -1;
+      return;
+    }
+
+    searchEmpty.classList.add('hidden');
+    searchMeta.textContent = `${hits.length} match${hits.length === 1 ? '' : 'es'}`;
+    searchResults.innerHTML = hits
+      .map((hit, index) => {
+        const { doc, matched } = hit;
+        const chips = matched
+          .map(
+            (field) =>
+              `<span class="inline-flex items-center gap-1 rounded-full bg-[#F7BA1E]/15 border border-[#F7BA1E]/30 px-2 py-0.5 text-[10px] text-stone-700"><span class="font-bold text-[#7D6E23]">${escapeHtml(field.label)}</span><span class="truncate max-w-[12rem]">${escapeHtml(field.value)}</span></span>`,
+          )
+          .join('');
+        return `
+          <div class="ops-search-hit group px-4 py-3.5 hover:bg-[#F7BA1E]/12 cursor-pointer transition-colors ${index === 0 ? 'bg-[#F7BA1E]/08' : ''}" role="option" data-index="${index}" data-ref="${escapeHtml(doc.ref)}" data-url="${escapeHtml(doc.bookingUrl)}" aria-selected="${index === 0 ? 'true' : 'false'}">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="font-display font-black text-[#111111] text-base truncate">${escapeHtml(doc.name)}</p>
+                <p class="text-xs text-stone-500 mt-0.5 truncate">${escapeHtml(doc.ref)} · ${escapeHtml(doc.email || 'No email')}</p>
+              </div>
+              <span class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full shrink-0 ${statusClass(doc.status)}">${escapeHtml(doc.statusLabel)}</span>
+            </div>
+            <p class="text-sm text-stone-600 mt-2">
+              ${escapeHtml(doc.checkin)} → ${escapeHtml(doc.checkout)}
+              <span class="text-stone-500"> · ${escapeHtml(doc.tent)} · ${doc.guests}g · ${doc.delivery ? 'Delivery' : 'DIY'}</span>
+            </p>
+            <p class="text-xs text-stone-500 mt-1 truncate">${escapeHtml(doc.location || 'Location TBC')}</p>
+            ${chips ? `<div class="flex flex-wrap gap-1.5 mt-2.5">${chips}</div>` : ''}
+            <div class="flex flex-wrap gap-2 mt-3">
+              <a href="${escapeHtml(doc.bookingUrl)}" class="ops-search-link rounded-full bg-[#F7BA1E] text-[#111111] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider" data-action="open">Open booking</a>
+              <a href="${escapeHtml(doc.packListUrl)}" class="ops-search-link rounded-full border border-[#7D6E23]/25 text-stone-700 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider hover:border-[#F7BA1E]" data-action="pack">Pack list</a>
+              <button type="button" class="ops-search-peek rounded-full border border-[#7D6E23]/25 text-stone-700 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider hover:border-[#F7BA1E]" data-ref="${escapeHtml(doc.ref)}">Quick peek</button>
+              ${doc.balanceDue > 0.01 ? `<span class="ml-auto text-[11px] font-bold text-amber-700 self-center">£${Number(doc.balanceDue).toFixed(2)} due</span>` : ''}
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+
+    searchActiveIndex = 0;
+    bindSearchHitEvents();
+  }
+
+  function bindSearchHitEvents() {
+    searchResults?.querySelectorAll('.ops-search-hit').forEach((hit) => {
+      hit.addEventListener('mouseenter', () => setSearchActive(Number(hit.getAttribute('data-index'))));
+      hit.addEventListener('click', (event) => {
+        if (event.target.closest('.ops-search-link') || event.target.closest('.ops-search-peek')) return;
+        const url = hit.getAttribute('data-url');
+        if (url) window.location.href = url;
+      });
+    });
+    searchResults?.querySelectorAll('.ops-search-peek').forEach((btn) => {
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        closeSearchPanel();
+        openPeek(btn.getAttribute('data-ref'));
+      });
+    });
+  }
+
+  function setSearchActive(index) {
+    const hits = Array.from(searchResults?.querySelectorAll('.ops-search-hit') || []);
+    if (!hits.length) {
+      searchActiveIndex = -1;
+      return;
+    }
+    searchActiveIndex = Math.max(0, Math.min(index, hits.length - 1));
+    hits.forEach((hit, i) => {
+      const on = i === searchActiveIndex;
+      hit.classList.toggle('bg-[#F7BA1E]/12', on);
+      hit.classList.toggle('bg-[#F7BA1E]/08', false);
+      hit.setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) hit.scrollIntoView({ block: 'nearest' });
+    });
+  }
+
+  function runSearch(query) {
+    const tokens = tokenizeQuery(query);
+    searchClear?.classList.toggle('hidden', !query);
+    if (!tokens.length) {
+      closeSearchPanel(false);
+      return;
+    }
+
+    const hits = searchDocs
+      .map((doc) => scoreDoc(doc, tokens))
+      .filter(Boolean)
+      .sort((a, b) => b.score - a.score || a.doc.checkin.localeCompare(b.doc.checkin))
+      .slice(0, 12);
+
+    openSearchPanel();
+    renderSearchResults(hits);
+  }
+
+  function openSearchPanel() {
+    searchPanel?.classList.remove('hidden');
+  }
+
+  function closeSearchPanel(clearInput = false) {
+    searchPanel?.classList.add('hidden');
+    searchActiveIndex = -1;
+    if (clearInput && searchInput) {
+      searchInput.value = '';
+      searchClear?.classList.add('hidden');
+    }
+  }
+
+  searchInput?.addEventListener('input', () => runSearch(searchInput.value));
+  searchInput?.addEventListener('focus', () => {
+    if (tokenizeQuery(searchInput.value).length) {
+      openSearchPanel();
+      runSearch(searchInput.value);
+    }
+  });
+
+  searchClear?.addEventListener('click', () => {
+    closeSearchPanel(true);
+    searchInput?.focus();
+  });
+
+  searchInput?.addEventListener('keydown', (event) => {
+    const hits = Array.from(searchResults?.querySelectorAll('.ops-search-hit') || []);
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      if (!hits.length) return;
+      setSearchActive(searchActiveIndex < 0 ? 0 : searchActiveIndex + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (!hits.length) return;
+      setSearchActive(searchActiveIndex <= 0 ? hits.length - 1 : searchActiveIndex - 1);
+    } else if (event.key === 'Enter') {
+      const active = hits[searchActiveIndex] || hits[0];
+      if (!active) return;
+      event.preventDefault();
+      const url = active.getAttribute('data-url');
+      if (url) window.location.href = url;
+    } else if (event.key === 'Escape') {
+      closeSearchPanel();
+      searchInput.blur();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    const meta = event.metaKey || event.ctrlKey;
+    if (meta && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      searchInput?.focus();
+      searchInput?.select();
+    } else if (event.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA' && document.activeElement?.tagName !== 'SELECT') {
+      event.preventDefault();
+      searchInput?.focus();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!searchRoot?.contains(event.target)) closeSearchPanel();
+  });
+
+  if (typeof navigator !== 'undefined' && !/Mac|iPhone|iPad/i.test(navigator.platform || navigator.userAgent || '')) {
+    const kbd = document.getElementById('ops-search-kbd');
+    if (kbd) kbd.textContent = 'Ctrl K';
+  }
+
+  const staysGrid = document.getElementById('stays-grid');
+  const staysMeta = document.getElementById('stays-filter-meta');
+  const staysEmpty = document.getElementById('stays-empty');
+  const staysSort = document.getElementById('stays-sort');
+  const filterButtons = Array.from(document.querySelectorAll('.stays-filter-btn'));
+  let activeFilter = 'all';
+
+  function ymdLocal(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function startOfWeekMonday(date) {
+    const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const day = d.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  function endOfWeekSunday(date) {
+    const start = startOfWeekMonday(date);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return end;
+  }
+
+  function inRange(ymd, startYmd, endYmd) {
+    return ymd >= startYmd && ymd <= endYmd;
+  }
+
+  function applyStaysView() {
+    if (!staysGrid) return;
+    const cards = Array.from(staysGrid.querySelectorAll('.stay-card'));
+    const today = new Date();
+    const todayYmd = ymdLocal(today);
+    const weekStart = ymdLocal(startOfWeekMonday(today));
+    const weekEnd = ymdLocal(endOfWeekSunday(today));
+    const sort = staysSort?.value || 'checkin-asc';
+
+    let visible = cards.filter((card) => {
+      const checkin = card.getAttribute('data-checkin') || '';
+      const checkout = card.getAttribute('data-checkout') || '';
+      const status = card.getAttribute('data-status') || '';
+      const balance = Number(card.getAttribute('data-balance') || 0);
+
+      if (activeFilter === 'checkins-week') return inRange(checkin, weekStart, weekEnd);
+      if (activeFilter === 'checkouts-week') return inRange(checkout, weekStart, weekEnd);
+      if (activeFilter === 'balance-due') return balance > 0.01 || status === 'balance_due';
+      if (activeFilter === 'paid') return status === 'paid_in_full';
+      if (activeFilter === 'next-6') return checkin >= todayYmd;
+      return true;
+    });
+
+    if (activeFilter === 'next-6') {
+      visible = [...visible]
+        .sort((a, b) => (a.getAttribute('data-checkin') || '').localeCompare(b.getAttribute('data-checkin') || ''))
+        .slice(0, 6);
+    }
+
+    const statusRank = (status) => {
+      if (status === 'balance_due') return 0;
+      if (status === 'confirmed') return 1;
+      if (status === 'paid_in_full') return 2;
+      return 3;
+    };
+
+    visible.sort((a, b) => {
+      const checkinA = a.getAttribute('data-checkin') || '';
+      const checkinB = b.getAttribute('data-checkin') || '';
+      const checkoutA = a.getAttribute('data-checkout') || '';
+      const checkoutB = b.getAttribute('data-checkout') || '';
+      const balanceA = Number(a.getAttribute('data-balance') || 0);
+      const balanceB = Number(b.getAttribute('data-balance') || 0);
+      const totalA = Number(a.getAttribute('data-total') || 0);
+      const totalB = Number(b.getAttribute('data-total') || 0);
+      const statusA = a.getAttribute('data-status') || '';
+      const statusB = b.getAttribute('data-status') || '';
+
+      if (sort === 'checkin-desc') return checkinB.localeCompare(checkinA);
+      if (sort === 'checkout-asc') return checkoutA.localeCompare(checkoutB) || checkinA.localeCompare(checkinB);
+      if (sort === 'balance-desc') return balanceB - balanceA || checkinA.localeCompare(checkinB);
+      if (sort === 'balance-asc') return balanceA - balanceB || checkinA.localeCompare(checkinB);
+      if (sort === 'total-desc') return totalB - totalA || checkinA.localeCompare(checkinB);
+      if (sort === 'paid-first') return statusRank(statusB) - statusRank(statusA) || checkinA.localeCompare(checkinB);
+      if (sort === 'due-first') return statusRank(statusA) - statusRank(statusB) || balanceB - balanceA || checkinA.localeCompare(checkinB);
+      return checkinA.localeCompare(checkinB);
+    });
+
+    const visibleSet = new Set(visible);
+    cards.forEach((card) => {
+      card.classList.toggle('hidden', !visibleSet.has(card));
+    });
+    visible.forEach((card) => staysGrid.appendChild(card));
+
+    const labels = {
+      all: 'All stays',
+      'checkins-week': 'This week check-ins',
+      'checkouts-week': 'This week check-outs',
+      'next-6': 'Next 6 check-ins',
+      'balance-due': 'Balance due',
+      paid: 'Paid in full',
+    };
+    if (staysMeta) {
+      staysMeta.textContent = `${visible.length} stay${visible.length === 1 ? '' : 's'} · ${labels[activeFilter] || 'All stays'}`;
+    }
+    staysEmpty?.classList.toggle('hidden', visible.length > 0);
+  }
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.getAttribute('data-filter') || 'all';
+      filterButtons.forEach((other) => {
+        const on = other === btn;
+        other.setAttribute('aria-selected', on ? 'true' : 'false');
+        other.classList.toggle('bg-[#F7BA1E]', on);
+        other.classList.toggle('border-[#F7BA1E]', on);
+        other.classList.toggle('text-[#111111]', on);
+        other.classList.toggle('bg-white/80', !on);
+        other.classList.toggle('border-[#7D6E23]/25', !on);
+        other.classList.toggle('text-stone-600', !on);
+      });
+      applyStaysView();
+    });
+  });
+
+  staysSort?.addEventListener('change', applyStaysView);
+  applyStaysView();
 </script>

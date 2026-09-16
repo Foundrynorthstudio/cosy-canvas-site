@@ -1,0 +1,116 @@
+---
+import StudioLayout from '../../../layouts/StudioLayout.astro';
+import StudioNav from '../../../components/StudioNav.astro';
+
+/** Skeleton examples — sellable kits composed of physical shelf units. */
+const kitBlueprints = [
+  {
+    name: 'Cosy kitchen',
+    sellable: 'Add-on booked by guests',
+    icon: 'fa-kitchen-set',
+    units: [
+      'Dometic grill / stove',
+      'Kitchen prep table',
+      'Cookware set',
+      'Utensil roll (spatula, tongs, ladle)',
+      'Cutlery & crockery for 4–6',
+      'Coolbox',
+    ],
+  },
+  {
+    name: '5M bell tent',
+    sellable: 'Core canvas',
+    icon: 'fa-campground',
+    units: [
+      '5M canvas + bag',
+      'Centre pole & A-frame',
+      'Peg & guy set',
+      'Groundsheet',
+      'Coir / flooring mat',
+    ],
+  },
+  {
+    name: 'Wood burner',
+    sellable: 'Add-on',
+    icon: 'fa-fire',
+    units: ['Stove body', 'Flue + spark arrestor', 'Hearth mat', 'Log basket', 'Heat gloves'],
+  },
+  {
+    name: 'Living lounge',
+    sellable: 'Add-on',
+    icon: 'fa-couch',
+    units: ['Lounge base / rug', 'Cushion set', 'Fairy lights + AA pack', 'Side table'],
+  },
+];
+---
+
+<StudioLayout title="Inventory · Cosy Studio">
+  <StudioNav active="inventory" />
+  <div class="max-w-7xl mx-auto px-4 py-10 space-y-8">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+      <div>
+        <p class="text-[#7D6E23] font-mono text-xs uppercase tracking-[0.25em]">Shelf & stock</p>
+        <h1 class="font-display text-3xl md:text-4xl font-black mt-1 text-[#111111]">Inventory</h1>
+        <p class="text-stone-500 text-sm mt-2 max-w-2xl">
+          Every sellable kit is a bundle of physical units. A Cosy kitchen isn’t one SKU on the van — it’s the grill, table, spatula, and the rest, counted on the shelf and packed as one load.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3 text-[11px] uppercase tracking-wider font-bold text-stone-500">
+        <span class="rounded-full bg-white/80 border border-dashed border-[#7D6E23]/30 px-3 py-2">Skeleton</span>
+        <span class="rounded-full bg-white/80 border border-[#7D6E23]/20 px-3 py-2">Units · kits · stock levels</span>
+      </div>
+    </div>
+
+    <section class="studio-panel rounded-3xl p-6 border-dashed border-[#F7BA1E]/40">
+      <h2 class="font-display text-lg font-black text-[#111111]">Coming next</h2>
+      <ul class="mt-3 grid sm:grid-cols-3 gap-3 text-sm text-stone-600">
+        <li class="rounded-2xl bg-[#FAF7EE] border border-[#7D6E23]/15 p-4">
+          <p class="font-bold text-[#111111] text-xs uppercase tracking-wider mb-1">Units</p>
+          Individual shelf items with qty on hand, condition, and container bay.
+        </li>
+        <li class="rounded-2xl bg-[#FAF7EE] border border-[#7D6E23]/15 p-4">
+          <p class="font-bold text-[#111111] text-xs uppercase tracking-wider mb-1">Kit recipes</p>
+          Map each booked add-on (kitchen, lounge, burner…) to its unit bill of materials.
+        </li>
+        <li class="rounded-2xl bg-[#FAF7EE] border border-[#7D6E23]/15 p-4">
+          <p class="font-bold text-[#111111] text-xs uppercase tracking-wider mb-1">Booking demand</p>
+          Peak concurrent need from the calendar, matched against stock so you know what to buy.
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="flex items-end justify-between gap-3 mb-4">
+        <div>
+          <h2 class="font-display text-lg font-black text-[#111111]">Example kit recipes</h2>
+          <p class="text-[11px] text-stone-500 mt-1">Illustrative only — not live stock yet.</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {
+          kitBlueprints.map((kit) => (
+            <article class="studio-panel rounded-3xl p-5 opacity-95">
+              <div class="flex items-start gap-3 mb-4">
+                <span class="w-11 h-11 rounded-2xl bg-[#F7BA1E] text-[#111111] flex items-center justify-center shrink-0">
+                  <i class={`fa-solid ${kit.icon}`}></i>
+                </span>
+                <div>
+                  <h3 class="font-display font-black text-[#111111]">{kit.name}</h3>
+                  <p class="text-[10px] uppercase tracking-wider font-bold text-[#7D6E23] mt-0.5">{kit.sellable}</p>
+                </div>
+              </div>
+              <ul class="space-y-2">
+                {kit.units.map((unit) => (
+                  <li class="flex items-center justify-between gap-3 rounded-xl bg-[#FAF7EE] border border-[#7D6E23]/10 px-3 py-2 text-sm text-stone-700">
+                    <span>{unit}</span>
+                    <span class="text-[10px] uppercase tracking-wider font-bold text-stone-400">1 unit</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</StudioLayout>

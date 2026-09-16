@@ -2,7 +2,7 @@
 import { parseStudioSession, STUDIO_COOKIE } from '../lib/journal-auth';
 
 interface Props {
-  active: 'home' | 'journal' | 'bookings' | 'emails';
+  active: 'home' | 'journal' | 'bookings' | 'emails' | 'guests' | 'inventory' | 'logistics';
 }
 const { active } = Astro.props;
 const session = parseStudioSession(Astro.cookies.get(STUDIO_COOKIE)?.value);
@@ -11,8 +11,11 @@ const session = parseStudioSession(Astro.cookies.get(STUDIO_COOKIE)?.value);
 <header class="border-b border-[#7D6E23]/15 bg-white/80 backdrop-blur-md sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
     <a href="/studio/bookings" class="font-display font-black text-sm tracking-wide text-[#111111]">Cosy Studio</a>
-    <nav class="flex items-center gap-5 text-xs uppercase tracking-wider font-bold">
+    <nav class="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs uppercase tracking-wider font-bold">
       <a href="/studio/bookings" class={active === 'bookings' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Bookings</a>
+      <a href="/studio/guests" class={active === 'guests' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Guests</a>
+      <a href="/studio/inventory" class={active === 'inventory' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Inventory</a>
+      <a href="/studio/logistics" class={active === 'logistics' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Logistics</a>
       <a href="/studio/emails" class={active === 'emails' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Emails</a>
       <a href="/studio/journal" class={active === 'journal' || active === 'home' ? 'text-[#7D6E23]' : 'text-stone-500 hover:text-[#111111]'}>Journal</a>
       <a href="/journal" class="text-stone-400 hover:text-[#111111]" target="_blank">View site</a>

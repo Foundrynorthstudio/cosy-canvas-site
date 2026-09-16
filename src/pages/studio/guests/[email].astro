@@ -1,0 +1,467 @@
+---
+import StudioLayout from '../../../layouts/StudioLayout.astro';
+import StudioNav from '../../../components/StudioNav.astro';
+import { buildGuestDetail } from '../../../lib/guest-crm';
+import { getAllBookings } from '../../../lib/booking-store';
+
+const rawEmail = Astro.params.email || '';
+let emailParam = rawEmail;
+try {
+  emailParam = decodeURIComponent(rawEmail);
+} catch {
+  emailParam = rawEmail;
+}
+const bookings = await getAllBookings();
+const guest = await buildGuestDetail(emailParam, bookings);
+
+if (!guest) {
+  return Astro.redirect('/studio/guests');
+}
+
+const profileJson = JSON.stringify(guest.profile);
+---
+
+<StudioLayout title={`${guest.name} · Guests · Cosy Studio`}>
+  <StudioNav active="guests" />
+  <div class="max-w-6xl mx-auto px-4 py-10 space-y-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+      <div>
+        <a href="/studio/guests" class="text-[11px] uppercase tracking-wider font-bold text-stone-500 hover:text-[#7D6E23]">← All guests</a>
+        <h1 class="font-display text-3xl md:text-4xl font-black mt-2 text-[#111111]">{guest.name}</h1>
+        <p class="text-stone-500 text-sm mt-2">
+          {guest.email}
+          {guest.phone ? ` · ${guest.phone}` : ''}
+        </p>
+        {guest.address && <p class="text-xs text-stone-500 mt-1">{guest.address}</p>}
+      </div>
+      <div class="flex flex-wrap gap-2 text-[11px] uppercase tracking-wider font-bold">
+        <span class="rounded-full bg-[#F7BA1E]/15 border border-[#F7BA1E]/30 text-[#7D6E23] px-3 py-2">
+          {guest.stayCount} stay{guest.stayCount === 1 ? '' : 's'}
+        </span>
+        <span class="rounded-full bg-white/80 border border-[#7D6E23]/20 text-stone-600 px-3 py-2">
+          £{guest.totalSpend.toFixed(2)} lifetime
+        </span>
+        {guest.balanceDue > 0.01 && (
+          <span class="rounded-full bg-amber-100 text-amber-800 px-3 py-2">
+            £{guest.balanceDue.toFixed(2)} due
+          </span>
+        )}
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-6 items-start">
+      <div class="space-y-6">
+        <section class="studio-panel rounded-3xl p-6 space-y-4">
+          <div>
+            <h2 class="font-display text-xl font-black text-[#111111]">Relationship</h2>
+            <p class="text-xs text-stone-500 mt-1">How we know them, preferences, and how to look after them.</p>
+          </div>
+          <label class="block text-xs text-stone-500">
+            Preferred name
+            <input id="preferred-name" value={guest.profile.preferredName} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" placeholder={guest.name} />
+          </label>
+          <label class="block text-xs text-stone-500">
+            Tags <span class="text-stone-400">(comma separated — VIP, returning, press…)</span>
+            <input id="guest-tags" value={guest.profile.tags.join(', ')} class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" placeholder="VIP, returning, Mull regular" />
+          </label>
+          <label class="block text-xs text-stone-500">
+            Relationship notes
+            <textarea id="relationship-notes" rows="5" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm text-[#111111]" placeholder="Anniversaries, dietary needs, favourite pitch, how they found us…">{guest.profile.relationshipNotes}</textarea>
+          </label>
+          <div class="flex items-center gap-3">
+            <button id="save-relationship" type="button" class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+              Save relationship
+            </button>
+            <p id="relationship-status" class="text-xs text-stone-500"></p>
+          </div>
+        </section>
+
+        <section class="studio-panel rounded-3xl p-6 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="font-display text-xl font-black text-[#111111]">Discounts</h2>
+              <p class="text-xs text-stone-500 mt-1">Loyalty offers and personal codes ready for the next stay.</p>
+            </div>
+            <button id="add-discount" type="button" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-2 hover:bg-[#F7BA1E]/10">
+              Add discount
+            </button>
+          </div>
+          <div id="discounts-list" class="space-y-3"></div>
+          <button id="save-discounts" type="button" class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+            Save discounts
+          </button>
+          <p id="discounts-status" class="text-xs text-stone-500"></p>
+        </section>
+
+        <section class="studio-panel rounded-3xl p-6 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="font-display text-xl font-black text-[#111111]">Recommendations</h2>
+              <p class="text-xs text-stone-500 mt-1">What to suggest next time — sites, kit, seasons, upgrades.</p>
+            </div>
+            <button id="add-recommendation" type="button" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-2 hover:bg-[#F7BA1E]/10">
+              Add recommendation
+            </button>
+          </div>
+          <div id="recommendations-list" class="space-y-3"></div>
+          <button id="save-recommendations" type="button" class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+            Save recommendations
+          </button>
+          <p id="recommendations-status" class="text-xs text-stone-500"></p>
+        </section>
+
+        <section class="studio-panel rounded-3xl p-6 space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 class="font-display text-xl font-black text-[#111111]">Personal comms</h2>
+              <p class="text-xs text-stone-500 mt-1">Emails, calls, and handwritten notes — stored on the guest, not buried in a booking.</p>
+            </div>
+            <button id="add-comms" type="button" class="rounded-full border border-[#F7BA1E]/60 text-[#7D6E23] font-display font-extrabold text-[10px] uppercase tracking-wider px-3 py-2 hover:bg-[#F7BA1E]/10">
+              Log message
+            </button>
+          </div>
+          <div id="comms-list" class="space-y-3"></div>
+          <button id="save-comms" type="button" class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+            Save comms
+          </button>
+          <p id="comms-status" class="text-xs text-stone-500"></p>
+        </section>
+      </div>
+
+      <aside class="space-y-6 lg:sticky lg:top-24">
+        <section class="studio-panel rounded-3xl p-5">
+          <h2 class="font-display text-lg font-black text-[#111111] mb-3">Stay history</h2>
+          {
+            guest.stays.length === 0 ? (
+              <p class="text-sm text-stone-500">No bookings linked yet.</p>
+            ) : (
+              <div class="space-y-3">
+                {guest.stays.map((stay) => (
+                  <a href={`/studio/bookings/${encodeURIComponent(stay.ref)}`} class="block rounded-2xl border border-[#7D6E23]/15 bg-white/70 p-3 hover:border-[#F7BA1E]/50 transition-colors">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <p class="font-display font-bold text-sm text-[#111111]">{stay.checkin} → {stay.checkout}</p>
+                        <p class="text-[11px] text-stone-500 mt-0.5">{stay.ref} · {stay.tent} · {stay.guests}g</p>
+                      </div>
+                      <span class:list={[
+                        'text-[9px] uppercase tracking-wider font-bold px-2 py-1 rounded-full shrink-0',
+                        stay.status === 'paid_in_full' && 'bg-emerald-100 text-emerald-800',
+                        stay.status === 'balance_due' && 'bg-amber-100 text-amber-800',
+                        stay.status === 'refunded' && 'bg-red-100 text-red-800',
+                        stay.status === 'confirmed' && 'bg-stone-100 text-stone-700',
+                      ]}>
+                        {stay.statusLabel}
+                      </span>
+                    </div>
+                    <p class="text-[11px] text-stone-500 mt-2 truncate">{stay.location}</p>
+                    <p class="text-[11px] text-stone-600 mt-1">
+                      £{stay.total.toFixed(2)}
+                      {stay.balanceDue > 0.01 && <span class="text-amber-700 font-bold"> · £{stay.balanceDue.toFixed(2)} due</span>}
+                    </p>
+                  </a>
+                ))}
+              </div>
+            )
+          }
+        </section>
+
+        {guest.tents.length > 0 && (
+          <section class="studio-panel rounded-3xl p-5">
+            <h2 class="font-display text-lg font-black text-[#111111] mb-3">Canvas history</h2>
+            <div class="flex flex-wrap gap-2">
+              {guest.tents.map((tent) => (
+                <span class="rounded-full bg-[#F7BA1E]/15 border border-[#F7BA1E]/30 px-3 py-1.5 text-xs text-stone-700">{tent}</span>
+              ))}
+            </div>
+          </section>
+        )}
+      </aside>
+    </div>
+  </div>
+
+  <script id="guest-profile-data" type="application/json" is:inline set:html={profileJson}></script>
+  <script id="guest-email-data" type="application/json" is:inline set:html={JSON.stringify(guest.email)}></script>
+</StudioLayout>
+
+<script>
+  const email = JSON.parse(document.getElementById('guest-email-data')?.textContent || '""');
+  let profile = JSON.parse(document.getElementById('guest-profile-data')?.textContent || '{}');
+
+  const discountsList = document.getElementById('discounts-list');
+  const recommendationsList = document.getElementById('recommendations-list');
+  const commsList = document.getElementById('comms-list');
+
+  function uid() {
+    if (crypto?.randomUUID) return crypto.randomUUID();
+    return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function escapeAttr(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;');
+  }
+
+  function escapeText(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;');
+  }
+
+  function renderDiscounts() {
+    if (!discountsList) return;
+    if (!profile.discounts?.length) {
+      discountsList.innerHTML = '<p class="text-sm text-stone-500">No personal discounts yet.</p>';
+      return;
+    }
+    discountsList.innerHTML = profile.discounts
+      .map(
+        (item, index) => `
+        <div class="rounded-2xl border border-[#7D6E23]/15 bg-white/80 p-4 space-y-3" data-index="${index}">
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="text-xs text-stone-500">Label<input data-field="label" value="${escapeAttr(item.label)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="Returning guest 10%" /></label>
+            <label class="text-xs text-stone-500">Code<input data-field="code" value="${escapeAttr(item.code)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="COSY-ALEX" /></label>
+            <label class="text-xs text-stone-500">Percent<input data-field="percent" type="number" value="${item.percent ?? ''}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="10" /></label>
+            <label class="text-xs text-stone-500">Amount £<input data-field="amountGbp" type="number" step="0.01" value="${item.amountGbp ?? ''}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="50" /></label>
+          </div>
+          <label class="text-xs text-stone-500">Notes<textarea data-field="notes" rows="2" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm">${escapeText(item.notes)}</textarea></label>
+          <div class="flex items-center justify-between gap-3">
+            <label class="text-xs text-stone-600 flex items-center gap-2"><input data-field="active" type="checkbox" ${item.active ? 'checked' : ''} class="accent-[#F7BA1E]" /> Active</label>
+            <button type="button" data-remove="discount" class="text-[10px] uppercase tracking-wider font-bold text-stone-400 hover:text-red-600">Remove</button>
+          </div>
+        </div>
+      `,
+      )
+      .join('');
+  }
+
+  function renderRecommendations() {
+    if (!recommendationsList) return;
+    if (!profile.recommendations?.length) {
+      recommendationsList.innerHTML = '<p class="text-sm text-stone-500">No recommendations logged yet.</p>';
+      return;
+    }
+    recommendationsList.innerHTML = profile.recommendations
+      .map(
+        (item, index) => `
+        <div class="rounded-2xl border border-[#7D6E23]/15 bg-white/80 p-4 space-y-3" data-index="${index}">
+          <label class="text-xs text-stone-500">Title<input data-field="title" value="${escapeAttr(item.title)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="Try a 6M next time" /></label>
+          <label class="text-xs text-stone-500">Recommendation<textarea data-field="body" rows="3" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm">${escapeText(item.body)}</textarea></label>
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-[10px] text-stone-400">${escapeAttr(item.createdBy || 'Studio')} · ${escapeAttr((item.createdAt || '').slice(0, 10))}</p>
+            <button type="button" data-remove="recommendation" class="text-[10px] uppercase tracking-wider font-bold text-stone-400 hover:text-red-600">Remove</button>
+          </div>
+        </div>
+      `,
+      )
+      .join('');
+  }
+
+  function renderComms() {
+    if (!commsList) return;
+    if (!profile.comms?.length) {
+      commsList.innerHTML = '<p class="text-sm text-stone-500">No personal messages logged yet.</p>';
+      return;
+    }
+    commsList.innerHTML = profile.comms
+      .map(
+        (item, index) => `
+        <div class="rounded-2xl border border-[#7D6E23]/15 bg-white/80 p-4 space-y-3" data-index="${index}">
+          <div class="grid sm:grid-cols-[8rem_1fr] gap-3">
+            <label class="text-xs text-stone-500">Channel
+              <select data-field="channel" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm">
+                <option value="email" ${item.channel === 'email' ? 'selected' : ''}>Email</option>
+                <option value="phone" ${item.channel === 'phone' ? 'selected' : ''}>Phone</option>
+                <option value="note" ${item.channel === 'note' ? 'selected' : ''}>Note</option>
+              </select>
+            </label>
+            <label class="text-xs text-stone-500">Subject / summary<input data-field="subject" value="${escapeAttr(item.subject)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="Follow-up after Mull stay" /></label>
+          </div>
+          <label class="text-xs text-stone-500">Message / notes<textarea data-field="body" rows="4" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm">${escapeText(item.body)}</textarea></label>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="text-xs text-stone-500">Date<input data-field="sentAt" type="date" value="${escapeAttr((item.sentAt || '').slice(0, 10))}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" /></label>
+            <label class="text-xs text-stone-500">Related booking<input data-field="relatedBookingRef" value="${escapeAttr(item.relatedBookingRef)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="CC-DEMO01" /></label>
+          </div>
+          <div class="flex items-center justify-between gap-3">
+            <p class="text-[10px] text-stone-400">${escapeAttr(item.createdBy || 'Studio')}</p>
+            <button type="button" data-remove="comms" class="text-[10px] uppercase tracking-wider font-bold text-stone-400 hover:text-red-600">Remove</button>
+          </div>
+        </div>
+      `,
+      )
+      .join('');
+  }
+
+  function readList(container, mapRow) {
+    return Array.from(container?.querySelectorAll('[data-index]') || []).map((row, index) => {
+      const get = (field) => row.querySelector(`[data-field="${field}"]`);
+      return mapRow(get, index);
+    });
+  }
+
+  function collectDiscounts() {
+    return readList(discountsList, (get, index) => {
+      const existing = profile.discounts[index] || {};
+      const percentRaw = get('percent')?.value;
+      const amountRaw = get('amountGbp')?.value;
+      return {
+        id: existing.id || uid(),
+        label: get('label')?.value || '',
+        code: get('code')?.value || '',
+        percent: percentRaw === '' || percentRaw == null ? null : Number(percentRaw),
+        amountGbp: amountRaw === '' || amountRaw == null ? null : Number(amountRaw),
+        notes: get('notes')?.value || '',
+        active: Boolean(get('active')?.checked),
+        createdAt: existing.createdAt || new Date().toISOString(),
+      };
+    });
+  }
+
+  function collectRecommendations() {
+    return readList(recommendationsList, (get, index) => {
+      const existing = profile.recommendations[index] || {};
+      return {
+        id: existing.id || uid(),
+        title: get('title')?.value || '',
+        body: get('body')?.value || '',
+        createdAt: existing.createdAt || new Date().toISOString(),
+        createdBy: existing.createdBy || '',
+      };
+    });
+  }
+
+  function collectComms() {
+    return readList(commsList, (get, index) => {
+      const existing = profile.comms[index] || {};
+      const date = get('sentAt')?.value || '';
+      return {
+        id: existing.id || uid(),
+        subject: get('subject')?.value || '',
+        body: get('body')?.value || '',
+        channel: get('channel')?.value || 'email',
+        sentAt: date ? `${date}T12:00:00.000Z` : existing.sentAt || new Date().toISOString(),
+        createdBy: existing.createdBy || '',
+        relatedBookingRef: get('relatedBookingRef')?.value || '',
+      };
+    });
+  }
+
+  async function savePatch(patch, statusEl) {
+    if (statusEl) statusEl.textContent = 'Saving…';
+    const res = await fetch(`/api/studio/guests/${encodeURIComponent(email)}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      if (statusEl) statusEl.textContent = json.error || 'Save failed';
+      return null;
+    }
+    profile = json;
+    if (statusEl) statusEl.textContent = 'Saved';
+    return json;
+  }
+
+  document.getElementById('save-relationship')?.addEventListener('click', async () => {
+    const tags = String(document.getElementById('guest-tags')?.value || '')
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    await savePatch(
+      {
+        preferredName: document.getElementById('preferred-name')?.value || '',
+        relationshipNotes: document.getElementById('relationship-notes')?.value || '',
+        tags,
+      },
+      document.getElementById('relationship-status'),
+    );
+  });
+
+  document.getElementById('save-discounts')?.addEventListener('click', async () => {
+    const discounts = collectDiscounts();
+    const saved = await savePatch({ discounts }, document.getElementById('discounts-status'));
+    if (saved) renderDiscounts();
+  });
+
+  document.getElementById('save-recommendations')?.addEventListener('click', async () => {
+    const recommendations = collectRecommendations();
+    const saved = await savePatch({ recommendations }, document.getElementById('recommendations-status'));
+    if (saved) renderRecommendations();
+  });
+
+  document.getElementById('save-comms')?.addEventListener('click', async () => {
+    const comms = collectComms();
+    const saved = await savePatch({ comms }, document.getElementById('comms-status'));
+    if (saved) renderComms();
+  });
+
+  document.getElementById('add-discount')?.addEventListener('click', () => {
+    profile.discounts = collectDiscounts();
+    profile.discounts.unshift({
+      id: uid(),
+      label: '',
+      code: '',
+      percent: null,
+      amountGbp: null,
+      notes: '',
+      active: true,
+      createdAt: new Date().toISOString(),
+    });
+    renderDiscounts();
+  });
+
+  document.getElementById('add-recommendation')?.addEventListener('click', () => {
+    profile.recommendations = collectRecommendations();
+    profile.recommendations.unshift({
+      id: uid(),
+      title: '',
+      body: '',
+      createdAt: new Date().toISOString(),
+      createdBy: '',
+    });
+    renderRecommendations();
+  });
+
+  document.getElementById('add-comms')?.addEventListener('click', () => {
+    profile.comms = collectComms();
+    profile.comms.unshift({
+      id: uid(),
+      subject: '',
+      body: '',
+      channel: 'email',
+      sentAt: new Date().toISOString(),
+      createdBy: '',
+      relatedBookingRef: '',
+    });
+    renderComms();
+  });
+
+  function bindRemoves(container, kind) {
+    container?.addEventListener('click', (event) => {
+      const btn = event.target.closest(`[data-remove="${kind}"]`);
+      if (!btn) return;
+      const row = btn.closest('[data-index]');
+      const index = Number(row?.getAttribute('data-index'));
+      if (kind === 'discount') {
+        profile.discounts = collectDiscounts().filter((_, i) => i !== index);
+        renderDiscounts();
+      } else if (kind === 'recommendation') {
+        profile.recommendations = collectRecommendations().filter((_, i) => i !== index);
+        renderRecommendations();
+      } else if (kind === 'comms') {
+        profile.comms = collectComms().filter((_, i) => i !== index);
+        renderComms();
+      }
+    });
+  }
+
+  bindRemoves(discountsList, 'discount');
+  bindRemoves(recommendationsList, 'recommendation');
+  bindRemoves(commsList, 'comms');
+
+  renderDiscounts();
+  renderRecommendations();
+  renderComms();
+</script>
