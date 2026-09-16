@@ -6,6 +6,7 @@ import {
   bookingLoadIcons,
   buildBookingPeekMap,
   buildOpsCalendar,
+  buildYearCapacity,
   parseMonthParam,
 } from '../../../lib/booking-ops-calendar';
 import { getAllBookings } from '../../../lib/booking-store';
@@ -14,8 +15,10 @@ const bookings = await getAllBookings();
 const dueCount = bookings.filter((b) => b.remainingBalance > 0).length;
 const { year, month } = parseMonthParam(Astro.url.searchParams.get('month'));
 const calendar = buildOpsCalendar(bookings, year, month);
+const yearCapacity = buildYearCapacity(bookings, year);
 const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.checkinDate));
 const peekMap = buildBookingPeekMap(bookings);
+const STAY_YELLOW = '#F7BA1E';
 ---
 
 <StudioLayout title="Bookings · Cosy Studio">
@@ -42,154 +45,205 @@ const peekMap = buildBookingPeekMap(bookings);
         </div>
       ) : (
         <>
-          <section>
-            <div class="flex items-center justify-between gap-3 mb-4">
-              <h2 class="font-display text-lg font-black text-[#111111]">Fleet needed (peak concurrent)</h2>
-              <p class="text-[11px] text-stone-500 max-w-md text-right hidden sm:block">
-                Peak = most of that kit out on any one night. Stock to the peak; unit-nights show overall pressure.
-              </p>
-            </div>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-              {calendar.metrics.map((metric) => (
-                <div class="studio-tile rounded-3xl p-4 min-h-[7.5rem] flex flex-col">
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="w-9 h-9 rounded-2xl bg-[#F7BA1E]/20 text-[#7D6E23] flex items-center justify-center">
+          <div class="grid lg:grid-cols-[15rem_minmax(0,1fr)] gap-6 items-start">
+            <aside class="space-y-3 lg:sticky lg:top-24">
+              <div>
+                <h2 class="font-display text-base font-black text-[#111111]">Fleet needed</h2>
+                <p class="text-[11px] text-stone-600 mt-1 leading-relaxed">
+                  Peak concurrent kit. Stock to the peak.
+                </p>
+              </div>
+              <div class="flex flex-col gap-2">
+                {calendar.metrics.map((metric) => (
+                  <div class="studio-tile rounded-2xl p-3 flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-[#F7BA1E]/25 text-[#7D6E23] flex items-center justify-center shrink-0">
                       <i class={`fa-solid ${metric.icon}`}></i>
                     </span>
-                    <span class="font-display text-2xl font-black text-[#111111]">{metric.peak}</span>
+                    <div class="min-w-0 flex-1">
+                      <p class="font-display font-bold text-xs text-[#111111] leading-tight truncate">{metric.label}</p>
+                      <p class="text-[9px] uppercase tracking-wider text-stone-500 mt-0.5">
+                        {metric.bookings} stay{metric.bookings === 1 ? '' : 's'}
+                      </p>
+                    </div>
+                    <span class="font-display text-xl font-black text-[#111111] tabular-nums">{metric.peak}</span>
                   </div>
-                  <p class="font-display font-bold text-sm text-[#111111] mt-3 leading-tight">{metric.label}</p>
-                  <p class="text-[10px] uppercase tracking-wider text-stone-500 mt-auto pt-2">
-                    {metric.bookings} stay{metric.bookings === 1 ? '' : 's'} · {metric.unitNights} unit-nights
+                ))}
+              </div>
+            </aside>
+
+            <div class="space-y-6 min-w-0">
+              <section class="studio-panel rounded-3xl p-5">
+                <div class="flex flex-wrap items-end justify-between gap-3 mb-4">
+                  <div>
+                    <h2 class="font-display text-lg font-black text-[#111111]">{yearCapacity.year} capacity</h2>
+                    <p class="text-[11px] text-stone-600 mt-1">
+                      Guest-nights by month — expect a summer peak, quieter winters.
+                      {yearCapacity.peakGuestNights > 0 && (
+                        <> Peak {yearCapacity.months[yearCapacity.peakMonth - 1]?.short}: {yearCapacity.peakGuestNights} guest-nights.</>
+                      )}
+                    </p>
+                  </div>
+                  <p class="text-[11px] font-bold text-[#7D6E23] uppercase tracking-wider">
+                    {yearCapacity.totalGuestNights} guest-nights · year
                   </p>
                 </div>
-              ))}
-            </div>
-          </section>
-
-          <section class="studio-panel rounded-3xl overflow-hidden">
-            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-stone-200">
-              <a
-                href={`/studio/bookings?month=${calendar.prev}`}
-                class="w-9 h-9 rounded-full border border-stone-200 text-stone-500 hover:text-[#111111] hover:border-[#F7BA1E]/60 flex items-center justify-center bg-white"
-                aria-label="Previous month"
-              >
-                <i class="fa-solid fa-chevron-left text-xs"></i>
-              </a>
-              <div class="text-center">
-                <h2 class="font-display text-xl font-black text-[#111111]">{calendar.label}</h2>
-                <p class="text-[11px] text-stone-500">{calendar.stayCount} stay{calendar.stayCount === 1 ? '' : 's'} this month</p>
-              </div>
-              <a
-                href={`/studio/bookings?month=${calendar.next}`}
-                class="w-9 h-9 rounded-full border border-stone-200 text-stone-500 hover:text-[#111111] hover:border-[#F7BA1E]/60 flex items-center justify-center bg-white"
-                aria-label="Next month"
-              >
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-              </a>
-            </div>
-
-            <div class="grid grid-cols-7 border-b border-stone-200 text-[10px] uppercase tracking-widest text-stone-500">
-              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
-                <div class="px-2 py-2 text-center">{d}</div>
-              ))}
-            </div>
-
-            <div class="grid grid-cols-7 auto-rows-fr">
-              {calendar.days.map((day) => (
-                <div
-                  class:list={[
-                    'min-h-[7.5rem] sm:min-h-[9.5rem] border-r border-b border-stone-100 p-1.5 sm:p-2',
-                    !day.inMonth && 'opacity-35',
-                    day.stays.length > 0 && 'bg-[#F7BA1E]/[0.06]',
-                  ]}
-                >
-                  <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="text-[11px] font-bold text-stone-500">{day.day}</span>
-                    {day.stays.length > 0 && (
-                      <span class="text-[9px] font-mono text-[#7D6E23]">{day.stays.length}</span>
-                    )}
-                  </div>
-                  <div class="space-y-1.5">
-                    {day.stays.slice(0, 2).map((stay) => (
-                      <button
-                        type="button"
-                        class="rr-stay-peek w-full text-left rounded-lg px-1.5 py-1 text-[#111111] leading-tight hover:brightness-110 transition"
-                        style={`background:${stay.color}`}
-                        title={stay.title}
-                        data-ref={stay.ref}
-                      >
-                        <span class="block text-[10px] sm:text-[11px] font-black truncate">{stay.name}</span>
-                        <span class="block text-[8px] sm:text-[9px] font-bold opacity-80 truncate">
-                          {stay.tent} · {stay.guests}g · {stay.delivery ? 'Delivery' : 'DIY'}
-                        </span>
-                        <span class="mt-0.5 flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold opacity-90">
-                          <span class="inline-flex gap-0.5">
-                            {stay.icons.map((icon) => (
-                              <i class={`fa-solid ${icon}`}></i>
-                            ))}
+                <div class="relative h-40 rounded-2xl bg-[#DDD5C4]/80 border border-[#7D6E23]/15 px-2 pt-4 pb-8">
+                  <div class="absolute left-2 right-2 bottom-8 h-px bg-[#7D6E23]/35"></div>
+                  <div class="h-full flex items-end justify-between gap-1">
+                    {yearCapacity.months.map((m) => {
+                      const height = Math.max(m.intensity, m.guestNights > 0 ? 8 : 2);
+                      const active = m.month === month;
+                      return (
+                        <a
+                          href={`/studio/bookings?month=${yearCapacity.year}-${String(m.month).padStart(2, '0')}`}
+                          class="group flex-1 flex flex-col items-center justify-end h-full gap-1"
+                          title={`${m.label}: ${m.guestNights} guest-nights · ${m.stays} stays`}
+                        >
+                          <span class="text-[9px] font-bold text-[#7D6E23] opacity-0 group-hover:opacity-100 tabular-nums">
+                            {m.guestNights || ''}
                           </span>
-                          <span class="truncate">{stay.kitUnits} kit</span>
-                        </span>
-                      </button>
-                    ))}
-                    {day.stays.length > 2 && (
-                      <p class="text-[9px] text-stone-500 pl-1">+{day.stays.length - 2} more</p>
-                    )}
+                          <span
+                            class:list={[
+                              'w-full max-w-[2rem] rounded-t-md transition-all',
+                              active ? 'bg-[#F7BA1E] ring-2 ring-[#7D6E23]/40' : 'bg-[#F7BA1E]/80 group-hover:bg-[#F7BA1E]',
+                            ]}
+                            style={`height:${height}%`}
+                          ></span>
+                          <span class:list={['text-[9px] uppercase tracking-wide font-bold', active ? 'text-[#111111]' : 'text-stone-500']}>
+                            {m.short}
+                          </span>
+                        </a>
+                      );
+                    })}
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              </section>
 
-          <section>
-            <h2 class="font-display text-lg font-black mb-4 text-[#111111]">All stays</h2>
-            <div class="grid md:grid-cols-2 gap-4">
-              {upcoming.map((booking) => {
-                const status = deriveBookingStatus(booking);
-                const icons = bookingLoadIcons(booking);
-                return (
-                  <button
-                    type="button"
-                    class="rr-stay-peek text-left studio-panel rounded-3xl hover:border-[#F7BA1E]/50 transition-colors p-5 block w-full"
-                    data-ref={booking.bookingRef}
+              <section class="studio-calendar rounded-3xl overflow-hidden shadow-sm">
+                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#7D6E23]/20 bg-[#EFE8DA]/90">
+                  <a
+                    href={`/studio/bookings?month=${calendar.prev}`}
+                    class="w-9 h-9 rounded-full border border-[#7D6E23]/25 text-stone-600 hover:text-[#111111] hover:border-[#F7BA1E] flex items-center justify-center bg-[#FAF7EE]"
+                    aria-label="Previous month"
                   >
-                    <div class="flex items-start justify-between gap-3">
-                      <div>
-                        <p class="font-display font-black text-lg text-[#111111]">{booking.customerName}</p>
-                        <p class="text-stone-500 text-xs mt-1">{booking.bookingRef} · {booking.customerEmail}</p>
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                  </a>
+                  <div class="text-center">
+                    <h2 class="font-display text-xl font-black text-[#111111]">{calendar.label}</h2>
+                    <p class="text-[11px] text-stone-600">{calendar.stayCount} stay{calendar.stayCount === 1 ? '' : 's'} this month</p>
+                  </div>
+                  <a
+                    href={`/studio/bookings?month=${calendar.next}`}
+                    class="w-9 h-9 rounded-full border border-[#7D6E23]/25 text-stone-600 hover:text-[#111111] hover:border-[#F7BA1E] flex items-center justify-center bg-[#FAF7EE]"
+                    aria-label="Next month"
+                  >
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                  </a>
+                </div>
+
+                <div class="grid grid-cols-7 border-b border-[#7D6E23]/15 text-[10px] uppercase tracking-widest text-stone-600 bg-[#E7E1D4]">
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => (
+                    <div class="px-2 py-2 text-center">{d}</div>
+                  ))}
+                </div>
+
+                <div class="grid grid-cols-7 auto-rows-fr bg-[#E7E1D4]">
+                  {calendar.days.map((day) => (
+                    <div
+                      class:list={[
+                        'min-h-[11rem] sm:min-h-[14rem] border-r border-b border-[#7D6E23]/12 p-2 sm:p-2.5',
+                        !day.inMonth && 'opacity-40',
+                        day.stays.length > 0 ? 'bg-[#DED6C4]' : 'bg-[#E7E1D4]',
+                      ]}
+                    >
+                      <div class="flex items-center justify-between gap-1 mb-2">
+                        <span class="text-xs font-bold text-stone-600">{day.day}</span>
+                        {day.stays.length > 0 && (
+                          <span class="text-[10px] font-mono text-[#7D6E23] font-bold">{day.stays.length}</span>
+                        )}
                       </div>
-                      <span class:list={[
-                        'text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full shrink-0',
-                        status === 'paid_in_full' && 'bg-emerald-100 text-emerald-800',
-                        status === 'balance_due' && 'bg-amber-100 text-amber-800',
-                        status === 'refunded' && 'bg-red-100 text-red-800',
-                        status === 'confirmed' && 'bg-stone-100 text-stone-700',
-                      ]}>
-                        {statusLabel(status)}
-                      </span>
+                      <div class="space-y-2">
+                        {day.stays.slice(0, 2).map((stay) => (
+                          <button
+                            type="button"
+                            class="rr-stay-peek w-full text-left rounded-xl px-2.5 py-2.5 text-[#111111] leading-tight hover:brightness-105 transition shadow-sm"
+                            style={`background:${STAY_YELLOW}`}
+                            title={stay.title}
+                            data-ref={stay.ref}
+                          >
+                            <span class="block text-xs sm:text-sm font-black truncate">{stay.name}</span>
+                            <span class="block text-[10px] sm:text-[11px] font-bold opacity-80 truncate mt-0.5">
+                              {stay.tent} · {stay.guests}g · {stay.delivery ? 'Delivery' : 'DIY'}
+                            </span>
+                            <span class="mt-1.5 flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold opacity-90">
+                              <span class="inline-flex gap-1">
+                                {stay.icons.map((icon) => (
+                                  <i class={`fa-solid ${icon}`}></i>
+                                ))}
+                              </span>
+                              <span class="truncate">{stay.kitUnits} kit</span>
+                            </span>
+                          </button>
+                        ))}
+                        {day.stays.length > 2 && (
+                          <p class="text-[10px] text-stone-600 pl-1 font-semibold">+{day.stays.length - 2} more</p>
+                        )}
+                      </div>
                     </div>
-                    <p class="text-sm text-stone-600 mt-3">
-                      {booking.checkinDate} → {booking.checkoutDate}
-                      <span class="text-stone-500"> · {booking.guests} guests</span>
-                    </p>
-                    <p class="text-xs text-stone-500 mt-1 truncate">{booking.campsiteLocation}</p>
-                    <div class="flex flex-wrap gap-2 mt-4">
-                      {icons.map((item) => (
-                        <span class="inline-flex items-center gap-1.5 rounded-full bg-stone-50 border border-stone-200 px-2.5 py-1 text-[10px] text-stone-600">
-                          <i class={`fa-solid ${item.icon} text-[#7D6E23]`}></i>
-                          {item.label}
-                        </span>
-                      ))}
-                    </div>
-                    {booking.remainingBalance > 0 && (
-                      <p class="text-[11px] text-amber-700 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
-                    )}
-                  </button>
-                );
-              })}
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h2 class="font-display text-lg font-black mb-4 text-[#111111]">All stays</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                  {upcoming.map((booking) => {
+                    const status = deriveBookingStatus(booking);
+                    const icons = bookingLoadIcons(booking);
+                    return (
+                      <button
+                        type="button"
+                        class="rr-stay-peek text-left studio-panel rounded-3xl hover:border-[#F7BA1E]/50 transition-colors p-5 block w-full"
+                        data-ref={booking.bookingRef}
+                      >
+                        <div class="flex items-start justify-between gap-3">
+                          <div>
+                            <p class="font-display font-black text-lg text-[#111111]">{booking.customerName}</p>
+                            <p class="text-stone-500 text-xs mt-1">{booking.bookingRef} · {booking.customerEmail}</p>
+                          </div>
+                          <span class:list={[
+                            'text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full shrink-0',
+                            status === 'paid_in_full' && 'bg-emerald-100 text-emerald-800',
+                            status === 'balance_due' && 'bg-amber-100 text-amber-800',
+                            status === 'refunded' && 'bg-red-100 text-red-800',
+                            status === 'confirmed' && 'bg-stone-100 text-stone-700',
+                          ]}>
+                            {statusLabel(status)}
+                          </span>
+                        </div>
+                        <p class="text-sm text-stone-600 mt-3">
+                          {booking.checkinDate} → {booking.checkoutDate}
+                          <span class="text-stone-500"> · {booking.guests} guests</span>
+                        </p>
+                        <p class="text-xs text-stone-500 mt-1 truncate">{booking.campsiteLocation}</p>
+                        <div class="flex flex-wrap gap-2 mt-4">
+                          {icons.map((item) => (
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-[#F7BA1E]/15 border border-[#F7BA1E]/30 px-2.5 py-1 text-[10px] text-stone-700">
+                              <i class={`fa-solid ${item.icon} text-[#7D6E23]`}></i>
+                              {item.label}
+                            </span>
+                          ))}
+                        </div>
+                        {booking.remainingBalance > 0 && (
+                          <p class="text-[11px] text-amber-700 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
             </div>
-          </section>
+          </div>
         </>
       )
     }

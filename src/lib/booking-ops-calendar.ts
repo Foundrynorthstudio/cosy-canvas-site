@@ -75,7 +75,8 @@ const FLEET_META: Record<FleetKey, { label: string; icon: string }> = {
   beachkits: { label: 'Beach kits', icon: 'fa-bucket' },
 };
 
-const STAY_COLORS = ['#F7BA1E', '#7D6E23', '#60a5fa', '#c084fc', '#34d399', '#fb7185', '#fbbf24', '#a3e635'];
+const STAY_COLOR = '#F7BA1E';
+const STAY_COLORS = [STAY_COLOR];
 
 function parseIso(iso: string): Date {
   const [y, m, d] = iso.split('-').map(Number);
@@ -419,3 +420,63 @@ export function buildBookingPeekMap(
   });
   return map;
 }
+
+export interface YearMonthCapacity {
+  month: number; // 1-12
+  label: string;
+  short: string;
+  guestNights: number;
+  stays: number;
+  /** 0-100 relative to the year's busiest month */
+  intensity: number;
+}
+
+export interface YearCapacity {
+  year: number;
+  months: YearMonthCapacity[];
+  peakMonth: number;
+  peakGuestNights: number;
+  totalGuestNights: number;
+}
+
+/** Seasonal capacity map: guest-nights per month (summer should peak). */
+export function buildYearCapacity(bookings: BookingRecord[], year: number): YearCapacity {
+  const guestNights = Array.from({ length: 12 }, () => 0);
+  const stays = Array.from({ length: 12 }, () => 0);
+  const stayCounted = Array.from({ length: 12 }, () => new Set<string>());
+
+  for (const booking of bookings) {
+    const nights = nightsBetween(booking.checkinDate, booking.checkoutDate);
+    for (const iso of nights) {
+      const [y, m] = iso.split('-').map(Number);
+      if (y !== year) continue;
+      guestNights[m - 1] += Math.max(1, booking.guests || 1);
+      stayCounted[m - 1].add(booking.bookingRef);
+    }
+  }
+
+  for (let i = 0; i < 12; i++) stays[i] = stayCounted[i].size;
+  const peakGuestNights = Math.max(1, ...guestNights);
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const shorts = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+  const months: YearMonthCapacity[] = guestNights.map((value, index) => ({
+    month: index + 1,
+    label: labels[index],
+    short: shorts[index],
+    guestNights: value,
+    stays: stays[index],
+    intensity: Math.round((value / peakGuestNights) * 100),
+  }));
+
+  const peakMonth = months.reduce((best, month) => (month.guestNights > best.guestNights ? month : best), months[0]).month;
+
+  return {
+    year,
+    months,
+    peakMonth,
+    peakGuestNights: Math.max(...guestNights),
+    totalGuestNights: guestNights.reduce((sum, n) => sum + n, 0),
+  };
+}
+

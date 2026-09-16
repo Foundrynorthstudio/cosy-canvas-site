@@ -15,18 +15,32 @@
   background-attachment: fixed !important;
 }
 
+/* Cosy Studio — slightly muted contour (less bright than public site) */
+.contour-lines-bg-studio {
+  background-color: #EFEBE3 !important;
+  background-image: linear-gradient(rgba(239, 235, 227, 0.88), rgba(232, 226, 214, 0.9)), url("/cosy_canvas_contour_bg.png") !important;
+  background-size: auto, 750px 750px !important;
+  background-repeat: repeat !important;
+  background-attachment: fixed !important;
+}
+
 /* Cosy Studio — light ops desk surfaces */
 .studio-panel {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(125, 110, 35, 0.14);
-  box-shadow: 0 8px 30px -12px rgba(17, 17, 17, 0.12);
+  background: rgba(250, 247, 238, 0.92);
+  border: 1px solid rgba(125, 110, 35, 0.18);
+  box-shadow: 0 8px 30px -12px rgba(17, 17, 17, 0.14);
   backdrop-filter: blur(8px);
 }
 
 .studio-tile {
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(125, 110, 35, 0.12);
-  box-shadow: 0 4px 18px -8px rgba(17, 17, 17, 0.1);
+  background: rgba(253, 251, 247, 0.95);
+  border: 1px solid rgba(125, 110, 35, 0.14);
+  box-shadow: 0 4px 18px -8px rgba(17, 17, 17, 0.12);
+}
+
+.studio-calendar {
+  background: #E7E1D4;
+  border: 1px solid rgba(125, 110, 35, 0.2);
 }
 
 .os-grid-badge {
