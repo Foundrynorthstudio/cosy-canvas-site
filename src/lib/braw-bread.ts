@@ -1,4 +1,4 @@
-export const BRAW_BREAD_URL = 'https://brawbread.co.uk';
+export const BRAW_BREAD_URL = 'https://brawbread.com';
 export const BRAW_BREAD_NETLIFY_URL = 'https://brawbread.netlify.app';
 export const BRAW_BREAD_LOGO = '/events/braw-bread/logo-horizontal.svg';
 export const BRAW_BREAD_MARK = '/events/braw-bread/logo-vertical.svg';
