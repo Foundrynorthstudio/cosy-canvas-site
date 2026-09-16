@@ -16,7 +16,7 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
   <div class="max-w-6xl mx-auto px-4 py-8">
     <div class="flex items-center justify-between mb-8">
       <div>
-        <a href="/studio" class="text-xs text-stone-400 hover:text-[#F7BA1E]">← All stories</a>
+        <a href="/studio/journal" class="text-xs text-stone-400 hover:text-[#F7BA1E]">← All stories</a>
         <h1 class="font-display text-3xl font-black mt-2">{isEdit ? 'Edit story' : 'New story'}</h1>
       </div>
       {
@@ -156,7 +156,7 @@ const isoValue = post?.isoDate ? post.isoDate.slice(0, 16) : new Date().toISOStr
       return;
     }
     statusEl.textContent = 'Saved.';
-    window.location.href = '/studio';
+    window.location.href = '/studio/journal';
   });
 
   document.getElementById('delete-btn')?.addEventListener('click', async () => {

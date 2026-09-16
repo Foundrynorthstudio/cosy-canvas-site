@@ -6,7 +6,7 @@ const { slug } = Astro.params;
 const post = slug ? await getPostBySlug(slug, true) : undefined;
 
 if (!post) {
-  return Astro.redirect('/studio');
+  return Astro.redirect('/studio/journal');
 }
 ---
 
