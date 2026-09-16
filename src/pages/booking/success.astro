@@ -2,7 +2,12 @@
 import Layout from "../../layouts/Layout.astro";
 import { capturePaidBooking } from "../../lib/booking-capture";
 import { isDiyFulfillment } from "../../lib/booking";
-import { isRatRaceBooking } from "../../lib/rat-race";
+import {
+  buildRatRacePreviewBooking,
+  isRatRaceBooking,
+  isRatRacePackage,
+  RAT_RACE_PAYMENTS_ENABLED,
+} from "../../lib/rat-race";
 import {
   DEPOT,
   depotMapsUrl,
@@ -14,6 +19,8 @@ import { getStripe } from "../../lib/stripe-client";
 import type { BookingDetails } from "../../lib/email";
 
 const sessionId = Astro.url.searchParams.get("session_id");
+const preview = Astro.url.searchParams.get("preview");
+const isPreview = preview === "rat-race" && !sessionId;
 
 let booking: BookingDetails | null = null;
 let errorMsg = "";
@@ -26,7 +33,19 @@ const diyCollection = {
   hasPin: Boolean(depotWhat3Words()),
 };
 
-if (sessionId) {
+if (isPreview) {
+  const guests = Number(Astro.url.searchParams.get("guests") || 5);
+  const packageParam = Astro.url.searchParams.get("package") || "deluxe";
+  const packageKind = isRatRacePackage(packageParam) ? packageParam : "deluxe";
+  const paymentPlan =
+    Astro.url.searchParams.get("plan") === "instalment" ? "instalment" : "deposit";
+  booking = buildRatRacePreviewBooking({
+    guests,
+    packageKind,
+    concierge: Astro.url.searchParams.get("concierge") === "1",
+    paymentPlan,
+  });
+} else if (sessionId) {
   const stripe = getStripe();
   if (stripe) {
     try {
@@ -77,20 +96,36 @@ if (sessionId) {
 ---
 
 <Layout
-  title="Booking Confirmed | The Cosy Canvas Co."
+  title={isPreview ? "Booking Confirmation Preview | The Cosy Canvas Co." : "Booking Confirmed | The Cosy Canvas Co."}
   description="Thank you for booking with The Cosy Canvas Co. Your Scottish glamping stay is confirmed."
+  robots={isPreview ? "noindex, nofollow" : undefined}
 >
+  {isPreview && (
+    <div class="bg-amber-50 border-b border-amber-300 text-amber-950 text-center text-xs sm:text-sm px-4 py-3 relative z-40">
+      <strong class="font-display font-black">Preview only.</strong>
+      {" "}
+      {RAT_RACE_PAYMENTS_ENABLED
+        ? "Sample Rat Race confirmation layout."
+        : "Paid Rat Race bookings are paused until organiser approval — this is the confirmation page guests will see after checkout."}
+      {" "}
+      <a href="/events/rat-race#book-rat-race" class="underline font-bold">Back to packages</a>
+    </div>
+  )}
   <div class="bg-[#111111] text-white py-12 md:py-16 border-b border-stone-800 relative z-30">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
       <div class="w-16 h-16 bg-[#F7BA1E] text-[#111111] rounded-full flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg shadow-[#F7BA1E]/20 animate-bounce">
         <i class="fa-solid fa-check"></i>
       </div>
-      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-1 font-bold">PAYMENT & RESERVATION CONFIRMED</span>
+      <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-1 font-bold">
+        {isPreview ? "CONFIRMATION PREVIEW" : "PAYMENT & RESERVATION CONFIRMED"}
+      </span>
       <h1 class="font-display text-3xl md:text-5xl font-black text-white">
         You're going cosy camping!
       </h1>
       <p class="text-stone-300 text-sm md:text-base mt-2 max-w-xl mx-auto font-light leading-relaxed">
-        Thank you for your reservation. A confirmation email with receipt and arrival details has been sent to your inbox.
+        {isPreview
+          ? "Sample guest confirmation for Rat Race Coast to Coast — packages, deposit, and what happens next."
+          : "Thank you for your reservation. A confirmation email with receipt and arrival details has been sent to your inbox."}
       </p>
     </div>
   </div>

@@ -8,6 +8,12 @@ import {
 
 export const RAT_RACE_EVENT_URL = 'https://www.ratrace.com/events/scotland-coast-to-coast/';
 
+/** Flip to true once Rat Race organisers approve paid canvas bookings. */
+export const RAT_RACE_PAYMENTS_ENABLED = false;
+
+export const RAT_RACE_PAYMENTS_PAUSED_MESSAGE =
+  'Paid Rat Race bookings are paused until we have organiser approval. You can still preview packages and pricing on this page.';
+
 export const RAT_RACE_2027 = {
   slug: 'rat-race-c2c-2027',
   title: 'Scotland Coast to Coast',
@@ -147,6 +153,88 @@ export function ratRaceSecurityCheckinNote(tents: number, amount: number): strin
 
 export function isRatRaceBooking(booking: { eventSlug?: string }): boolean {
   return booking.eventSlug === RAT_RACE_2027.slug;
+}
+
+/** Sample confirmation payload for organiser / sales previews (no Stripe). */
+export function buildRatRacePreviewBooking(options?: {
+  guests?: number;
+  packageKind?: RatRacePackage;
+  concierge?: boolean;
+  paymentPlan?: 'deposit' | 'instalment';
+}): {
+  bookingRef: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  customerAddress: string;
+  campsiteLocation: string;
+  specialRequests: string;
+  checkinDate: string;
+  checkoutDate: string;
+  nights: number;
+  guests: number;
+  tentType: string;
+  beddingTier: string;
+  beddingPrice: number;
+  addons: { title: string; price: number }[];
+  fulfillment: string;
+  fulfillmentPrice: number;
+  totalRentalPrice: number;
+  depositPercent: number;
+  depositAmount: number;
+  securityDeposit: number;
+  totalPaidToday: number;
+  remainingBalance: number;
+  balanceDueDate: string;
+  paymentPlan: 'deposit' | 'instalment';
+  instalmentMonthly?: number;
+  instalmentCount?: number;
+  eventSlug: string;
+} {
+  const packageKind = options?.packageKind === 'cosy' ? 'cosy' : 'deluxe';
+  const quote = pricedForPaymentPlan(
+    quoteRatRace({ guests: options?.guests ?? 5, packageKind }),
+    options?.paymentPlan === 'instalment' ? 'instalment' : 'deposit',
+  );
+  const notes = [
+    options?.concierge
+      ? 'Morrisons Fort William concierge requested. Send order-build instructions after canvas payment.'
+      : '',
+    'Preview confirmation — payments paused pending organiser approval.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return {
+    bookingRef: 'CC-PREVIEW',
+    customerName: 'Alex Campbell',
+    customerEmail: 'alex@example.com',
+    customerPhone: '+44 7700 900123',
+    customerAddress: '14 Highland Way, Edinburgh, EH1 2NG',
+    campsiteLocation: RAT_RACE_2027.locationLabel,
+    specialRequests: notes,
+    checkinDate: quote.checkinDate,
+    checkoutDate: quote.checkoutDate,
+    nights: quote.nights,
+    guests: quote.guests,
+    tentType: quote.tentType,
+    beddingTier: quote.beddingTier,
+    beddingPrice: quote.beddingPrice,
+    addons: quote.addons.filter((line) => line.price > 0),
+    fulfillment: quote.fulfillment,
+    fulfillmentPrice: quote.fulfillmentPrice,
+    totalRentalPrice: quote.totalRentalPrice,
+    depositPercent: quote.depositPercent,
+    depositAmount: quote.depositAmount,
+    securityDeposit: quote.securityDeposit,
+    totalPaidToday: quote.totalDueToday,
+    remainingBalance: quote.remainingBalance,
+    balanceDueDate: quote.balanceDueDate,
+    paymentPlan: quote.paymentPlan,
+    instalmentMonthly: quote.payMonthly.monthlyAmount,
+    instalmentCount: quote.payMonthly.monthlyCount,
+    eventSlug: RAT_RACE_2027.slug,
+  };
 }
 
 const MAX_GUESTS = 40;

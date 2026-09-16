@@ -7,6 +7,8 @@ import {
   RAT_RACE_2027,
   RAT_RACE_EVENT_URL,
   RAT_RACE_PACKAGE_META,
+  RAT_RACE_PAYMENTS_ENABLED,
+  RAT_RACE_PAYMENTS_PAUSED_MESSAGE,
 } from '../../lib/rat-race';
 import { BRAW_BREAD_LOGO, BRAW_BREAD_MARK, BRAW_BREAD_MENU, BRAW_BREAD_URL } from '../../lib/braw-bread';
 
@@ -17,7 +19,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
 
 <Layout
   title="Rat Race Coast to Coast Glamping 2027 | Cosy & Deluxe Saturday Night | The Cosy Canvas Co."
-  description={`Book Saturday-night bell tents for Rat Race Scotland Coast to Coast, 11 September 2027. Cosy £${COSY_RATE_PER_GUEST}/guest, Deluxe +£${DELUXE_ADDON_PER_GUEST}. 4M or 6M auto-packed from headcount. Morrisons Fort William concierge extra.`}
+  description={`Saturday-night bell tents for Rat Race Scotland Coast to Coast, 11 September 2027. Cosy £${COSY_RATE_PER_GUEST}/guest, Deluxe +£${DELUXE_ADDON_PER_GUEST}. 4M or 6M auto-packed from headcount. Morrisons Fort William concierge extra.`}
   image={RAT_RACE_2027.tile}
   keywords="rat race coast to coast camping, rat race glamping 2027, fort william bell tent hire, event camping scotland"
   breadcrumbItems={[
@@ -42,7 +44,9 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
             class="h-10 md:h-12 w-auto"
           />
         </a>
-        <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">Event partner · bookable now</span>
+        <span class="text-[#F7BA1E] font-mono text-xs uppercase tracking-widest block mb-2 font-bold">
+          {RAT_RACE_PAYMENTS_ENABLED ? 'Event partner · bookable now' : 'Event partner · preview only'}
+        </span>
         <h1 class="font-display text-3xl md:text-5xl font-black text-white leading-tight">
           Rat Race Coast to Coast
           <span class="block">Under Canvas</span>
@@ -57,7 +61,7 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
             href="#book-rat-race"
             class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3"
           >
-            Book Saturday night
+            {RAT_RACE_PAYMENTS_ENABLED ? 'Book Saturday night' : 'Preview packages & pricing'}
           </a>
           <a
             href={RAT_RACE_EVENT_URL}
@@ -298,32 +302,41 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
           <p class="text-xs text-stone-400" id="rr-quote-security">{initialQuote.securityCheckinNote}</p>
         </div>
 
-        <fieldset class="space-y-2">
-          <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">How you pay the stay</legend>
-          <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer">
-            <input type="radio" name="rr-pay-plan" value="deposit" checked class="mt-1" />
-            <span>
-              <span class="block font-display font-black">Pay the stay</span>
-              <span class="text-xs text-stone-500">50% to book. 50% balance collected the week before.</span>
-            </span>
-          </label>
-          <label id="rr-pay-up-label" class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
-            <input type="radio" name="rr-pay-plan" value="instalment" class="mt-1" id="rr-pay-instalment" />
-            <span>
-              <span class="block font-display font-black">Pay Up · 2 months now, 10 after</span>
-              <span class="text-xs text-stone-500" id="rr-pay-up-copy">
-                Two months of the stay today, then ten interest-free months on the same card. Stripe runs the subscription — the card platform most people already trust at checkout. Klarna energy, not Klarna.
+        {RAT_RACE_PAYMENTS_ENABLED ? (
+          <fieldset class="space-y-2">
+            <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">How you pay the stay</legend>
+            <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer">
+              <input type="radio" name="rr-pay-plan" value="deposit" checked class="mt-1" />
+              <span>
+                <span class="block font-display font-black">Pay the stay</span>
+                <span class="text-xs text-stone-500">50% to book. 50% balance collected the week before.</span>
               </span>
-            </span>
-          </label>
-        </fieldset>
+            </label>
+            <label id="rr-pay-up-label" class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
+              <input type="radio" name="rr-pay-plan" value="instalment" class="mt-1" id="rr-pay-instalment" />
+              <span>
+                <span class="block font-display font-black">Pay Up · 2 months now, 10 after</span>
+                <span class="text-xs text-stone-500" id="rr-pay-up-copy">
+                  Two months of the stay today, then ten interest-free months on the same card. Stripe runs the subscription — the card platform most people already trust at checkout. Klarna energy, not Klarna.
+                </span>
+              </span>
+            </label>
+          </fieldset>
+        ) : (
+          <div class="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950 space-y-1">
+            <p class="font-display font-black text-[#111111]">Payments paused</p>
+            <p>{RAT_RACE_PAYMENTS_PAUSED_MESSAGE}</p>
+            <p class="text-xs text-amber-900/80">Click below to see the confirmation page guests will get once bookings open.</p>
+          </div>
+        )}
 
         <button
           type="button"
           id="rr-open-checkout"
+          data-payments-enabled={RAT_RACE_PAYMENTS_ENABLED ? '1' : '0'}
           class="w-full rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-sm uppercase tracking-wider py-4"
         >
-          Continue to payment
+          {RAT_RACE_PAYMENTS_ENABLED ? 'Continue to payment' : 'Preview confirmation page'}
         </button>
       </div>
     </div>
@@ -584,7 +597,21 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
     modal.classList.remove('flex');
     document.body.style.overflow = 'auto';
   }
-  document.getElementById('rr-open-checkout').addEventListener('click', openModal);
+  document.getElementById('rr-open-checkout').addEventListener('click', () => {
+    const btn = document.getElementById('rr-open-checkout');
+    if (btn?.getAttribute('data-payments-enabled') !== '1') {
+      const params = new URLSearchParams({
+        preview: 'rat-race',
+        guests: String(guests()),
+        package: packageKind(),
+        plan: paymentPlan(),
+      });
+      if (document.getElementById('rr-concierge')?.checked) params.set('concierge', '1');
+      window.location.href = `/booking/success?${params.toString()}`;
+      return;
+    }
+    openModal();
+  });
   document.getElementById('rr-close-modal').addEventListener('click', closeModal);
 
   document.getElementById('rr-guest-form').addEventListener('submit', async (event) => {

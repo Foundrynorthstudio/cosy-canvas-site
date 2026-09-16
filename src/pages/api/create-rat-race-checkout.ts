@@ -6,6 +6,8 @@ import {
   pricedForPaymentPlan,
   quoteRatRace,
   RAT_RACE_2027,
+  RAT_RACE_PAYMENTS_ENABLED,
+  RAT_RACE_PAYMENTS_PAUSED_MESSAGE,
   type RatRaceQuote,
 } from '../../lib/rat-race';
 import { brawBreadNote } from '../../lib/braw-bread';
@@ -60,6 +62,13 @@ function checkoutMetadata(
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
+    if (!RAT_RACE_PAYMENTS_ENABLED) {
+      return new Response(
+        JSON.stringify({ error: RAT_RACE_PAYMENTS_PAUSED_MESSAGE }),
+        { status: 503, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
     const data = await request.json();
     const {
       guests,
