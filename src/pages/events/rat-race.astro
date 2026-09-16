@@ -479,16 +479,19 @@ const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
     if (securityEl) securityEl.textContent = q.securityCheckinNote || '';
     const copy = document.getElementById('rr-pay-up-copy');
     const radio = document.getElementById('rr-pay-instalment');
-    if (q.payMonthly?.available) {
-      radio.disabled = false;
-      copy.textContent =
-        `Two months of the stay (£${Number(q.payMonthly.upfrontAmount).toFixed(2)}) today, then ${q.payMonthly.monthlyCount} × £${Number(q.payMonthly.monthlyAmount).toFixed(2)} on a Stripe subscription. Klarna energy, not Klarna.`;
-    } else {
-      if (paymentPlan() === 'instalment') {
-        document.querySelector('input[name="rr-pay-plan"][value="deposit"]').checked = true;
+    if (radio && copy) {
+      if (q.payMonthly?.available) {
+        radio.disabled = false;
+        copy.textContent =
+          `Two months of the stay (£${Number(q.payMonthly.upfrontAmount).toFixed(2)}) today, then ${q.payMonthly.monthlyCount} × £${Number(q.payMonthly.monthlyAmount).toFixed(2)} on a Stripe subscription. Klarna energy, not Klarna.`;
+      } else {
+        if (paymentPlan() === 'instalment') {
+          const depositRadio = document.querySelector('input[name="rr-pay-plan"][value="deposit"]');
+          if (depositRadio) depositRadio.checked = true;
+        }
+        radio.disabled = true;
+        copy.textContent = q.payMonthly?.reason || 'Pay Up is not available this close to the Saturday night.';
       }
-      radio.disabled = true;
-      copy.textContent = q.payMonthly?.reason || 'Pay Up is not available this close to the Saturday night.';
     }
     const summary = document.getElementById('rr-modal-summary');
     if (summary) summary.textContent = `${q.tentType} · Saturday night · ${q.guests} guests · due today £${dueToday(q).toFixed(2)}`;
