@@ -58,7 +58,8 @@ async function readBlobs(): Promise<StaffUser[] | null> {
       return (data as StaffStoreFile).users;
     }
     return null;
-  } catch {
+  } catch (error) {
+    console.error('[staff-store] blob read failed', error);
     return null;
   }
 }
@@ -69,24 +70,36 @@ async function writeBlobs(users: StaffUser[]): Promise<boolean> {
     const store = getStore(BLOB_STORE);
     await store.setJSON(BLOB_KEY, { users });
     return true;
-  } catch {
+  } catch (error) {
+    console.error('[staff-store] blob write failed', error);
     return false;
   }
 }
 
 async function persist(users: StaffUser[]): Promise<void> {
-  writeChain = writeChain.then(async () => {
+  const blobOk = await writeBlobs(users);
+  if (blobOk) return;
+  try {
     await writeLocalFile(users);
-    await writeBlobs(users);
-  });
-  await writeChain;
+  } catch (error) {
+    console.error('[staff-store] local persist failed', error);
+  }
+}
+
+function enqueueWrite<T>(work: () => Promise<T>): Promise<T> {
+  const run = writeChain.then(work, work);
+  writeChain = run.then(
+    () => undefined,
+    () => undefined,
+  );
+  return run;
 }
 
 function bootstrapPassword(): string {
   return readAuthEnv('STUDIO_STAFF_INITIAL_PASSWORD') || readAuthEnv('JOURNAL_ADMIN_PASSWORD');
 }
 
-async function seedMissing(existing: StaffUser[]): Promise<{ users: StaffUser[]; added: boolean }> {
+function seedMissing(existing: StaffUser[]): { users: StaffUser[]; added: boolean } {
   const byEmail = new Map(existing.map((user) => [normalizeEmail(user.email), user]));
   const bootstrap = bootstrapPassword();
   if (!bootstrap) return { users: existing, added: false };
@@ -110,10 +123,24 @@ async function seedMissing(existing: StaffUser[]): Promise<{ users: StaffUser[];
 }
 
 export async function listStaff(): Promise<StaffUser[]> {
-  const fromBlobs = await readBlobs();
-  const fromLocal = fromBlobs ?? (await readLocalFile()) ?? [];
-  const { users, added } = await seedMissing(fromLocal);
-  if (added) await persist(users);
+  let loaded: StaffUser[] = [];
+  try {
+    const fromBlobs = await readBlobs();
+    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
+    else {
+      const fromDisk = await readLocalFile();
+      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
+    }
+  } catch (error) {
+    console.error('[staff-store] read failed', error);
+  }
+
+  const { users, added } = seedMissing(loaded);
+  if (added || loaded.length === 0) {
+    await enqueueWrite(async () => {
+      await persist(users);
+    });
+  }
   return users;
 }
 
@@ -126,15 +153,17 @@ export async function getStaffByEmail(email: string): Promise<StaffUser | null> 
 
 export async function updateStaffPassword(email: string, password: string): Promise<StaffUser | null> {
   const key = normalizeEmail(email);
-  const users = await listStaff();
-  const index = users.findIndex((user) => normalizeEmail(user.email) === key);
-  if (index < 0) return null;
-  const now = new Date().toISOString();
-  users[index] = {
-    ...users[index],
-    passwordHash: hashPassword(password),
-    updatedAt: now,
-  };
-  await persist(users);
-  return users[index];
+  return enqueueWrite(async () => {
+    const users = await listStaff();
+    const index = users.findIndex((user) => normalizeEmail(user.email) === key);
+    if (index < 0) return null;
+    const now = new Date().toISOString();
+    users[index] = {
+      ...users[index],
+      passwordHash: hashPassword(password),
+      updatedAt: now,
+    };
+    await persist(users);
+    return users[index];
+  });
 }
