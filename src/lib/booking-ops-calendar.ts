@@ -1,5 +1,5 @@
 import type { BookingRecord } from './booking';
-import { isDiyFulfillment } from './booking';
+import { deriveBookingStatus, isDiyFulfillment, statusLabel } from './booking';
 import { buildKitManifest } from './booking-kit';
 
 export type FleetKey =
@@ -350,4 +350,72 @@ export function bookingLoadIcons(booking: BookingRecord): { icon: string; label:
     }
   }
   return icons;
+}
+
+export interface BookingPeekSummary {
+  ref: string;
+  name: string;
+  email: string;
+  phone: string;
+  color: string;
+  tent: string;
+  tentFull: string;
+  guests: number;
+  nights: number;
+  checkin: string;
+  checkout: string;
+  location: string;
+  delivery: boolean;
+  fulfillment: string;
+  bedding: string;
+  status: string;
+  statusLabel: string;
+  balanceDue: number;
+  kitUnits: number;
+  kit: { icon: string; label: string; qty: number }[];
+  addons: string[];
+}
+
+export function buildBookingPeekMap(
+  bookings: BookingRecord[],
+  colorByRef?: Map<string, string>,
+): Record<string, BookingPeekSummary> {
+  const map: Record<string, BookingPeekSummary> = {};
+  bookings.forEach((booking, index) => {
+    const demand = bookingFleetDemand(booking);
+    const diy = isDiyFulfillment(booking.fulfillment);
+    const kit = (Object.keys(FLEET_META) as FleetKey[])
+      .filter((key) => demand[key] > 0)
+      .map((key) => ({
+        icon: FLEET_META[key].icon,
+        label: FLEET_META[key].label,
+        qty: demand[key],
+      }));
+    const kitUnits = kit.reduce((sum, item) => sum + item.qty, 0);
+    const status = deriveBookingStatus(booking);
+    map[booking.bookingRef] = {
+      ref: booking.bookingRef,
+      name: booking.customerName,
+      email: booking.customerEmail,
+      phone: booking.customerPhone,
+      color: colorByRef?.get(booking.bookingRef) || STAY_COLORS[index % STAY_COLORS.length],
+      tent: shortTent(booking.tentType),
+      tentFull: booking.tentType,
+      guests: booking.guests,
+      nights: booking.nights,
+      checkin: booking.checkinDate,
+      checkout: booking.checkoutDate,
+      location: booking.campsiteLocation,
+      delivery: !diy,
+      fulfillment: booking.fulfillment,
+      bedding: booking.beddingTier,
+      status,
+      statusLabel: statusLabel(status),
+      balanceDue: booking.remainingBalance,
+      kitUnits,
+      kit,
+      addons: booking.addons.map((addon) => addon.title),
+    };
+  });
+  return map;
 }

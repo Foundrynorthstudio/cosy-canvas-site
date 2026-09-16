@@ -4,6 +4,7 @@ import StudioNav from '../../../components/StudioNav.astro';
 import { deriveBookingStatus, statusLabel } from '../../../lib/booking';
 import {
   bookingLoadIcons,
+  buildBookingPeekMap,
   buildOpsCalendar,
   parseMonthParam,
 } from '../../../lib/booking-ops-calendar';
@@ -14,6 +15,7 @@ const dueCount = bookings.filter((b) => b.remainingBalance > 0).length;
 const { year, month } = parseMonthParam(Astro.url.searchParams.get('month'));
 const calendar = buildOpsCalendar(bookings, year, month);
 const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.checkinDate));
+const peekMap = buildBookingPeekMap(bookings);
 ---
 
 <StudioLayout title="Bookings · Cosy Studio">
@@ -24,7 +26,7 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
         <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em]">Operations desk</p>
         <h1 class="font-display text-3xl md:text-4xl font-black mt-1">Bookings calendar</h1>
         <p class="text-stone-400 text-sm mt-2">
-          {bookings.length} stays on file · {dueCount} with a balance due · peak kit sized for overlap, not raw totals
+          {bookings.length} stays on file · {dueCount} with a balance due · click a stay tile for a quick ops summary
         </p>
       </div>
       <button id="remind-all" class="rounded-full border border-[#F7BA1E]/40 text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 self-start">
@@ -110,11 +112,12 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
                   </div>
                   <div class="space-y-1.5">
                     {day.stays.slice(0, 2).map((stay) => (
-                      <a
-                        href={`/studio/bookings/${stay.ref}`}
-                        class="block rounded-lg px-1.5 py-1 text-[#111111] leading-tight"
+                      <button
+                        type="button"
+                        class="rr-stay-peek w-full text-left rounded-lg px-1.5 py-1 text-[#111111] leading-tight hover:brightness-110 transition"
                         style={`background:${stay.color}`}
                         title={stay.title}
+                        data-ref={stay.ref}
                       >
                         <span class="block text-[10px] sm:text-[11px] font-black truncate">{stay.name}</span>
                         <span class="block text-[8px] sm:text-[9px] font-bold opacity-80 truncate">
@@ -128,7 +131,7 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
                           </span>
                           <span class="truncate">{stay.kitUnits} kit</span>
                         </span>
-                      </a>
+                      </button>
                     ))}
                     {day.stays.length > 2 && (
                       <p class="text-[9px] text-stone-500 pl-1">+{day.stays.length - 2} more</p>
@@ -146,9 +149,10 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
                 const status = deriveBookingStatus(booking);
                 const icons = bookingLoadIcons(booking);
                 return (
-                  <a
-                    href={`/studio/bookings/${booking.bookingRef}`}
-                    class="rounded-3xl border border-white/10 bg-white/[0.03] hover:border-[#F7BA1E]/40 hover:bg-white/[0.05] transition-colors p-5 block"
+                  <button
+                    type="button"
+                    class="rr-stay-peek text-left rounded-3xl border border-white/10 bg-white/[0.03] hover:border-[#F7BA1E]/40 hover:bg-white/[0.05] transition-colors p-5 block w-full"
+                    data-ref={booking.bookingRef}
                   >
                     <div class="flex items-start justify-between gap-3">
                       <div>
@@ -181,7 +185,7 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
                     {booking.remainingBalance > 0 && (
                       <p class="text-[11px] text-amber-300 mt-3">£{booking.remainingBalance.toFixed(2)} balance due</p>
                     )}
-                  </a>
+                  </button>
                 );
               })}
             </div>
@@ -191,9 +195,142 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
     }
     <p id="status" class="text-xs text-stone-500"></p>
   </div>
+
+  <div id="stay-peek" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm" aria-hidden="true">
+    <div class="relative w-full max-w-lg rounded-3xl border border-white/10 bg-[#161616] shadow-2xl overflow-hidden" role="dialog" aria-modal="true" aria-labelledby="peek-name">
+      <div id="peek-accent" class="h-1.5 w-full bg-[#F7BA1E]"></div>
+      <div class="p-6 space-y-5">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="text-[#F7BA1E] font-mono text-[10px] uppercase tracking-widest font-bold" id="peek-ref"></p>
+            <h2 class="font-display text-2xl font-black text-white mt-1" id="peek-name"></h2>
+            <p class="text-stone-500 text-xs mt-1" id="peek-contact"></p>
+          </div>
+          <button type="button" id="peek-close" class="w-9 h-9 rounded-full bg-white/5 text-stone-300 hover:text-white" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <span id="peek-status" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-white/10 text-stone-200"></span>
+          <span id="peek-fulfillment" class="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full bg-[#F7BA1E]/15 text-[#F7BA1E]"></span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3">
+            <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Stay</p>
+            <p class="text-white font-bold" id="peek-dates"></p>
+            <p class="text-stone-400 mt-1" id="peek-guests"></p>
+          </div>
+          <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3">
+            <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Canvas</p>
+            <p class="text-white font-bold" id="peek-tent"></p>
+            <p class="text-stone-400 mt-1 truncate" id="peek-bedding"></p>
+          </div>
+        </div>
+
+        <div class="rounded-2xl bg-white/[0.04] border border-white/10 p-3 text-xs">
+          <p class="text-stone-500 uppercase tracking-wider text-[10px] mb-1">Location</p>
+          <p class="text-stone-200" id="peek-location"></p>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <p class="text-stone-500 uppercase tracking-wider text-[10px] font-bold">Kit load</p>
+            <p class="text-[#F7BA1E] text-xs font-bold" id="peek-kit-total"></p>
+          </div>
+          <div id="peek-kit" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <p id="peek-balance" class="hidden text-amber-300 text-xs font-bold"></p>
+
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a id="peek-open" href="/studio/bookings" class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3">
+            Open full booking
+          </a>
+          <button type="button" id="peek-dismiss" class="rounded-full border border-white/15 text-stone-300 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 hover:text-white">
+            Keep on calendar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script id="stay-peek-data" type="application/json" is:inline set:html={JSON.stringify(peekMap)}></script>
 </StudioLayout>
 
 <script>
+  const peekData = JSON.parse(document.getElementById('stay-peek-data')?.textContent || '{}');
+  const overlay = document.getElementById('stay-peek');
+
+  function closePeek() {
+    if (!overlay) return;
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function openPeek(ref) {
+    const data = peekData[ref];
+    if (!data || !overlay) return;
+
+    document.getElementById('peek-ref').textContent = data.ref;
+    document.getElementById('peek-name').textContent = data.name;
+    document.getElementById('peek-contact').textContent = [data.email, data.phone].filter(Boolean).join(' · ');
+    document.getElementById('peek-dates').textContent = `${data.checkin} → ${data.checkout}`;
+    document.getElementById('peek-guests').textContent = `${data.guests} guests · ${data.nights} night${data.nights === 1 ? '' : 's'}`;
+    document.getElementById('peek-tent').textContent = data.tentFull;
+    document.getElementById('peek-bedding').textContent = data.bedding || 'No bedding package';
+    document.getElementById('peek-location').textContent = data.location || 'Location TBC';
+    document.getElementById('peek-kit-total').textContent = `${data.kitUnits} kit units`;
+    document.getElementById('peek-fulfillment').textContent = data.delivery ? 'With delivery' : 'DIY pickup';
+    document.getElementById('peek-accent').style.background = data.color || '#F7BA1E';
+
+    const status = document.getElementById('peek-status');
+    status.textContent = data.statusLabel;
+    status.className = 'text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full ';
+    if (data.status === 'paid_in_full') status.className += 'bg-emerald-500/15 text-emerald-300';
+    else if (data.status === 'balance_due') status.className += 'bg-amber-500/15 text-amber-300';
+    else if (data.status === 'refunded') status.className += 'bg-red-500/15 text-red-300';
+    else status.className += 'bg-white/10 text-stone-200';
+
+    const kit = document.getElementById('peek-kit');
+    kit.innerHTML = (data.kit || [])
+      .map(
+        (item) =>
+          `<span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 border border-white/10 px-2.5 py-1 text-[11px] text-stone-200"><i class="fa-solid ${item.icon} text-[#F7BA1E]"></i>${item.label}${item.qty > 1 ? ` ×${item.qty}` : ''}</span>`,
+      )
+      .join('');
+
+    const balance = document.getElementById('peek-balance');
+    if (data.balanceDue > 0.01) {
+      balance.textContent = `£${Number(data.balanceDue).toFixed(2)} still due`;
+      balance.classList.remove('hidden');
+    } else {
+      balance.classList.add('hidden');
+    }
+
+    document.getElementById('peek-open').setAttribute('href', `/studio/bookings/${encodeURIComponent(data.ref)}`);
+
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  document.querySelectorAll('.rr-stay-peek').forEach((el) => {
+    el.addEventListener('click', () => openPeek(el.getAttribute('data-ref')));
+  });
+  document.getElementById('peek-close')?.addEventListener('click', closePeek);
+  document.getElementById('peek-dismiss')?.addEventListener('click', closePeek);
+  overlay?.addEventListener('click', (event) => {
+    if (event.target === overlay) closePeek();
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closePeek();
+  });
+
   document.getElementById('remind-all')?.addEventListener('click', async () => {
     const status = document.getElementById('status');
     if (status) status.textContent = 'Sending…';
