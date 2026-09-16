@@ -1,4 +1,5 @@
 import type { BookingRecord } from './booking';
+import { isDiyFulfillment } from './booking';
 import { buildKitManifest } from './booking-kit';
 
 export type FleetKey =
@@ -27,11 +28,24 @@ export interface FleetMetric {
   bookings: number;
 }
 
+export interface CalendarStayChip {
+  ref: string;
+  name: string;
+  color: string;
+  tent: string;
+  guests: number;
+  delivery: boolean;
+  kitUnits: number;
+  kitSummary: string;
+  icons: string[];
+  title: string;
+}
+
 export interface CalendarDay {
   iso: string;
   day: number;
   inMonth: boolean;
-  stays: { ref: string; name: string; color: string }[];
+  stays: CalendarStayChip[];
   demand: Partial<Record<FleetKey, number>>;
 }
 
@@ -123,6 +137,63 @@ export function bookingFleetDemand(booking: BookingRecord): Record<FleetKey, num
   }
 
   return demand;
+}
+
+function shortTent(tentType: string): string {
+  const multi = tentType.match(/^(\d+)\s*[×x]\s*(\d+\s*M)/i);
+  if (multi) return `${multi[1]}×${multi[2].replace(/\s+/g, '')}`;
+  const single = tentType.match(/(\d+\s*M)/i);
+  if (single) return single[1].replace(/\s+/g, '');
+  return tentType.slice(0, 8);
+}
+
+export function bookingStayChip(booking: BookingRecord, color: string): CalendarStayChip {
+  const demand = bookingFleetDemand(booking);
+  const diy = isDiyFulfillment(booking.fulfillment);
+  const icons: string[] = [];
+  const bits: string[] = [];
+  let kitUnits = 0;
+
+  for (const key of Object.keys(FLEET_META) as FleetKey[]) {
+    const n = demand[key];
+    if (!n) continue;
+    kitUnits += n;
+    icons.push(FLEET_META[key].icon);
+    if (key === 'tents') bits.push(n > 1 ? `${n} tents` : shortTent(booking.tentType));
+    else if (key === 'mattresses') bits.push(n > 1 ? `${n} beds` : 'beds');
+    else if (key === 'kitchens') bits.push('kitchen');
+    else if (key === 'woodburners') bits.push('burner');
+    else if (key === 'lounges') bits.push('lounge');
+    else if (key === 'starlinks') bits.push('Starlink');
+    else if (key === 'awnings') bits.push('awning');
+    else if (key === 'linen') bits.push('linen');
+  }
+
+  const name = booking.customerName.split(' ')[0] || booking.customerName;
+  const tent = shortTent(booking.tentType);
+  const kitSummary = bits.slice(0, 4).join(' · ');
+  const title = [
+    booking.customerName,
+    tent,
+    `${booking.guests} guests`,
+    diy ? 'DIY pickup' : 'With delivery',
+    kitSummary ? `${kitUnits} kit units: ${kitSummary}` : '',
+  ]
+    .filter(Boolean)
+    .join(' · ');
+
+  return {
+    ref: booking.bookingRef,
+    name,
+    color,
+    tent,
+    guests: booking.guests,
+    delivery: !diy,
+    kitUnits,
+    kitSummary,
+    icons: icons.slice(0, 4),
+    title,
+  };
 }
 
 function nightsBetween(checkin: string, checkout: string): string[] {
@@ -234,11 +305,9 @@ export function buildOpsCalendar(bookings: BookingRecord[], year: number, month:
     const inMonth = date.getMonth() === month - 1;
     const stays = active
       .filter((booking) => booking.checkinDate <= iso && iso < booking.checkoutDate)
-      .map((booking) => ({
-        ref: booking.bookingRef,
-        name: booking.customerName.split(' ')[0] || booking.customerName,
-        color: colorByRef.get(booking.bookingRef) || STAY_COLORS[0],
-      }));
+      .map((booking) =>
+        bookingStayChip(booking, colorByRef.get(booking.bookingRef) || STAY_COLORS[0]),
+      );
     days.push({
       iso,
       day: date.getDate(),

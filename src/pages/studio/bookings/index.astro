@@ -97,7 +97,7 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
               {calendar.days.map((day) => (
                 <div
                   class:list={[
-                    'min-h-[5.5rem] sm:min-h-[7rem] border-r border-b border-white/5 p-1.5 sm:p-2',
+                    'min-h-[7.5rem] sm:min-h-[9.5rem] border-r border-b border-white/5 p-1.5 sm:p-2',
                     !day.inMonth && 'opacity-35',
                     day.stays.length > 0 && 'bg-[#F7BA1E]/[0.04]',
                   ]}
@@ -108,19 +108,30 @@ const upcoming = [...bookings].sort((a, b) => a.checkinDate.localeCompare(b.chec
                       <span class="text-[9px] font-mono text-[#F7BA1E]">{day.stays.length}</span>
                     )}
                   </div>
-                  <div class="space-y-1">
-                    {day.stays.slice(0, 3).map((stay) => (
+                  <div class="space-y-1.5">
+                    {day.stays.slice(0, 2).map((stay) => (
                       <a
                         href={`/studio/bookings/${stay.ref}`}
-                        class="block truncate rounded-md px-1.5 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#111111]"
+                        class="block rounded-lg px-1.5 py-1 text-[#111111] leading-tight"
                         style={`background:${stay.color}`}
-                        title={stay.name}
+                        title={stay.title}
                       >
-                        {stay.name}
+                        <span class="block text-[10px] sm:text-[11px] font-black truncate">{stay.name}</span>
+                        <span class="block text-[8px] sm:text-[9px] font-bold opacity-80 truncate">
+                          {stay.tent} · {stay.guests}g · {stay.delivery ? 'Delivery' : 'DIY'}
+                        </span>
+                        <span class="mt-0.5 flex items-center gap-1 text-[8px] sm:text-[9px] font-semibold opacity-90">
+                          <span class="inline-flex gap-0.5">
+                            {stay.icons.map((icon) => (
+                              <i class={`fa-solid ${icon}`}></i>
+                            ))}
+                          </span>
+                          <span class="truncate">{stay.kitUnits} kit</span>
+                        </span>
                       </a>
                     ))}
-                    {day.stays.length > 3 && (
-                      <p class="text-[9px] text-stone-500 pl-1">+{day.stays.length - 3} more</p>
+                    {day.stays.length > 2 && (
+                      <p class="text-[9px] text-stone-500 pl-1">+{day.stays.length - 2} more</p>
                     )}
                   </div>
                 </div>
