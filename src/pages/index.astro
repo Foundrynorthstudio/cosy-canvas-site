@@ -8,23 +8,23 @@ import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
   description="Custom luxury bell tent stays delivered and pitched for you across Scotland's wild coastal spots, lochs, and campsites."
 >
   <!-- Hero Section -->
-  <section class="relative bg-transparent overflow-hidden border-b border-stone-200/60 py-12 md:py-20 lg:py-24">
+  <section class="relative bg-transparent overflow-hidden border-b border-stone-200/60 py-10 md:py-16 lg:py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        <!-- Left Hero Content -->
-        <div class="lg:col-span-6 space-y-6">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#7D6E23]/10 border border-[#7D6E23]/20 text-[#4F571A] text-xs font-semibold tracking-wider uppercase">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-14 items-center">
+
+        <!-- Copy -->
+        <div class="lg:col-span-5 space-y-6 order-2 lg:order-1">
+          <div class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-[#7D6E23]/10 border border-[#7D6E23]/20 text-[#4F571A] text-xs font-semibold tracking-wider uppercase">
             Luxury Camping Rentals Scotland
           </div>
 
-          <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-[#111111] leading-tight">
+          <h1 class="font-display text-4xl sm:text-5xl lg:text-[3.35rem] xl:text-6xl font-black text-[#111111] leading-[1.05]">
             We Deliver. <br/>
             We Setup. <br/>
             <span class="text-[#7D6E23]">We Collect.</span>
           </h1>
 
-          <p class="text-stone-600 text-lg sm:text-xl font-light leading-relaxed">
+          <p class="text-stone-600 text-base sm:text-lg lg:text-xl font-light leading-relaxed max-w-xl">
             Custom luxury bell tent stays pitched and styled for you at Scotland's most breathtaking wild coastal spots, coves, and campsites. You just arrive and switch off.
           </p>
 
@@ -39,7 +39,7 @@ import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
             </div>
           </div>
 
-          <div class="flex flex-col sm:flex-row gap-4 pt-2">
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
             <a href="/booking" class="inline-flex items-center justify-center gap-3 bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-sm uppercase tracking-wider py-4 px-8 rounded-full transition-all shadow-lg shadow-[#F7BA1E]/20 hover:-translate-y-0.5">
               <i class="fa-solid fa-compass"></i>
               <span>Begin your booking</span>
@@ -51,36 +51,15 @@ import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from '../lib/rat-race';
           </div>
         </div>
 
-        <!-- Right Visual Grid -->
-        <div class="lg:col-span-6">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="col-span-2 relative rounded-2xl overflow-hidden shadow-xl border border-stone-200 group h-72 sm:h-80">
-              <img src="/cosy_canvas_hero_coastal_pitch.jpg" alt="White bell tent pitched on coastal Scottish cove" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" onerror="this.src='https://placehold.co/800x600/FAF7EE/7D6E23?text=Scottish+Coastal+Bell+Tent+Stay'"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div class="absolute bottom-4 left-4 right-4 text-white flex items-center justify-between">
-                <div>
-                  <span class="os-grid-badge text-[#F7BA1E] text-[10px] bg-black/40 border-[#F7BA1E]/40 px-2 py-0.5 rounded backdrop-blur-sm">SCOTTISH COASTAL SETUP</span>
-                  <h3 class="font-display font-bold text-sm sm:text-base mt-1">Remote Ocean Cove Stays</h3>
-                </div>
-                <span class="bg-[#7D6E23] text-white text-[10px] font-bold px-2.5 py-1 rounded">100% WATERPROOF</span>
-              </div>
-            </div>
-
-            <div class="relative rounded-xl overflow-hidden shadow-md border border-stone-200 group h-44">
-              <img src="/cosy_canvas_hero_cinema_lounge_night.jpg" alt="Inside cosy bell tent illuminated with laser light projector" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://placehold.co/400x300/FAF7EE/7D6E23?text=Cosy+Night+Ambience'"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div class="absolute bottom-2.5 left-2.5 right-2.5 text-white text-xs font-bold">
-                Starry Cinema & Living Lounge
-              </div>
-            </div>
-
-            <div class="relative rounded-xl overflow-hidden shadow-md border border-stone-200 group h-44">
-              <img src="/cosy_canvas_hero_highland_valley_glow.jpg" alt="Glow of illuminated bell tent in remote mountain valley at twilight" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://placehold.co/400x300/FAF7EE/7D6E23?text=Twilight+Stay'"/>
-              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-              <div class="absolute bottom-2.5 left-2.5 right-2.5 text-white text-xs font-bold">
-                Highland Valley Warm Glow
-              </div>
-            </div>
+        <!-- Single hero photograph -->
+        <div class="lg:col-span-7 order-1 lg:order-2">
+          <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/80 h-[min(58vh,420px)] sm:h-[min(62vh,520px)] lg:h-[min(78vh,720px)]">
+            <img
+              src="/cosy_canvas_hero_coastal_pitch.jpg"
+              alt="White bell tent pitched on a remote Scottish ocean cove"
+              class="absolute inset-0 w-full h-full object-cover"
+              onerror="this.src='https://placehold.co/1200x1500/FAF7EE/7D6E23?text=Scottish+Coastal+Bell+Tent+Stay'"
+            />
           </div>
         </div>
 
