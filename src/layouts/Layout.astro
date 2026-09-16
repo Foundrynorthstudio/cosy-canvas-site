@@ -33,6 +33,9 @@ import '../styles/global.css';
 import CookieConsent from '../components/CookieConsent.astro';
 import { DEPOT, depotWhat3Words } from '../lib/depot';
 import { COMPANY } from '../lib/company';
+import { cosyConciergeMailto } from '../lib/campsites';
+
+const conciergeMailto = cosyConciergeMailto('Quality Guarantee');
 
 const siteUrl = Astro.site ? Astro.site.origin : "https://cosycanvasco.com";
 const pathCanonical = `${siteUrl}${Astro.url.pathname === "/" ? "/" : Astro.url.pathname.replace(/\/$/, "")}`;
@@ -377,6 +380,16 @@ const breadcrumbSchema = {
             <h4 class="font-display font-bold text-white text-xs uppercase tracking-widest mb-4">Quality Guarantee</h4>
             <p class="text-xs text-stone-400 leading-relaxed mb-4">
               Every stay is covered by our Fix-It-Fast Support & Full Refund Weather Guarantee.
+            </p>
+            <a
+              href={conciergeMailto}
+              class="inline-flex items-center gap-2 rounded-full bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-extrabold text-[10px] uppercase tracking-wider px-4 py-2.5 transition-colors mb-4"
+            >
+              <i class="fa-solid fa-comments text-[10px]"></i>
+              Talk to Trystan
+            </a>
+            <p class="text-[10px] text-stone-500 leading-snug mb-4">
+              Cosy Concierge — help with bookings, stays, and our guarantee.
             </p>
             <div class="text-[11px] text-stone-500 space-x-2">
               <a href="/terms" class="hover:text-stone-300">Terms</a>
