@@ -3,7 +3,9 @@ import { deriveBookingStatus, isDiyFulfillment, statusLabel } from './booking';
 import { buildKitManifest } from './booking-kit';
 
 export type FleetKey =
-  | 'tents'
+  | 'tents4'
+  | 'tents5'
+  | 'tents6'
   | 'mattresses'
   | 'linen'
   | 'pillows'
@@ -26,6 +28,7 @@ export interface FleetMetric {
   unitNights: number;
   /** Bookings that need at least one of this item */
   bookings: number;
+  core?: boolean;
 }
 
 export interface CalendarStayChip {
@@ -57,11 +60,15 @@ export interface OpsCalendar {
   next: string;
   days: CalendarDay[];
   metrics: FleetMetric[];
+  tentMetrics: FleetMetric[];
+  addonMetrics: FleetMetric[];
   stayCount: number;
 }
 
-const FLEET_META: Record<FleetKey, { label: string; icon: string }> = {
-  tents: { label: 'Bell tents', icon: 'fa-campground' },
+const FLEET_META: Record<FleetKey, { label: string; icon: string; core?: boolean }> = {
+  tents4: { label: '4M bell tents', icon: 'fa-campground', core: true },
+  tents5: { label: '5M bell tents', icon: 'fa-campground', core: true },
+  tents6: { label: '6M bell tents', icon: 'fa-campground', core: true },
   mattresses: { label: 'Beds / airframes', icon: 'fa-bed' },
   linen: { label: 'Linen sets', icon: 'fa-shirt' },
   pillows: { label: 'Pillows', icon: 'fa-cloud' },
@@ -75,8 +82,29 @@ const FLEET_META: Record<FleetKey, { label: string; icon: string }> = {
   beachkits: { label: 'Beach kits', icon: 'fa-bucket' },
 };
 
+const FLEET_ORDER = Object.keys(FLEET_META) as FleetKey[];
+
 const STAY_COLOR = '#F7BA1E';
 const STAY_COLORS = [STAY_COLOR];
+
+function emptyDemand(): Record<FleetKey, number> {
+  return {
+    tents4: 0,
+    tents5: 0,
+    tents6: 0,
+    mattresses: 0,
+    linen: 0,
+    pillows: 0,
+    kitchens: 0,
+    woodburners: 0,
+    lounges: 0,
+    awnings: 0,
+    starlinks: 0,
+    chairs: 0,
+    firekits: 0,
+    beachkits: 0,
+  };
+}
 
 function parseIso(iso: string): Date {
   const [y, m, d] = iso.split('-').map(Number);
@@ -95,25 +123,37 @@ function qtyNumber(raw: string): number {
   return match ? Number(match[1]) : 1;
 }
 
+/** Count 4M / 5M / 6M tents from tentType strings like "5M Bell Tent" or "1×6M + 1×4M". */
+export function tentSizeCounts(tentType: string): Pick<Record<FleetKey, number>, 'tents4' | 'tents5' | 'tents6'> {
+  const counts = { tents4: 0, tents5: 0, tents6: 0 };
+  const multi = [...String(tentType).matchAll(/(\d+)\s*[×x]\s*(\d)\s*M/gi)];
+  if (multi.length) {
+    for (const match of multi) {
+      const qty = Number(match[1]) || 0;
+      const size = match[2];
+      if (size === '4') counts.tents4 += qty;
+      else if (size === '5') counts.tents5 += qty;
+      else if (size === '6') counts.tents6 += qty;
+    }
+    return counts;
+  }
+  const single = String(tentType).match(/(\d)\s*M/i);
+  if (single) {
+    const size = single[1];
+    if (size === '4') counts.tents4 = 1;
+    else if (size === '5') counts.tents5 = 1;
+    else if (size === '6') counts.tents6 = 1;
+  }
+  return counts;
+}
+
 /** Physical kit units this booking needs while on site. */
 export function bookingFleetDemand(booking: BookingRecord): Record<FleetKey, number> {
-  const demand: Record<FleetKey, number> = {
-    tents: 0,
-    mattresses: 0,
-    linen: 0,
-    pillows: 0,
-    kitchens: 0,
-    woodburners: 0,
-    lounges: 0,
-    awnings: 0,
-    starlinks: 0,
-    chairs: 0,
-    firekits: 0,
-    beachkits: 0,
-  };
-
-  const tentCountMatch = booking.tentType.match(/^(\d+)\s*[×x]/i);
-  demand.tents = tentCountMatch ? Number(tentCountMatch[1]) : 1;
+  const demand = emptyDemand();
+  const tents = tentSizeCounts(booking.tentType);
+  demand.tents4 = tents.tents4;
+  demand.tents5 = tents.tents5;
+  demand.tents6 = tents.tents6;
 
   const manifest = buildKitManifest(booking);
   for (const group of manifest.groups) {
@@ -160,7 +200,9 @@ export function bookingStayChip(booking: BookingRecord, color: string): Calendar
     if (!n) continue;
     kitUnits += n;
     icons.push(FLEET_META[key].icon);
-    if (key === 'tents') bits.push(n > 1 ? `${n} tents` : shortTent(booking.tentType));
+    if (key === 'tents4') bits.push(n > 1 ? `${n}×4M` : '4M');
+    else if (key === 'tents5') bits.push(n > 1 ? `${n}×5M` : '5M');
+    else if (key === 'tents6') bits.push(n > 1 ? `${n}×6M` : '6M');
     else if (key === 'mattresses') bits.push(n > 1 ? `${n} beds` : 'beds');
     else if (key === 'kitchens') bits.push('kitchen');
     else if (key === 'woodburners') bits.push('burner');
@@ -232,70 +274,44 @@ export function buildOpsCalendar(bookings: BookingRecord[], year: number, month:
   });
 
   const demandByDay = new Map<string, Record<FleetKey, number>>();
-  const unitNights: Record<FleetKey, number> = {
-    tents: 0,
-    mattresses: 0,
-    linen: 0,
-    pillows: 0,
-    kitchens: 0,
-    woodburners: 0,
-    lounges: 0,
-    awnings: 0,
-    starlinks: 0,
-    chairs: 0,
-    firekits: 0,
-    beachkits: 0,
-  };
-  const bookingHits: Record<FleetKey, number> = { ...unitNights };
+  const unitNights = emptyDemand();
+  const bookingHits = emptyDemand();
 
   for (const booking of bookings) {
     const demand = bookingFleetDemand(booking);
     const nights = nightsBetween(booking.checkinDate, booking.checkoutDate);
-    for (const key of Object.keys(demand) as FleetKey[]) {
+    for (const key of FLEET_ORDER) {
       if (demand[key] > 0) bookingHits[key] += 1;
       unitNights[key] += demand[key] * nights.length;
     }
     for (const iso of nights) {
-      const dayDemand = demandByDay.get(iso) || {
-        tents: 0,
-        mattresses: 0,
-        linen: 0,
-        pillows: 0,
-        kitchens: 0,
-        woodburners: 0,
-        lounges: 0,
-        awnings: 0,
-        starlinks: 0,
-        chairs: 0,
-        firekits: 0,
-        beachkits: 0,
-      };
-      for (const key of Object.keys(demand) as FleetKey[]) {
+      const dayDemand = demandByDay.get(iso) || emptyDemand();
+      for (const key of FLEET_ORDER) {
         dayDemand[key] += demand[key];
       }
       demandByDay.set(iso, dayDemand);
     }
   }
 
-  const peaks: Record<FleetKey, number> = { ...unitNights };
-  for (const key of Object.keys(peaks) as FleetKey[]) peaks[key] = 0;
+  const peaks = emptyDemand();
   for (const dayDemand of demandByDay.values()) {
-    for (const key of Object.keys(dayDemand) as FleetKey[]) {
+    for (const key of FLEET_ORDER) {
       peaks[key] = Math.max(peaks[key], dayDemand[key] || 0);
     }
   }
 
-  const metrics: FleetMetric[] = (Object.keys(FLEET_META) as FleetKey[])
-    .map((key) => ({
-      key,
-      label: FLEET_META[key].label,
-      icon: FLEET_META[key].icon,
-      peak: peaks[key],
-      unitNights: unitNights[key],
-      bookings: bookingHits[key],
-    }))
-    .filter((metric) => metric.peak > 0 || metric.bookings > 0)
-    .sort((a, b) => b.peak - a.peak || b.unitNights - a.unitNights);
+  const metrics: FleetMetric[] = FLEET_ORDER.map((key) => ({
+    key,
+    label: FLEET_META[key].label,
+    icon: FLEET_META[key].icon,
+    peak: peaks[key],
+    unitNights: unitNights[key],
+    bookings: bookingHits[key],
+    core: Boolean(FLEET_META[key].core),
+  })).filter((metric) => metric.core || metric.peak > 0 || metric.bookings > 0);
+
+  const tentMetrics = metrics.filter((metric) => metric.core);
+  const addonMetrics = metrics.filter((metric) => !metric.core);
 
   const days: CalendarDay[] = [];
   const gridStart = new Date(year, month - 1, 1 - startPad);
@@ -327,6 +343,8 @@ export function buildOpsCalendar(bookings: BookingRecord[], year: number, month:
     next: monthKey(nextDate.getFullYear(), nextDate.getMonth() + 1),
     days,
     metrics,
+    tentMetrics,
+    addonMetrics,
     stayCount: active.length,
   };
 }
