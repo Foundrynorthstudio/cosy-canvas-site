@@ -1,0 +1,55 @@
+---
+import StudioLayout from '../../layouts/StudioLayout.astro';
+import StudioNav from '../../components/StudioNav.astro';
+import { parseStudioSession, STUDIO_COOKIE } from '../../lib/journal-auth';
+
+const session = parseStudioSession(Astro.cookies.get(STUDIO_COOKIE)?.value);
+if (!session) {
+  return Astro.redirect('/studio/login');
+}
+
+const error = Astro.url.searchParams.get('error');
+const ok = Astro.url.searchParams.get('ok');
+---
+
+<StudioLayout title="Account · Cosy Studio">
+  <StudioNav active="home" />
+  <main class="max-w-lg mx-auto px-4 py-10 space-y-6">
+    <div>
+      <p class="text-[#F7BA1E] font-mono text-[10px] uppercase tracking-widest font-bold mb-2">Account</p>
+      <h1 class="font-display text-3xl font-black">Your login</h1>
+      <p class="text-stone-400 text-sm mt-2">
+        Signed in as <span class="text-white font-bold">{session.name}</span>
+        {session.email ? <span class="text-stone-500"> · {session.email}</span> : <span class="text-stone-500"> · break-glass</span>}
+      </p>
+    </div>
+
+    {session.email ? (
+      <form method="POST" action="/api/studio/account-password" class="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
+        <h2 class="font-display font-black text-lg">Change password</h2>
+        <p class="text-stone-500 text-xs leading-relaxed">
+          Use a strong unique password (12+ characters). Generate one with <code class="text-stone-300">openssl rand -base64 24</code>.
+        </p>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2" for="password">New password</label>
+          <input id="password" name="password" type="password" required minlength="12" autocomplete="new-password" class="w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2" for="confirm">Confirm</label>
+          <input id="confirm" name="confirm" type="password" required minlength="12" autocomplete="new-password" class="w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3 text-sm" />
+        </div>
+        {ok === '1' && <p class="text-emerald-400 text-xs">Password updated.</p>}
+        {error === 'short' && <p class="text-red-400 text-xs">Use at least 12 characters.</p>}
+        {error === 'mismatch' && <p class="text-red-400 text-xs">Passwords do not match.</p>}
+        {error === 'missing' && <p class="text-red-400 text-xs">Account not found — contact Jeremie.</p>}
+        <button type="submit" class="rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider px-6 py-3">
+          Save password
+        </button>
+      </form>
+    ) : (
+      <div class="rounded-3xl border border-amber-500/30 bg-amber-500/10 p-6 text-sm text-amber-100">
+        You are on the break-glass master login. Sign out and sign in with your cofounder email to set a personal password.
+      </div>
+    )}
+  </main>
+</StudioLayout>

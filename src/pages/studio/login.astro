@@ -7,45 +7,63 @@ const nextPath = Astro.url.searchParams.get('next') || '/studio/bookings';
 const configured = studioPasswordConfigured();
 ---
 
-<StudioLayout title="Journal Studio · Sign in">
+<StudioLayout title="Cosy Studio · Sign in">
   <div class="min-h-screen flex items-center justify-center px-4 py-16">
     <div class="w-full max-w-md">
       <div class="mb-8 text-center">
         <p class="text-[#F7BA1E] font-mono text-xs uppercase tracking-[0.25em] mb-3">The Cosy Canvas Co.</p>
         <h1 class="font-display text-3xl font-black">Studio</h1>
-        <p class="text-stone-400 text-sm mt-2">Sign in to manage bookings and the journal.</p>
+        <p class="text-stone-400 text-sm mt-2">Sign in with your cofounder email to manage bookings, journal, and emails.</p>
       </div>
-      <form method="POST" action="/api/studio/login" class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur">
+      <form method="POST" action="/api/studio/login" class="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur space-y-4">
         <input type="hidden" name="next" value={nextPath} />
-        <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2" for="password">
-          Publisher password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          autocomplete="current-password"
-          class="w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3.5 text-sm text-white focus:border-[#F7BA1E] focus:outline-none"
-        />
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2" for="email">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="username"
+            placeholder="you@cosycanvasco.com"
+            class="w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3.5 text-sm text-white focus:border-[#F7BA1E] focus:outline-none"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-stone-400 mb-2" for="password">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            class="w-full rounded-2xl bg-[#1a1a1a] border border-stone-700 px-4 py-3.5 text-sm text-white focus:border-[#F7BA1E] focus:outline-none"
+          />
+        </div>
         {
           error === 'invalid' && (
-            <p class="text-red-400 text-xs mt-3">That password does not match.</p>
+            <p class="text-red-400 text-xs">That email or password does not match.</p>
           )
         }
         {
           error === 'config' || !configured ? (
-            <p class="text-amber-400 text-xs mt-3">
+            <p class="text-amber-400 text-xs">
               Set JOURNAL_ADMIN_PASSWORD and JOURNAL_SESSION_SECRET in your environment before signing in.
             </p>
           ) : null
         }
         <button
           type="submit"
-          class="mt-6 w-full rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 hover:bg-[#D4A51E]"
+          class="w-full rounded-full bg-[#F7BA1E] text-[#111111] font-display font-extrabold text-xs uppercase tracking-wider py-3.5 hover:bg-[#D4A51E]"
         >
           Enter studio
         </button>
+        <p class="text-stone-500 text-[11px] leading-relaxed">
+          Leave email blank and use the break-glass master password only in an emergency.
+        </p>
       </form>
       <p class="text-center text-stone-500 text-xs mt-6">
         <a href="/journal" class="hover:text-[#F7BA1E]">Back to the journal</a>
