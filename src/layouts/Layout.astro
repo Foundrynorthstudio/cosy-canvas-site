@@ -214,9 +214,9 @@ const breadcrumbSchema = {
     <!-- Navigation Header -->
     <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-20">
-          <a href="/" class="flex items-center" aria-label="The Cosy Canvas Co. Homepage">
-            <img src="/TCCC Horizontal Logo.png" alt="The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland" class="h-10 md:h-12 w-auto object-contain" onerror="this.src='https://placehold.co/200x60/FAF7EE/7D6E23?text=The+Cosy+Canvas+Co.'">
+        <div class="flex items-center justify-between h-20 gap-3">
+          <a href="/" class="flex items-center min-w-0 shrink" aria-label="The Cosy Canvas Co. Homepage">
+            <img src="/TCCC Horizontal Logo.png" alt="The Cosy Canvas Co. - Luxury Bell Tent Hire Scotland" class="h-9 sm:h-10 md:h-12 w-auto max-w-[42vw] object-contain" onerror="this.src='https://placehold.co/200x60/FAF7EE/7D6E23?text=The+Cosy+Canvas+Co.'">
           </a>
           <nav class="hidden lg:flex items-center space-x-7 text-sm font-medium text-stone-700" aria-label="Main Navigation">
             <a href="/camping-hire" class="hover:text-[#7D6E23] transition-colors">Camping Hire</a>
@@ -242,12 +242,73 @@ const breadcrumbSchema = {
             <a href="/faqs" class="hover:text-[#7D6E23] transition-colors">FAQs</a>
             <a href="/about" class="hover:text-[#7D6E23] transition-colors">About Us</a>
           </nav>
-          <a href="/booking" class="bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-bold text-xs uppercase tracking-wider py-2.5 px-6 rounded-full shadow-md transition-all flex items-center gap-2">
-            <img src="/favicon.svg" alt="" width="18" height="18" class="h-[18px] w-[18px] rounded-[4px] shrink-0" /> Book Now
-          </a>
+          <div class="flex items-center gap-2 shrink-0">
+            <a href="/booking" class="bg-[#F7BA1E] hover:bg-[#D4A51E] text-[#111111] font-display font-bold text-[10px] sm:text-xs uppercase tracking-wider py-2.5 px-3.5 sm:px-6 rounded-full shadow-md transition-all flex items-center gap-1.5 sm:gap-2">
+              <img src="/favicon.svg" alt="" width="18" height="18" class="h-[16px] w-[16px] sm:h-[18px] sm:w-[18px] rounded-[4px] shrink-0" /> Book Now
+            </a>
+            <button
+              type="button"
+              id="mobile-nav-toggle"
+              class="lg:hidden w-11 h-11 rounded-full border border-stone-200 bg-white text-[#111111] flex items-center justify-center hover:border-[#F7BA1E] transition"
+              aria-controls="mobile-nav"
+              aria-expanded="false"
+              aria-label="Open site menu"
+            >
+              <i class="fa-solid fa-bars text-base" data-icon="open"></i>
+              <i class="fa-solid fa-xmark text-base hidden" data-icon="close"></i>
+            </button>
+          </div>
         </div>
       </div>
+
+      <div id="mobile-nav" class="lg:hidden hidden border-t border-stone-200 bg-white max-h-[min(70dvh,calc(100dvh-5rem))] overflow-y-auto overscroll-contain">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col text-sm font-medium text-stone-800" aria-label="Mobile Navigation">
+          <a href="/camping-hire" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Camping Hire</a>
+          <a href="/campsites" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Cosy Campsites</a>
+          <a href="/parties" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Parties &amp; Sleepovers</a>
+          <a href="/events" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Events &amp; Weddings</a>
+          <a href="/events/rat-race" class="py-3 pl-4 border-b border-stone-100 text-stone-600 hover:text-[#7D6E23]">
+            <span class="block font-semibold text-stone-800">Rat Race Coast to Coast</span>
+            <span class="block text-[11px] text-stone-500">Sat 11 Sep 2027 · Cosy or Deluxe</span>
+          </a>
+          <a href="/events/loch-fyne-musical-festival" class="py-3 pl-4 border-b border-stone-100 text-stone-600 hover:text-[#7D6E23]">Loch Fyne Musical Festival</a>
+          <a href="/journal" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Journal</a>
+          <a href="/gear" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">Gear we use</a>
+          <a href="/faqs" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">FAQs</a>
+          <a href="/about" class="py-3.5 border-b border-stone-100 hover:text-[#7D6E23]">About Us</a>
+          <a href="/booking" class="mt-3 mb-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3.5">
+            <i class="fa-solid fa-campground text-[11px]"></i> Begin your booking
+          </a>
+        </nav>
+      </div>
     </header>
+
+    <script is:inline>
+      (function () {
+        const toggle = document.getElementById('mobile-nav-toggle');
+        const panel = document.getElementById('mobile-nav');
+        if (!toggle || !panel) return;
+        const openIcon = toggle.querySelector('[data-icon="open"]');
+        const closeIcon = toggle.querySelector('[data-icon="close"]');
+        function setOpen(open) {
+          panel.classList.toggle('hidden', !open);
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          toggle.setAttribute('aria-label', open ? 'Close site menu' : 'Open site menu');
+          openIcon?.classList.toggle('hidden', open);
+          closeIcon?.classList.toggle('hidden', !open);
+          document.body.classList.toggle('overflow-hidden', open);
+        }
+        toggle.addEventListener('click', () => {
+          setOpen(panel.classList.contains('hidden'));
+        });
+        panel.querySelectorAll('a').forEach((link) => {
+          link.addEventListener('click', () => setOpen(false));
+        });
+        window.addEventListener('resize', () => {
+          if (window.matchMedia('(min-width: 1024px)').matches) setOpen(false);
+        });
+      })();
+    </script>
 
     <!-- Dynamic Content Slot -->
     <main class="flex-grow">
