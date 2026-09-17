@@ -475,6 +475,26 @@ const mailSettings = await getMailSettings();
         <p id="kit-ops-status" class="text-xs text-stone-500"></p>
       </form>
     </section>
+
+    <section class="studio-panel rounded-3xl p-6 mt-6 border border-red-200/80">
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div>
+          <p class="text-red-700 font-mono text-[11px] uppercase tracking-[0.2em]">Danger zone</p>
+          <h2 class="font-display text-xl font-black text-[#111111] mt-1">Delete booking</h2>
+          <p class="text-sm text-stone-500 mt-1 max-w-xl">
+            Permanently removes {booking.bookingRef} from Studio. Stripe charges are not refunded or cancelled — handle that in Stripe if needed.
+          </p>
+        </div>
+        <button
+          type="button"
+          id="delete-booking"
+          class="rounded-full border border-red-300 bg-red-50 text-red-800 font-display font-extrabold text-xs uppercase tracking-wider px-5 py-3 hover:bg-red-100 shrink-0"
+        >
+          Delete booking
+        </button>
+      </div>
+      <p id="delete-status" class="text-xs text-stone-500 mt-3"></p>
+    </section>
   </div>
 </StudioLayout>
 
@@ -740,6 +760,25 @@ const mailSettings = await getMailSettings();
       return;
     }
     if (status) status.textContent = `Sent. Charge £${Number(json.charge).toFixed(2)} (basket + 10%, cap £15).`;
+  });
+
+  document.getElementById('delete-booking')?.addEventListener('click', async () => {
+    const status = document.getElementById('delete-status');
+    if (
+      !confirm(
+        `Delete booking ${ref} permanently? This cannot be undone. Stripe charges are not refunded automatically.`,
+      )
+    ) {
+      return;
+    }
+    if (status) status.textContent = 'Deleting…';
+    const res = await fetch(`/api/studio/bookings/${ref}`, { method: 'DELETE' });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      if (status) status.textContent = json.error || 'Delete failed';
+      return;
+    }
+    window.location.href = '/studio/bookings';
   });
 
   syncFailUi();

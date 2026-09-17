@@ -281,7 +281,7 @@ const profileJson = JSON.stringify(guest.profile);
           <label class="text-xs text-stone-500">Message / notes<textarea data-field="body" rows="4" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm">${escapeText(item.body)}</textarea></label>
           <div class="grid sm:grid-cols-2 gap-3">
             <label class="text-xs text-stone-500">Date<input data-field="sentAt" type="date" value="${escapeAttr((item.sentAt || '').slice(0, 10))}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" /></label>
-            <label class="text-xs text-stone-500">Related booking<input data-field="relatedBookingRef" value="${escapeAttr(item.relatedBookingRef)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="CC-DEMO01" /></label>
+            <label class="text-xs text-stone-500">Related booking<input data-field="relatedBookingRef" value="${escapeAttr(item.relatedBookingRef)}" class="mt-1 w-full rounded-xl bg-white border border-stone-200 px-3 py-2 text-sm" placeholder="CC-XXXXX" /></label>
           </div>
           <div class="flex items-center justify-between gap-3">
             <p class="text-[10px] text-stone-400">${escapeAttr(item.createdBy || 'Studio')}</p>

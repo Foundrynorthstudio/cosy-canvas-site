@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import type { BookingRecord } from '../../../../lib/booking';
-import { updateBooking } from '../../../../lib/booking-store';
+import { deleteBooking, updateBooking } from '../../../../lib/booking-store';
 
 export const PUT: APIRoute = async ({ params, request }) => {
   const ref = params.ref;
@@ -43,4 +43,15 @@ export const PUT: APIRoute = async ({ params, request }) => {
   const booking = await updateBooking(ref, patch);
   if (!booking) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
   return new Response(JSON.stringify({ booking }), { headers: { 'Content-Type': 'application/json' } });
+};
+
+export const DELETE: APIRoute = async ({ params }) => {
+  const ref = params.ref;
+  if (!ref) return new Response(JSON.stringify({ error: 'Missing ref' }), { status: 400 });
+
+  const deleted = await deleteBooking(ref);
+  if (!deleted) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
+  return new Response(JSON.stringify({ ok: true, bookingRef: ref }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 };

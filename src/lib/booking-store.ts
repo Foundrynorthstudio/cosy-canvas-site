@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { DEMO_BOOKINGS } from './booking-demo';
 import type { BookingRecord } from './booking';
 
 const BLOB_STORE = 'cosy-bookings';
@@ -18,6 +17,11 @@ function sortBookings(bookings: BookingRecord[]): BookingRecord[] {
   return [...bookings].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
+}
+
+/** Legacy walkthrough bookings — no longer seeded; purged from the store when found. */
+export function isDemoBookingRef(ref: string): boolean {
+  return /^CC-DEMO\d+/i.test(ref.trim());
 }
 
 async function readLocalFile(): Promise<BookingRecord[] | null> {
@@ -60,31 +64,26 @@ async function writeBlobs(bookings: BookingRecord[]): Promise<boolean> {
   }
 }
 
-function withMissingDemos(existing: BookingRecord[]): { bookings: BookingRecord[]; added: boolean } {
-  const refs = new Set(existing.map((booking) => booking.bookingRef));
-  const missing = DEMO_BOOKINGS.filter((demo) => !refs.has(demo.bookingRef));
-  if (missing.length === 0) return { bookings: existing, added: false };
-  return { bookings: [...existing, ...structuredClone(missing)], added: true };
-}
-
 async function loadBookings(): Promise<BookingRecord[]> {
   let loaded: BookingRecord[] = [];
   try {
     const fromBlobs = await readBlobs();
-    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
+    if (fromBlobs) loaded = fromBlobs;
     else {
       const fromDisk = await readLocalFile();
-      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
+      if (fromDisk) loaded = fromDisk;
     }
   } catch (error) {
     console.error('Booking store read failed.', error);
   }
 
-  const next = withMissingDemos(loaded);
-  if (next.added || loaded.length === 0) {
-    await persist(next.bookings);
+  const withoutDemos = loaded.filter((booking) => !isDemoBookingRef(booking.bookingRef));
+  if (withoutDemos.length !== loaded.length) {
+    await persist(withoutDemos);
+    return sortBookings(withoutDemos);
   }
-  return sortBookings(next.bookings);
+
+  return sortBookings(loaded);
 }
 
 async function persist(bookings: BookingRecord[]): Promise<void> {
@@ -155,5 +154,15 @@ export async function updateBooking(
     };
     await persist(bookings);
     return bookings[index];
+  });
+}
+
+export async function deleteBooking(ref: string): Promise<boolean> {
+  return enqueueWrite(async () => {
+    const bookings = await loadBookings();
+    const next = bookings.filter((booking) => booking.bookingRef !== ref);
+    if (next.length === bookings.length) return false;
+    await persist(next);
+    return true;
   });
 }
