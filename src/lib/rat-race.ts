@@ -1,18 +1,16 @@
-import {
-  brawBreadLines,
-  brawBreadTotal,
-  emptyBrawBreadOrder,
-  parseBrawBreadOrder,
-  type BrawBreadOrder,
-} from './braw-bread';
+import type { BookingRecord } from './booking';
+import { deriveBookingStatus } from './booking';
 
 export const RAT_RACE_EVENT_URL = 'https://www.ratrace.com/events/scotland-coast-to-coast/';
 
-/** Flip to true once Rat Race organisers approve paid canvas bookings. */
+/** Flip to true once Rat Race organisers (Dave) approve paid canvas bookings. */
 export const RAT_RACE_PAYMENTS_ENABLED = false;
 
 export const RAT_RACE_PAYMENTS_PAUSED_MESSAGE =
   'Paid Rat Race bookings are paused until we have organiser approval. You can still preview packages and pricing on this page.';
+
+export const RAT_RACE_CAMPING_PASS_NOTE =
+  'All participants need to buy a camping pass via the Rat Race website. Your tent booking with us does not include the camping pass.';
 
 export const RAT_RACE_2027 = {
   slug: 'rat-race-c2c-2027',
@@ -40,108 +38,249 @@ export const RAT_RACE_2027 = {
   organiserCommissionRate: 0.1,
 } as const;
 
-export type RatRacePackage = 'cosy' | 'deluxe';
+export const RAT_RACE_TENT_CAP = 20;
+export const RAT_RACE_GROUP_CAP = 3;
+export const SECURITY_PER_TENT = 200;
 
-export const COSY_RATE_PER_GUEST = 50;
-export const DELUXE_ADDON_PER_GUEST = 35;
+export type RatRaceTentKind = 'cosy' | 'deluxe' | 'group';
 
-export const RAT_RACE_PACKAGE_META: Record<
-  RatRacePackage,
+export interface RatRaceTentLineInput {
+  kind: RatRaceTentKind;
+  guests: number;
+}
+
+export const RAT_RACE_TENT_META: Record<
+  RatRaceTentKind,
   {
     label: string;
-    capacity6: number;
-    capacity4: number;
-    capacity: number;
+    sizeLabel: string;
+    sizeMetres: 5 | 6;
     minGuests: number;
-    guestStep: number;
-    ratePerGuest: number;
-    addonPerGuest: number;
+    maxGuests: number;
+    basePrice: number;
+    baseGuests: number;
+    extraGuestPrice: number;
+    limited?: boolean;
     summary: string;
+    beddingTier: string;
   }
 > = {
   cosy: {
     label: 'Cosy',
-    capacity6: 10,
-    capacity4: 4,
-    capacity: 10,
-    minGuests: 2,
-    guestStep: 1,
-    ratePerGuest: COSY_RATE_PER_GUEST,
-    addonPerGuest: 0,
+    sizeLabel: '5M',
+    sizeMetres: 5,
+    minGuests: 1,
+    maxGuests: 5,
+    basePrice: 245,
+    baseGuests: 3,
+    extraGuestPrice: 40,
     summary:
-      'Memory-foam camping mattress, sleeping bag, pillow, night stand and one chair.',
+      'Raised air bed (air mattress on an air frame), sleeping bag, pillow, night stand and chair per guest.',
+    beddingTier: 'Raised air bed, sleeping bag, pillow, night stand, chair',
   },
   deluxe: {
     label: 'Deluxe',
-    capacity6: 6,
-    capacity4: 2,
-    capacity: 6,
+    sizeLabel: '5M',
+    sizeMetres: 5,
     minGuests: 2,
-    guestStep: 1,
-    ratePerGuest: COSY_RATE_PER_GUEST + DELUXE_ADDON_PER_GUEST,
-    addonPerGuest: DELUXE_ADDON_PER_GUEST,
+    maxGuests: 3,
+    basePrice: 320,
+    baseGuests: 2,
+    extraGuestPrice: 60,
     summary:
-      `Cosy sleep kit on airframes, plus an indoor lounge and kitchen: seating, table, and a place to sit out typical Scottish weather. No gas hob. £${DELUXE_ADDON_PER_GUEST} on top of Cosy.`,
+      'Proper single bed per guest with mattress topper, duvet, pillows and fresh linen, plus bedside tables, rug and lighting.',
+    beddingTier: 'Proper single bed, mattress topper, duvet, pillows, linen',
+  },
+  group: {
+    label: 'Group tent',
+    sizeLabel: '6M',
+    sizeMetres: 6,
+    minGuests: 1,
+    maxGuests: 6,
+    basePrice: 395,
+    baseGuests: 6,
+    extraGuestPrice: 0,
+    limited: true,
+    summary: '6M Cosy set-up for up to 6 guests. Limited availability (max 3).',
+    beddingTier: 'Raised air bed Cosy set-up (Group tent)',
   },
 };
 
-export interface RatRaceVillagePack {
-  tents6: number;
-  tents4: number;
+export function isRatRaceTentKind(value: unknown): value is RatRaceTentKind {
+  return value === 'cosy' || value === 'deluxe' || value === 'group';
+}
+
+/** Accepts current kinds plus legacy package aliases. */
+export function isRatRacePackage(value: unknown): boolean {
+  return isRatRaceTentKind(value) || value === 'budget' || value === 'medium';
+}
+
+export function normaliseRatRaceTentKind(value: unknown): RatRaceTentKind {
+  if (value === 'deluxe' || value === 'medium') return 'deluxe';
+  if (value === 'group') return 'group';
+  return 'cosy';
+}
+
+export function clampTentGuests(kind: RatRaceTentKind, guests: number): number {
+  const meta = RAT_RACE_TENT_META[kind];
+  const n = Math.round(Number(guests) || meta.minGuests);
+  return Math.min(meta.maxGuests, Math.max(meta.minGuests, n));
+}
+
+export function priceRatRaceTentLine(kind: RatRaceTentKind, guestsInput: number): {
+  kind: RatRaceTentKind;
+  guests: number;
+  price: number;
+  title: string;
+  sizeLabel: string;
+} {
+  const meta = RAT_RACE_TENT_META[kind];
+  const guests = clampTentGuests(kind, guestsInput);
+  const extras = Math.max(0, guests - meta.baseGuests);
+  const price = roundMoney(meta.basePrice + extras * meta.extraGuestPrice);
+  const sizeBit = `${meta.sizeLabel} ${meta.label}`;
+  const title = `${sizeBit} · ${guests} guest${guests === 1 ? '' : 's'} · £${price.toFixed(2)}`;
+  return { kind, guests, price, title, sizeLabel: meta.sizeLabel };
+}
+
+export function parseRatRaceTentLines(raw: unknown): RatRaceTentLineInput[] {
+  if (!Array.isArray(raw)) return [];
+  const lines: RatRaceTentLineInput[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const kind = normaliseRatRaceTentKind((item as { kind?: unknown }).kind);
+    const guests = clampTentGuests(kind, Number((item as { guests?: unknown }).guests));
+    lines.push({ kind, guests });
+  }
+  return lines;
+}
+
+export function tentMixLabel(lines: { kind: RatRaceTentKind; guests: number }[]): string {
+  const counts: Record<RatRaceTentKind, number> = { cosy: 0, deluxe: 0, group: 0 };
+  for (const line of lines) counts[line.kind] += 1;
+  const bits = (Object.keys(counts) as RatRaceTentKind[])
+    .filter((kind) => counts[kind] > 0)
+    .map((kind) => {
+      const meta = RAT_RACE_TENT_META[kind];
+      return `${counts[kind]} × ${meta.sizeLabel} ${meta.label}`;
+    });
+  return bits.join(' + ') || 'No tents';
+}
+
+export function countTentKinds(lines: RatRaceTentLineInput[]): {
   tents: number;
-  tentType: string;
-  leftoverAfterSix: number;
-  occupancy6: number[];
-  occupancy4: number[];
+  tents5: number;
+  tents6: number;
+  groupTents: number;
+} {
+  let tents5 = 0;
+  let tents6 = 0;
+  let groupTents = 0;
+  for (const line of lines) {
+    if (line.kind === 'group') {
+      tents6 += 1;
+      groupTents += 1;
+    } else {
+      tents5 += 1;
+    }
+  }
+  return { tents: lines.length, tents5, tents6, groupTents };
 }
 
-function distributeOccupancy(tents: number, people: number, cap: number): number[] {
-  if (tents <= 0) return [];
-  const fills: number[] = [];
-  let left = people;
-  for (let i = 0; i < tents; i += 1) {
-    const fill = Math.min(cap, Math.max(0, Math.ceil(left / (tents - i))));
-    fills.push(fill);
-    left -= fill;
+/** Parse tent counts from stored tentType strings. */
+export function parseRatRaceTentTypeCounts(tentType: string): {
+  tents: number;
+  tents5: number;
+  tents6: number;
+  groupTents: number;
+} {
+  const multi = [...String(tentType).matchAll(/(\d+)\s*[×x]\s*(\d)\s*M\s*(Cosy|Deluxe|Group[^·+]*)?/gi)];
+  if (multi.length) {
+    let tents5 = 0;
+    let tents6 = 0;
+    let groupTents = 0;
+    for (const match of multi) {
+      const qty = Number(match[1]) || 0;
+      const size = match[2];
+      const label = (match[3] || '').toLowerCase();
+      if (size === '6' || label.includes('group')) {
+        tents6 += qty;
+        groupTents += qty;
+      } else {
+        tents5 += qty;
+      }
+    }
+    return { tents: tents5 + tents6, tents5, tents6, groupTents };
   }
-  return fills;
+  const single = String(tentType).match(/(\d)\s*M/i);
+  if (single) {
+    const size = single[1];
+    if (size === '6' || /group/i.test(tentType)) {
+      return { tents: 1, tents5: 0, tents6: 1, groupTents: 1 };
+    }
+    return { tents: 1, tents5: 1, tents6: 0, groupTents: 0 };
+  }
+  return { tents: 0, tents5: 0, tents6: 0, groupTents: 0 };
 }
 
-export function packRatRaceVillage(guests: number, packageKind: RatRacePackage): RatRaceVillagePack {
-  const meta = RAT_RACE_PACKAGE_META[packageKind];
-  const headcount = Math.max(1, Math.round(guests));
-  let tents6 = Math.floor(headcount / meta.capacity6);
-  const leftoverAfterSix = headcount % meta.capacity6;
-  let tents4 = 0;
-  if (packageKind === 'deluxe') {
-    if (leftoverAfterSix === meta.capacity4) tents4 = 1;
-    else if (leftoverAfterSix > 0) tents6 += 1;
-  } else if (leftoverAfterSix > 0 && leftoverAfterSix <= meta.capacity4) {
-    tents4 = 1;
-  } else if (leftoverAfterSix > 0) {
-    tents6 += 1;
+export function isActiveRatRaceBooking(booking: BookingRecord): boolean {
+  if (!isRatRaceBooking(booking)) return false;
+  const status = deriveBookingStatus(booking);
+  return status !== 'cancelled' && status !== 'refunded';
+}
+
+export function ratRaceInventoryFromBookings(bookings: BookingRecord[]): {
+  bookedTents: number;
+  bookedGroup: number;
+  remainingTents: number;
+  remainingGroup: number;
+  soldOut: boolean;
+  groupSoldOut: boolean;
+} {
+  let bookedTents = 0;
+  let bookedGroup = 0;
+  for (const booking of bookings) {
+    if (!isActiveRatRaceBooking(booking)) continue;
+    const counts = parseRatRaceTentTypeCounts(booking.tentType);
+    bookedTents += counts.tents;
+    bookedGroup += counts.groupTents;
   }
-  if (tents6 + tents4 === 0) tents4 = 1;
-  const occupancy4 = distributeOccupancy(tents4, Math.min(headcount, tents4 * meta.capacity4), meta.capacity4);
-  const sixPeople = headcount - occupancy4.reduce((sum, n) => sum + n, 0);
-  const occupancy6 = distributeOccupancy(tents6, sixPeople, meta.capacity6);
-  const tents = tents6 + tents4;
-  const bits = [
-    tents6 ? `${tents6} × 6M` : '',
-    tents4 ? `${tents4} × 4M` : '',
-  ].filter(Boolean);
+  const remainingTents = Math.max(0, RAT_RACE_TENT_CAP - bookedTents);
+  const remainingGroup = Math.max(0, RAT_RACE_GROUP_CAP - bookedGroup);
   return {
-    tents6,
-    tents4,
-    tents,
-    leftoverAfterSix,
-    occupancy6,
-    occupancy4,
-    tentType: `${bits.join(' + ')} ${meta.label}`,
+    bookedTents,
+    bookedGroup,
+    remainingTents,
+    remainingGroup,
+    soldOut: remainingTents <= 0,
+    groupSoldOut: remainingGroup <= 0,
   };
 }
 
-export const SECURITY_PER_TENT = 200;
+export function inventoryAllowsLines(
+  inventory: ReturnType<typeof ratRaceInventoryFromBookings>,
+  lines: RatRaceTentLineInput[],
+): { ok: boolean; error?: string } {
+  const counts = countTentKinds(lines);
+  if (counts.tents < 1) return { ok: false, error: 'Add at least one tent to continue.' };
+  if (counts.tents > inventory.remainingTents) {
+    return {
+      ok: false,
+      error: inventory.soldOut
+        ? 'Sold out — all 20 tents are booked.'
+        : `Only ${inventory.remainingTents} tent${inventory.remainingTents === 1 ? '' : 's'} left across Cosy, Deluxe and Group.`,
+    };
+  }
+  if (counts.groupTents > inventory.remainingGroup) {
+    return {
+      ok: false,
+      error: inventory.groupSoldOut
+        ? 'Group tents are sold out (max 3).'
+        : `Only ${inventory.remainingGroup} Group tent${inventory.remainingGroup === 1 ? '' : 's'} left.`,
+    };
+  }
+  return { ok: true };
+}
 
 export function ratRaceSecurityCheckinNote(tents: number, amount: number): string {
   const mix =
@@ -155,118 +294,28 @@ export function isRatRaceBooking(booking: { eventSlug?: string }): boolean {
   return booking.eventSlug === RAT_RACE_2027.slug;
 }
 
-/** Sample confirmation payload for organiser / sales previews (no Stripe). */
-export function buildRatRacePreviewBooking(options?: {
-  guests?: number;
-  packageKind?: RatRacePackage;
-  concierge?: boolean;
-  paymentPlan?: 'deposit' | 'instalment';
-}): {
-  bookingRef: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  customerAddress: string;
-  campsiteLocation: string;
-  specialRequests: string;
-  checkinDate: string;
-  checkoutDate: string;
-  nights: number;
-  guests: number;
-  tentType: string;
-  beddingTier: string;
-  beddingPrice: number;
-  addons: { title: string; price: number }[];
-  fulfillment: string;
-  fulfillmentPrice: number;
-  totalRentalPrice: number;
-  depositPercent: number;
-  depositAmount: number;
-  securityDeposit: number;
-  totalPaidToday: number;
-  remainingBalance: number;
-  balanceDueDate: string;
-  paymentPlan: 'deposit' | 'instalment';
-  instalmentMonthly?: number;
-  instalmentCount?: number;
-  eventSlug: string;
-} {
-  const packageKind = options?.packageKind === 'cosy' ? 'cosy' : 'deluxe';
-  const quote = pricedForPaymentPlan(
-    quoteRatRace({ guests: options?.guests ?? 5, packageKind }),
-    options?.paymentPlan === 'instalment' ? 'instalment' : 'deposit',
-  );
-  const notes = [
-    options?.concierge
-      ? 'Morrisons Fort William concierge requested. Send order-build instructions after canvas payment.'
-      : '',
-    'Preview confirmation — payments paused pending organiser approval.',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  return {
-    bookingRef: 'CC-PREVIEW',
-    customerName: 'Alex Campbell',
-    customerEmail: 'alex@example.com',
-    customerPhone: '+44 7700 900123',
-    customerAddress: '14 Highland Way, Edinburgh, EH1 2NG',
-    campsiteLocation: RAT_RACE_2027.locationLabel,
-    specialRequests: notes,
-    checkinDate: quote.checkinDate,
-    checkoutDate: quote.checkoutDate,
-    nights: quote.nights,
-    guests: quote.guests,
-    tentType: quote.tentType,
-    beddingTier: quote.beddingTier,
-    beddingPrice: quote.beddingPrice,
-    addons: quote.addons.filter((line) => line.price > 0),
-    fulfillment: quote.fulfillment,
-    fulfillmentPrice: quote.fulfillmentPrice,
-    totalRentalPrice: quote.totalRentalPrice,
-    depositPercent: quote.depositPercent,
-    depositAmount: quote.depositAmount,
-    securityDeposit: quote.securityDeposit,
-    totalPaidToday: quote.totalDueToday,
-    remainingBalance: quote.remainingBalance,
-    balanceDueDate: quote.balanceDueDate,
-    paymentPlan: quote.paymentPlan,
-    instalmentMonthly: quote.payMonthly.monthlyAmount,
-    instalmentCount: quote.payMonthly.monthlyCount,
-    eventSlug: RAT_RACE_2027.slug,
-  };
-}
-
-const MAX_GUESTS = 40;
-
 export interface RatRaceQuoteLine {
   title: string;
   price: number;
 }
 
 export interface RatRaceQuote {
+  tents: RatRaceTentLineInput[];
   guests: number;
   requestedGuests: number;
-  minGuests: number;
-  packageKind: RatRacePackage;
+  packageKind: RatRaceTentKind;
   packageLabel: string;
   nights: 1;
   checkinDate: string;
   checkoutDate: string;
   pitchFriday: string;
-  tents: number;
+  tentCount: number;
+  tents5: number;
   tents6: number;
-  tents4: number;
-  capacityPerTent: number;
-  capacity6: number;
-  capacity4: number;
-  ratePerGuest: number;
-  addonPerGuest: number;
+  groupTents: number;
   tentType: string;
   lines: RatRaceQuoteLine[];
   addons: RatRaceQuoteLine[];
-  brawBread: BrawBreadOrder;
-  brawBreadTotal: number;
   beddingTier: string;
   beddingPrice: number;
   fulfillment: string;
@@ -288,6 +337,9 @@ export interface RatRaceQuote {
   conciergeNote: string;
   payMonthly: RatRacePayMonthly;
   paymentPlan: 'deposit' | 'instalment';
+  inventory?: ReturnType<typeof ratRaceInventoryFromBookings>;
+  stockOk: boolean;
+  stockError?: string;
 }
 
 export interface RatRacePayMonthly {
@@ -392,80 +444,35 @@ export function pricedForPaymentPlan(
   };
 }
 
-export function normaliseRatRacePackage(value: unknown): RatRacePackage {
-  if (value === 'deluxe' || value === 'medium') return 'deluxe';
-  return 'cosy';
-}
-
-export function isRatRacePackage(value: unknown): value is RatRacePackage {
-  return value === 'cosy' || value === 'deluxe' || value === 'budget' || value === 'medium';
-}
-
-export function isValidDeluxeGuests(n: number): boolean {
-  const guests = Math.round(n);
-  if (guests < 2 || guests > MAX_GUESTS) return false;
-  if (guests === 3) return false;
-  if (guests % 6 === 1) return false;
-  return true;
-}
-
-export function billedRatRaceGuests(requested: number, packageKind: RatRacePackage): number {
-  const meta = RAT_RACE_PACKAGE_META[packageKind];
-  let n = Math.min(MAX_GUESTS, Math.max(meta.minGuests, Math.round(Number(requested) || meta.minGuests)));
-  if (packageKind === 'deluxe') {
-    while (n <= MAX_GUESTS && !isValidDeluxeGuests(n)) n += 1;
-    if (!isValidDeluxeGuests(n)) {
-      while (n >= meta.minGuests && !isValidDeluxeGuests(n)) n -= 1;
-    }
-  }
-  return n;
-}
-
-export function stepRatRaceGuests(current: number, delta: number, packageKind: RatRacePackage): number {
-  const dir = delta >= 0 ? 1 : -1;
-  let n = billedRatRaceGuests(current, packageKind) + dir;
-  while (n >= 2 && n <= MAX_GUESTS) {
-    if (packageKind !== 'deluxe' || isValidDeluxeGuests(n)) return n;
-    n += dir;
-  }
-  return billedRatRaceGuests(current, packageKind);
-}
-
 export function quoteRatRace(input: {
-  guests: number;
-  packageKind: unknown;
-  brawBread?: unknown;
+  tents?: unknown;
+  guests?: number;
+  packageKind?: unknown;
+  inventory?: ReturnType<typeof ratRaceInventoryFromBookings>;
 }): RatRaceQuote {
-  const packageKind = normaliseRatRacePackage(input.packageKind);
-  const meta = RAT_RACE_PACKAGE_META[packageKind];
-  const requestedGuests = Math.min(MAX_GUESTS, Math.max(1, Math.round(Number(input.guests) || 1)));
-  const guests = billedRatRaceGuests(requestedGuests, packageKind);
-  const pack = packRatRaceVillage(guests, packageKind);
-  const nights = RAT_RACE_2027.nights;
-  const cosySlice = roundMoney(guests * COSY_RATE_PER_GUEST * nights);
-  const addonSlice = roundMoney(guests * meta.addonPerGuest * nights);
-  const canvasPrice = roundMoney(cosySlice + addonSlice);
-  const brawBread = parseBrawBreadOrder(input.brawBread ?? emptyBrawBreadOrder());
-  const breadLines = brawBreadLines(brawBread);
-  const breadTotal = brawBreadTotal(brawBread);
-  const stayTotal = roundMoney(canvasPrice + breadTotal);
+  let lines = parseRatRaceTentLines(input.tents);
+  if (!lines.length) {
+    const kind = normaliseRatRaceTentKind(input.packageKind);
+    const guests = clampTentGuests(kind, Number(input.guests) || RAT_RACE_TENT_META[kind].minGuests);
+    lines = [{ kind, guests }];
+  }
+
+  const priced = lines.map((line) => priceRatRaceTentLine(line.kind, line.guests));
+  const normalised = priced.map((line) => ({ kind: line.kind, guests: line.guests }));
+  const counts = countTentKinds(normalised);
+  const guests = priced.reduce((sum, line) => sum + line.guests, 0);
+  const canvasPrice = roundMoney(priced.reduce((sum, line) => sum + line.price, 0));
+  const stayTotal = canvasPrice;
   const organiserCommissionAmount = roundMoney(canvasPrice * RAT_RACE_2027.organiserCommissionRate);
+  const primary = priced[0];
+  const packageKind = primary?.kind ?? 'cosy';
+  const meta = RAT_RACE_TENT_META[packageKind];
+  const tentType = tentMixLabel(normalised);
 
-  const addons: RatRaceQuoteLine[] = [
-    ...(packageKind === 'deluxe'
-      ? [{ title: `${guests} × Deluxe add-on @ £${DELUXE_ADDON_PER_GUEST} (airframes + indoor lounge and kitchen)`, price: addonSlice }]
-      : []),
-    ...breadLines,
-  ];
-
-  const lines: RatRaceQuoteLine[] = [
+  const quoteLines: RatRaceQuoteLine[] = [
+    ...priced.map((line) => ({ title: line.title, price: line.price })),
     {
-      title: `${guests} × Cosy · Saturday night @ £${COSY_RATE_PER_GUEST}`,
-      price: cosySlice,
-    },
-    ...addons,
-    {
-      title: `Village mix included (${pack.tentType} · pitch Friday, pack up Sunday)`,
+      title: `Village pitch Friday, Saturday night, pack up Sunday (${tentType})`,
       price: 0,
     },
   ];
@@ -485,35 +492,32 @@ export function quoteRatRace(input: {
     balanceDueDate = due.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  const securityDeposit = SECURITY_PER_TENT * pack.tents;
+  const securityDeposit = SECURITY_PER_TENT * counts.tents;
+  const inventory = input.inventory;
+  const stock = inventory
+    ? inventoryAllowsLines(inventory, normalised)
+    : { ok: true as const };
+
+  const beddingBits = [...new Set(priced.map((line) => RAT_RACE_TENT_META[line.kind].beddingTier))];
 
   return {
+    tents: normalised,
     guests,
-    requestedGuests,
-    minGuests: meta.minGuests,
+    requestedGuests: guests,
     packageKind,
     packageLabel: meta.label,
-    nights,
+    nights: RAT_RACE_2027.nights,
     checkinDate: RAT_RACE_2027.checkinDate,
     checkoutDate: RAT_RACE_2027.checkoutDate,
     pitchFriday: RAT_RACE_2027.pitchFriday,
-    tents: pack.tents,
-    tents6: pack.tents6,
-    tents4: pack.tents4,
-    capacityPerTent: meta.capacity6,
-    capacity6: meta.capacity6,
-    capacity4: meta.capacity4,
-    ratePerGuest: meta.ratePerGuest,
-    addonPerGuest: meta.addonPerGuest,
-    tentType: pack.tentType,
-    lines,
-    addons,
-    brawBread,
-    brawBreadTotal: breadTotal,
-    beddingTier:
-      packageKind === 'deluxe'
-        ? 'Cosy sleep kit on airframes'
-        : 'Memory-foam mattress, sleeping bag, pillow, night stand, chair',
+    tentCount: counts.tents,
+    tents5: counts.tents5,
+    tents6: counts.tents6,
+    groupTents: counts.groupTents,
+    tentType,
+    lines: quoteLines,
+    addons: [],
+    beddingTier: beddingBits.join(' · '),
     beddingPrice: 0,
     fulfillment: 'Village pitch Friday, Saturday night for guests, pack up Sunday',
     fulfillmentPrice: 0,
@@ -529,12 +533,99 @@ export function quoteRatRace(input: {
     remainingBalance,
     balanceDueDate,
     securityDeposit,
-    securityCheckinNote: ratRaceSecurityCheckinNote(pack.tents, securityDeposit),
+    securityCheckinNote: ratRaceSecurityCheckinNote(counts.tents, securityDeposit),
     totalDueToday: depositAmount,
     conciergeNote:
       'Morrisons Fort William. Add it to the booking, we send order instructions, you send the list back, then a Stripe payment link. Basket plus 10%, with the 10% capped at £15. Not in the Rat Race fee.',
     payMonthly: buildPayMonthlyPlan(stayTotal, RAT_RACE_2027.checkinDate),
     paymentPlan: 'deposit' as const,
+    inventory,
+    stockOk: stock.ok,
+    stockError: stock.ok ? undefined : stock.error,
+  };
+}
+
+/** Sample confirmation payload for organiser / sales previews (no Stripe). */
+export function buildRatRacePreviewBooking(options?: {
+  tents?: RatRaceTentLineInput[];
+  guests?: number;
+  packageKind?: RatRaceTentKind;
+  concierge?: boolean;
+  paymentPlan?: 'deposit' | 'instalment';
+}): {
+  bookingRef: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  customerAddress: string;
+  campsiteLocation: string;
+  specialRequests: string;
+  checkinDate: string;
+  checkoutDate: string;
+  nights: number;
+  guests: number;
+  tentType: string;
+  beddingTier: string;
+  beddingPrice: number;
+  addons: { title: string; price: number }[];
+  fulfillment: string;
+  fulfillmentPrice: number;
+  totalRentalPrice: number;
+  depositPercent: number;
+  depositAmount: number;
+  securityDeposit: number;
+  totalPaidToday: number;
+  remainingBalance: number;
+  balanceDueDate: string;
+  paymentPlan: 'deposit' | 'instalment';
+  instalmentMonthly?: number;
+  instalmentCount?: number;
+  eventSlug: string;
+} {
+  const quote = pricedForPaymentPlan(
+    quoteRatRace({
+      tents: options?.tents ?? [{ kind: options?.packageKind ?? 'cosy', guests: options?.guests ?? 2 }],
+    }),
+    options?.paymentPlan === 'instalment' ? 'instalment' : 'deposit',
+  );
+  const notes = [
+    options?.concierge
+      ? 'Morrisons Fort William concierge requested. Send order-build instructions after canvas payment.'
+      : '',
+    'Preview confirmation — payments paused pending organiser approval.',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return {
+    bookingRef: 'CC-PREVIEW',
+    customerName: 'Alex Campbell',
+    customerEmail: 'alex@example.com',
+    customerPhone: '+44 7700 900123',
+    customerAddress: '14 Highland Way, Edinburgh, EH1 2NG',
+    campsiteLocation: RAT_RACE_2027.locationLabel,
+    specialRequests: notes,
+    checkinDate: quote.checkinDate,
+    checkoutDate: quote.checkoutDate,
+    nights: quote.nights,
+    guests: quote.guests,
+    tentType: quote.tentType,
+    beddingTier: quote.beddingTier,
+    beddingPrice: quote.beddingPrice,
+    addons: quote.addons.filter((line) => line.price > 0),
+    fulfillment: quote.fulfillment,
+    fulfillmentPrice: quote.fulfillmentPrice,
+    totalRentalPrice: quote.totalRentalPrice,
+    depositPercent: quote.depositPercent,
+    depositAmount: quote.depositAmount,
+    securityDeposit: quote.securityDeposit,
+    totalPaidToday: quote.totalDueToday,
+    remainingBalance: quote.remainingBalance,
+    balanceDueDate: quote.balanceDueDate,
+    paymentPlan: quote.paymentPlan,
+    instalmentMonthly: quote.payMonthly.monthlyAmount,
+    instalmentCount: quote.payMonthly.monthlyCount,
+    eventSlug: RAT_RACE_2027.slug,
   };
 }
 

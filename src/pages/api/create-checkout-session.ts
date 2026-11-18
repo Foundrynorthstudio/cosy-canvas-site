@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
 import { getAllBookings } from '../../lib/booking-store';
 import { durnessUnavailableMessage, isDurnessBooking, takenDurnessMonthKeys } from '../../lib/durness';
+import { earlyBirdDiscountRate } from '../../lib/early-bird';
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
@@ -72,9 +73,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     else if (nights === 5) discountRate = 0.15;
     else if (nights >= 6) discountRate = 0.25;
 
-    if (checkinDate.startsWith('2027') && discountRate < 0.15) {
-      discountRate = 0.15;
-    }
+    const earlyBird = earlyBirdDiscountRate(checkinDate);
+    if (earlyBird > discountRate) discountRate = earlyBird;
 
     const discountedTentPrice = baseTentPrice * (1 - discountRate);
 

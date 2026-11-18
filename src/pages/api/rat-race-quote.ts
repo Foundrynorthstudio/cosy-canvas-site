@@ -1,13 +1,18 @@
 import type { APIRoute } from 'astro';
-import { isRatRacePackage, quoteRatRace } from '../../lib/rat-race';
+import { getAllBookings } from '../../lib/booking-store';
+import {
+  quoteRatRace,
+  ratRaceInventoryFromBookings,
+} from '../../lib/rat-race';
 
 export const POST: APIRoute = async ({ request }) => {
   const data = await request.json().catch(() => ({}));
-  const packageKind = isRatRacePackage(data.packageKind) ? data.packageKind : 'deluxe';
+  const inventory = ratRaceInventoryFromBookings(await getAllBookings());
   const quote = quoteRatRace({
-    guests: Number(data.guests) || 5,
-    packageKind,
-    brawBread: data.brawBread,
+    tents: data.tents,
+    guests: Number(data.guests) || undefined,
+    packageKind: data.packageKind,
+    inventory,
   });
   return new Response(JSON.stringify(quote), { headers: { 'Content-Type': 'application/json' } });
 };

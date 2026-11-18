@@ -1,16 +1,16 @@
 import type { APIRoute } from 'astro';
 import Stripe from 'stripe';
+import { getAllBookings } from '../../lib/booking-store';
 import {
   instalmentSubscriptionSchedule,
-  isRatRacePackage,
   pricedForPaymentPlan,
   quoteRatRace,
   RAT_RACE_2027,
   RAT_RACE_PAYMENTS_ENABLED,
   RAT_RACE_PAYMENTS_PAUSED_MESSAGE,
+  ratRaceInventoryFromBookings,
   type RatRaceQuote,
 } from '../../lib/rat-race';
-import { brawBreadNote } from '../../lib/braw-bread';
 
 function checkoutMetadata(
   quote: RatRaceQuote,
@@ -57,6 +57,10 @@ function checkoutMetadata(
     conciergeRequested: extras.concierge ? 'true' : 'false',
     organiserCommissionRate: String(quote.organiserCommissionRate),
     organiserCommissionAmount: String(quote.organiserCommissionAmount),
+    tents5: String(quote.tents5),
+    tents6: String(quote.tents6),
+    groupTents: String(quote.groupTents),
+    tentCount: String(quote.tentCount),
   };
 }
 
@@ -71,10 +75,10 @@ export const POST: APIRoute = async ({ request, url }) => {
 
     const data = await request.json();
     const {
+      tents,
       guests,
       packageKind,
       conciergeRequested,
-      brawBread,
       customerName,
       customerEmail,
       customerPhone,
@@ -90,12 +94,24 @@ export const POST: APIRoute = async ({ request, url }) => {
       );
     }
 
-    const kind = isRatRacePackage(packageKind) ? packageKind : 'deluxe';
+    const inventory = ratRaceInventoryFromBookings(await getAllBookings());
     const plan = requestedPlan === 'instalment' ? 'instalment' : 'deposit';
     const quote = pricedForPaymentPlan(
-      quoteRatRace({ guests: Number(guests) || 4, packageKind: kind, brawBread }),
+      quoteRatRace({
+        tents,
+        guests: Number(guests) || undefined,
+        packageKind,
+        inventory,
+      }),
       plan,
     );
+
+    if (!quote.stockOk) {
+      return new Response(JSON.stringify({ error: quote.stockError || 'Sold out.' }), {
+        status: 409,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     if (plan === 'instalment' && quote.paymentPlan !== 'instalment') {
       return new Response(
@@ -113,7 +129,6 @@ export const POST: APIRoute = async ({ request, url }) => {
       concierge
         ? 'Morrisons Fort William concierge requested. Send order-build instructions after canvas payment. Guest sends the list back; Stripe link for basket + 10% (10% capped at £15). Not in the Rat Race fee.'
         : '',
-      brawBreadNote(quote.brawBread),
       quote.paymentPlan === 'instalment'
         ? `Pay Up: 2 months (£${quote.depositAmount.toFixed(2)}) now, then ${quote.payMonthly.monthlyCount} × £${quote.payMonthly.monthlyAmount.toFixed(2)} on Stripe. Last charge ${quote.balanceDueDate}.`
         : '',
@@ -200,9 +215,7 @@ export const POST: APIRoute = async ({ request, url }) => {
                   currency: 'gbp',
                   product_data: {
                     name: `${quote.tentType} · Rat Race C2C Saturday night (${quote.checkinDate}) · ${quote.depositPercent}% deposit`,
-                    description: `${quote.guests} guests · Cosy £${quote.ratePerGuest - quote.addonPerGuest}${
-                      quote.addonPerGuest ? ` + Deluxe add-on £${quote.addonPerGuest}` : ''
-                    } · ${quote.tentType}. Total stay £${quote.totalRentalPrice.toFixed(2)}${
+                    description: `${quote.guests} guests · ${quote.tentType}. Total stay £${quote.totalRentalPrice.toFixed(2)}${
                       quote.remainingBalance > 0
                         ? ` (balance £${quote.remainingBalance.toFixed(2)} due by ${quote.balanceDueDate})`
                         : ''

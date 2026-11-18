@@ -1,6 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from "../lib/rat-race";
+import { RAT_RACE_TENT_META } from "../lib/rat-race";
 ---
 
 <Layout
@@ -36,7 +36,7 @@ import { COSY_RATE_PER_GUEST, DELUXE_ADDON_PER_GUEST } from "../lib/rat-race";
           <div class="p-6 md:p-8 flex flex-col justify-center">
             <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-1">Preview packages & pricing</p>
             <h2 class="font-display text-2xl font-black text-[#111111] mb-2">Rat Race Coast to Coast · 11–12 Sep 2027</h2>
-            <p class="text-sm text-stone-600 mb-4">Saturday night only. Cosy £{COSY_RATE_PER_GUEST}/guest, Deluxe +£{DELUXE_ADDON_PER_GUEST}. 4M or 6M packed from headcount. We pitch Friday and pack up on Sunday 12 September. Optional Fort William Morrisons concierge after you send a list. Paid bookings open once organisers approve.</p>
+            <p class="text-sm text-stone-600 mb-4">Saturday night only. 5M Cosy from £{RAT_RACE_TENT_META.cosy.basePrice}, 5M Deluxe from £{RAT_RACE_TENT_META.deluxe.basePrice}, limited 6M Group £{RAT_RACE_TENT_META.group.basePrice}. We pitch Friday and pack up on Sunday 12 September. Optional Fort William Morrisons concierge after you send a list. Paid bookings open once organisers approve.</p>
             <span class="text-sm font-bold text-[#7D6E23]">Open the Rat Race preview →</span>
           </div>
         </a>

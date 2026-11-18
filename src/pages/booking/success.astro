@@ -5,7 +5,7 @@ import { isDiyFulfillment } from "../../lib/booking";
 import {
   buildRatRacePreviewBooking,
   isRatRaceBooking,
-  isRatRacePackage,
+  isRatRaceTentKind,
   RAT_RACE_PAYMENTS_ENABLED,
 } from "../../lib/rat-race";
 import {
@@ -34,14 +34,20 @@ const diyCollection = {
 };
 
 if (isPreview) {
-  const guests = Number(Astro.url.searchParams.get("guests") || 5);
-  const packageParam = Astro.url.searchParams.get("package") || "deluxe";
-  const packageKind = isRatRacePackage(packageParam) ? packageParam : "deluxe";
   const paymentPlan =
     Astro.url.searchParams.get("plan") === "instalment" ? "instalment" : "deposit";
+  let tents;
+  try {
+    const raw = Astro.url.searchParams.get("tents");
+    if (raw) tents = JSON.parse(raw);
+  } catch {
+    tents = undefined;
+  }
+  const packageParam = Astro.url.searchParams.get("package") || "cosy";
   booking = buildRatRacePreviewBooking({
-    guests,
-    packageKind,
+    tents,
+    guests: Number(Astro.url.searchParams.get("guests") || 2),
+    packageKind: isRatRaceTentKind(packageParam) ? packageParam : "cosy",
     concierge: Astro.url.searchParams.get("concierge") === "1",
     paymentPlan,
   });
