@@ -1,16 +1,27 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
+import { readTextKey, writeTextKey } from './cloud-kv';
 
 function safePart(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]+/g, '_');
 }
 
-function blobKey(ref: string, sku: string): string {
+function photoKey(ref: string, sku: string): string {
   return `kit-photo/${safePart(ref)}/${safePart(sku)}`;
 }
 
-function localFile(ref: string, sku: string): string {
-  return path.join(process.cwd(), '.data', 'kit-photos', safePart(ref), safePart(sku));
+function toBase64(bytes: Uint8Array): string {
+  let binary = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+function fromBase64(raw: string): Uint8Array {
+  const binary = atob(raw);
+  const out = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) out[i] = binary.charCodeAt(i);
+  return out;
 }
 
 export async function saveKitPhoto(
@@ -22,40 +33,21 @@ export async function saveKitPhoto(
   const name = `${safePart(sku)}.bin`;
   const payload = JSON.stringify({
     contentType: contentType || 'image/jpeg',
-    bytes: Buffer.from(bytes).toString('base64'),
+    bytes: toBase64(bytes),
   });
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore('cosy-bookings');
-    await store.set(blobKey(ref, sku), payload);
-    return name;
-  } catch {
-    const file = localFile(ref, sku);
-    await mkdir(path.dirname(file), { recursive: true });
-    await writeFile(file, payload, 'utf8');
-    return name;
-  }
+  await writeTextKey(photoKey(ref, sku), payload);
+  return name;
 }
 
 export async function readKitPhoto(
   ref: string,
   sku: string,
-): Promise<{ contentType: string; bytes: Buffer } | null> {
+): Promise<{ contentType: string; bytes: Uint8Array } | null> {
+  const raw = await readTextKey(photoKey(ref, sku));
+  if (!raw) return null;
   try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore('cosy-bookings');
-    const raw = await store.get(blobKey(ref, sku), { type: 'text' });
-    if (raw) {
-      const parsed = JSON.parse(raw) as { contentType: string; bytes: string };
-      return { contentType: parsed.contentType, bytes: Buffer.from(parsed.bytes, 'base64') };
-    }
-  } catch {
-    /* local fallback */
-  }
-  try {
-    const raw = await readFile(localFile(ref, sku), 'utf8');
     const parsed = JSON.parse(raw) as { contentType: string; bytes: string };
-    return { contentType: parsed.contentType, bytes: Buffer.from(parsed.bytes, 'base64') };
+    return { contentType: parsed.contentType, bytes: fromBase64(parsed.bytes) };
   } catch {
     return null;
   }

@@ -3,8 +3,9 @@ import Layout from "../layouts/Layout.astro";
 import { cosyHolidaysSites } from "../lib/campsites";
 import { getAllBookings } from "../lib/booking-store";
 import { takenDurnessMonthKeys, upcomingDurnessSlots } from "../lib/durness";
+import { getStripePublishableKeyAsync } from "../lib/stripe-client";
 
-const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || "";
+const publishableKey = await getStripePublishableKeyAsync();
 const holidaysSites = cosyHolidaysSites();
 const durnessSlots = upcomingDurnessSlots(takenDurnessMonthKeys(await getAllBookings()));
 ---

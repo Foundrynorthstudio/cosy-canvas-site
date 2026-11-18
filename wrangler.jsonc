@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "cosy-canvas-site",
+  "main": "@astrojs/cloudflare/entrypoints/server",
+  "compatibility_date": "2026-11-18",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "account_id": "5722000f882f8635263687ba35892740",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist/client"
+  },
+  "workers_dev": true,
+  "preview_urls": true,
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "COSY_DATA",
+      "id": "8d2a1068469b4cee8f6a1bae8ac5a2ea",
+      "preview_id": "d8ef3d08a569462095d13ec6a2990ec3"
+    },
+    {
+      "binding": "SESSION",
+      "id": "887506e7c3934901be0d55583e073896"
+    }
+  ]
+}

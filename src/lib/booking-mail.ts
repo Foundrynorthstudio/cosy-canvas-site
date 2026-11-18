@@ -281,7 +281,7 @@ export function mailVars(
     paidToday: formatGbp(booking.totalPaidToday),
     remainingBalance: formatGbp(booking.remainingBalance),
     instalmentMonthly: formatGbp(booking.instalmentMonthly || 0),
-    instalmentCount: String(booking.instalmentCount || 10),
+    instalmentCount: String(booking.instalmentCount || 6),
     balanceDueDate: escapeHtml(booking.balanceDueDate || '28 days before check-in'),
     securityDeposit: formatGbp(booking.securityDeposit),
     specialRequests: escapeHtml(booking.specialRequests || 'None'),

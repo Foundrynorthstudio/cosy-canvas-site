@@ -1,11 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import { hashPassword, readAuthEnv } from './journal-auth';
-
-const BLOB_STORE = 'cosy-staff';
-const BLOB_KEY = 'staff-v1.json';
-const LOCAL_DIR = path.join(process.cwd(), '.data');
-const LOCAL_FILE = path.join(LOCAL_DIR, 'studio-staff.json');
+import { readJsonStore, writeJsonStore } from './cloud-kv';
 
 export type StaffRole = 'admin';
 
@@ -34,56 +28,8 @@ function normalizeEmail(email: string): string {
   return email.trim().toLowerCase();
 }
 
-async function readLocalFile(): Promise<StaffUser[] | null> {
-  try {
-    const raw = await readFile(LOCAL_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as StaffStoreFile;
-    return Array.isArray(parsed.users) ? parsed.users : null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeLocalFile(users: StaffUser[]): Promise<void> {
-  await mkdir(LOCAL_DIR, { recursive: true });
-  await writeFile(LOCAL_FILE, JSON.stringify({ users }, null, 2), 'utf8');
-}
-
-async function readBlobs(): Promise<StaffUser[] | null> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    const data = await store.get(BLOB_KEY, { type: 'json' });
-    if (data && Array.isArray((data as StaffStoreFile).users)) {
-      return (data as StaffStoreFile).users;
-    }
-    return null;
-  } catch (error) {
-    console.error('[staff-store] blob read failed', error);
-    return null;
-  }
-}
-
-async function writeBlobs(users: StaffUser[]): Promise<boolean> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    await store.setJSON(BLOB_KEY, { users });
-    return true;
-  } catch (error) {
-    console.error('[staff-store] blob write failed', error);
-    return false;
-  }
-}
-
 async function persist(users: StaffUser[]): Promise<void> {
-  const blobOk = await writeBlobs(users);
-  if (blobOk) return;
-  try {
-    await writeLocalFile(users);
-  } catch (error) {
-    console.error('[staff-store] local persist failed', error);
-  }
+  await writeJsonStore('staff', { users });
 }
 
 function enqueueWrite<T>(work: () => Promise<T>): Promise<T> {
@@ -125,12 +71,8 @@ function seedMissing(existing: StaffUser[]): { users: StaffUser[]; added: boolea
 export async function listStaff(): Promise<StaffUser[]> {
   let loaded: StaffUser[] = [];
   try {
-    const fromBlobs = await readBlobs();
-    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
-    else {
-      const fromDisk = await readLocalFile();
-      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
-    }
+    const data = await readJsonStore<StaffStoreFile>('staff');
+    if (data && Array.isArray(data.users) && data.users.length > 0) loaded = data.users;
   } catch (error) {
     console.error('[staff-store] read failed', error);
   }

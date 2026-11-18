@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { getAllBookings } from '../../lib/booking-store';
 import { durnessUnavailableMessage, isDurnessBooking, takenDurnessMonthKeys } from '../../lib/durness';
 import { earlyBirdDiscountRate } from '../../lib/early-bird';
+import { getStripeSecretKeyAsync } from '../../lib/stripe-client';
 
 export const POST: APIRoute = async ({ request, url }) => {
   try {
@@ -147,7 +148,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       .join(' ')
       .trim();
 
-    const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
+    const stripeSecretKey = await getStripeSecretKeyAsync();
 
     if (!stripeSecretKey || stripeSecretKey === 'sk_test_placeholder_key' || stripeSecretKey.startsWith('sk_test_placeholder')) {
       // If Stripe keys are placeholder, return informative error or mock support

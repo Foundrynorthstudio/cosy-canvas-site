@@ -11,6 +11,7 @@ import {
   ratRaceInventoryFromBookings,
   type RatRaceQuote,
 } from '../../lib/rat-race';
+import { getStripeSecretKeyAsync } from '../../lib/stripe-client';
 
 function checkoutMetadata(
   quote: RatRaceQuote,
@@ -146,7 +147,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       concierge,
     };
 
-    const stripeSecretKey = import.meta.env.STRIPE_SECRET_KEY;
+    const stripeSecretKey = await getStripeSecretKeyAsync();
     if (!stripeSecretKey || String(stripeSecretKey).startsWith('sk_test_placeholder')) {
       return new Response(
         JSON.stringify({
@@ -198,10 +199,18 @@ export const POST: APIRoute = async ({ request, url }) => {
             ],
             subscription_data: {
               trial_period_days: schedule.trialPeriodDays,
-              metadata,
+              metadata: {
+                ...metadata,
+                instalmentCancelAt: String(schedule.cancelAtUnix),
+                instalmentMonthlyCount: String(quote.payMonthly.monthlyCount),
+              },
             },
             return_url: `${url.origin}/booking/success?session_id={CHECKOUT_SESSION_ID}`,
-            metadata,
+            metadata: {
+              ...metadata,
+              instalmentCancelAt: String(schedule.cancelAtUnix),
+              instalmentMonthlyCount: String(quote.payMonthly.monthlyCount),
+            },
           })
         : await stripe.checkout.sessions.create({
             ui_mode: 'embedded_page',

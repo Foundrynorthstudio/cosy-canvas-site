@@ -176,7 +176,7 @@ const mailSettings = await getMailSettings();
           <p class="text-amber-700">Balance <span class="float-right">{formatGbp(booking.remainingBalance)}</span></p>
           {booking.paymentPlan === 'instalment' ? (
             <p class="text-[11px] text-stone-500 mt-1">
-              Pay Up · {booking.instalmentCount || 10} × {formatGbp(booking.instalmentMonthly || 0)} on Stripe. Last {booking.balanceDueDate || '—'}
+              Pay Up · {booking.instalmentCount || 6} × {formatGbp(booking.instalmentMonthly || 0)} on Stripe. Last {booking.balanceDueDate || '—'}
             </p>
           ) : null}
           <p class="text-stone-500">Refunded <span class="float-right">{formatGbp(booking.amountRefunded)}</span></p>

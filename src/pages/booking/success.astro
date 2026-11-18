@@ -297,11 +297,11 @@ if (isPreview) {
                   {booking.paymentPlan === 'instalment' && booking.remainingBalance > 0 && (
                     <div class="bg-amber-50 p-3.5 rounded-xl border border-amber-200 text-[#7D6E23] text-xs">
                       <div class="flex justify-between font-bold">
-                        <span>Pay Up remaining ({booking.instalmentCount || 10} months):</span>
+                        <span>Pay Up remaining ({booking.instalmentCount || 6} months):</span>
                         <span>£{booking.remainingBalance.toFixed(2)}</span>
                       </div>
                       <span class="text-[11px] text-stone-600 block mt-1">
-                        Stripe takes {booking.instalmentCount || 10} interest-free payments of £{(booking.instalmentMonthly || 0).toFixed(2)} from the same card. Last charge {booking.balanceDueDate || 'before the Saturday night'}. No Klarna — just a Stripe subscription.
+                        Stripe takes {booking.instalmentCount || 6} interest-free payments of £{(booking.instalmentMonthly || 0).toFixed(2)} from the same card. Last charge {booking.balanceDueDate || 'before the Saturday night'}. Klarna energy, not Klarna — just a Stripe subscription.
                       </span>
                     </div>
                   )}

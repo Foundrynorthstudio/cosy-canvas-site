@@ -17,7 +17,19 @@ export function readAuthEnv(name: string): string {
   } catch {
     fromMeta = undefined;
   }
+  // Prefer process.env (hydrated from CF secrets in middleware) over build-time meta.
   return (fromProcess || fromMeta || '').trim();
+}
+
+export async function readAuthEnvAsync(name: string): Promise<string> {
+  try {
+    const { env } = await import('cloudflare:workers');
+    const fromCf = (env as Record<string, unknown>)[name];
+    if (typeof fromCf === 'string' && fromCf.trim()) return fromCf.trim();
+  } catch {
+    /* local / non-CF */
+  }
+  return readAuthEnv(name);
 }
 
 function adminPassword(): string {

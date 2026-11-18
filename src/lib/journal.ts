@@ -215,7 +215,7 @@ Watch this space. The pictures below are the vision — Cosy Hotel rooms and an 
   {
     slug: "red-squirrel-campsite-glencoe",
     title: "Field notes from Red Squirrel: a Friday night in Glen Coe",
-    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my staging post for a Coast to Coast hire north of Fort William.",
+    excerpt: "Full 5G, a picnic-table office, and cooking by the fire. Red Squirrel is my staging post for a Coast to Coast hire north of Fort William — then Gemini renders of the dream fleet before bed.",
     category: "guides",
     categoryName: "Glamping Guides",
     author: {
@@ -224,14 +224,14 @@ Watch this space. The pictures below are the vision — Cosy Hotel rooms and an 
     },
     date: "11 September 2026",
     isoDate: "2026-09-11T21:30:00Z",
-    readTime: "8 min read",
+    readTime: "10 min read",
     featured: false,
     status: "published",
     image: "/campsite_red_squirrel.jpg",
     imageAlt: "Night pitch at Red Squirrel Campsite: two-person tent, stove, and picnic table under the Glen Coe trees",
     seoTitle: "Red Squirrel Campsite Glencoe: Friday Field Notes",
-    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a staging post for Coast to Coast, fire cooking, and a picnic table claimed as a desk.",
-    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, a82 glencoe drive",
+    seoDescription: "Friday night at Red Squirrel in Glen Coe: 5G as a staging post for Coast to Coast, fire cooking, and Gemini renders of the Cosy Canvas fleet.",
+    keywords: "red squirrel campsite glencoe, glencoe camping, ratrace fort william camping, vw caddy maxi, audi a4 wrap, a82 glencoe drive",
     content: `
 I am writing this from a picnic bench at **Red Squirrel Campsite** in Glen Coe, lamp on, stove going, laptop open. I love camping. I love driving. Put those together on the A82 on a Friday night and that is the whole point.
 
@@ -240,6 +240,10 @@ Tonight is a Cosy Canvas recce wrapped around a customer job. I am here a couple
 ---
 
 ## The drive
+
+The run north was in the wife’s **Audi A4 Quattro DSG Black Edition**. You get into a state of flow, chewing down miles of twisting A-roads in the Scottish Highlands. You are always going to end up stuck in a convoy behind something — and you need to remember the public buses use this road too. When there is traffic, being in this car is very comfortable. Low down. Just enough hug from the sporty seat. Everything easily within reach with both hands.
+
+It needs next to no input once you are in cruise on an A9. Dial in the speed and go. Tight in every corner. All the power when you want it. The weight of a heavy car, with the grip and the agility still there.
 
 The drive north was spectacular, as expected in Glen Coe.
 
@@ -331,6 +335,49 @@ You can then close the lid and fall asleep to the sound of the river. Bliss.
 <img src="/glencoe-red-squirrel/pitch-night-river.jpg" alt="Night pitch at Red Squirrel: two-man tent, stove, and a picnic table under a tarp in the woods">
 <figcaption>The office, closed. Tent, tarp, stove, river. Bliss.</figcaption>
 </figure>
+
+---
+
+## Dream fleet, rendered before bed
+
+I finished the night in Gemini, playing with the contour graphic on the vehicles I actually want to be driving on jobs like this.
+
+First up: the wife’s **A4**, wrapped. Contour lines, triangle mark, still a Black Edition underneath. Then the greedy spec — roof rack, steels, the all-terrain look I keep threatening her with.
+
+<div class="photo-pair photo-pair--portrait">
+<figure>
+<img src="/glencoe-red-squirrel/a4-wrap.jpg" alt="Audi A4 wrapped in Cosy Canvas contour graphics parked in Glen Coe with bell tents behind">
+<figcaption>The A4 Quattro in Cosy Canvas wrap. Still her car. Just louder about it.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/a4-wrap-swamper.jpg" alt="Wrapped Audi A4 with roof rack and black steel wheels in Glen Coe">
+<figcaption>Same wrap, my version: rack, steels, a bit of swamper. We can argue about the rims another night.</figcaption>
+</figure>
+</div>
+
+Then the new gift from **Barry** at CamperKing. I am actually very grateful. It is a **2016 VW Touran**, 178,000 miles, moon-miles, dog-shit example of the breed, and it smells awful. The boot, though — huge. For a staging run with kit, mattresses, and a pop-up, that matters more than the perfume.
+
+<figure>
+<img src="/glencoe-red-squirrel/touran-barry.jpg" alt="Black VW Touran with Cosy Canvas wrap, CamperKing plate and roof rack in Glen Coe">
+<figcaption>Barry’s moon-miles Touran, Gemini-spec. ND63 KDU energy. Grateful. The boot is the feature.</figcaption>
+</figure>
+
+The actual dream logistics vehicle is a **LWB Caddy Maxi**. Probably white — they usually are trades vans, and at CKS we already know how to make a white van look mint with the **CKS treatment**: gloss black wheels, gloss-pack bumper and grille insert. For this one I would go swamper — black wheel-arch trims and a cargo roof system. Doors open, bell tents in the background, Highland road still in the legs.
+
+<div class="photo-pair">
+<figure>
+<img src="/glencoe-red-squirrel/caddy-maxi-white.jpg" alt="White VW Caddy Maxi with Cosy Canvas graphics, gloss black wheels and roof cargo, doors open beside bell tents">
+<figcaption>White LWB Caddy Maxi. Trades van, CKS treatment, doors open on the job.</figcaption>
+</figure>
+<figure>
+<img src="/glencoe-red-squirrel/caddy-maxi-black.jpg" alt="Black VW Caddy Maxi with Cosy Canvas contour wrap and loaded roof, Glen Coe behind">
+<figcaption>Or all-black. Same rack, same load-out. I could live with either.</figcaption>
+</figure>
+</div>
+
+I love driving the Highland roads in Scotland. That is a huge part of why I am doing this. The canvas is the product. The A82 is the reason it does not feel like a spreadsheet company.
+
+This is tonight, from the bench. Tomorrow is Fort William.
 
 ---
 

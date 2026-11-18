@@ -1,5 +1,3 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import {
   CATEGORY_LABELS,
   estimateReadTime,
@@ -10,11 +8,7 @@ import {
   type JournalPost,
   type JournalStatus,
 } from './journal';
-
-const BLOB_STORE = 'cosy-journal';
-const BLOB_KEY = 'posts-v1.json';
-const LOCAL_DIR = path.join(process.cwd(), '.data');
-const LOCAL_FILE = path.join(LOCAL_DIR, 'journal-posts.json');
+import { readJsonStore, writeJsonStore } from './cloud-kv';
 
 interface JournalStoreFile {
   posts: JournalPost[];
@@ -26,46 +20,6 @@ function sortPosts(posts: JournalPost[]): JournalPost[] {
   return [...posts].sort(
     (a, b) => new Date(b.isoDate).getTime() - new Date(a.isoDate).getTime(),
   );
-}
-
-async function readLocalFile(): Promise<JournalPost[] | null> {
-  try {
-    const raw = await readFile(LOCAL_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as JournalStoreFile;
-    return Array.isArray(parsed.posts) ? parsed.posts : null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeLocalFile(posts: JournalPost[]): Promise<void> {
-  await mkdir(LOCAL_DIR, { recursive: true });
-  await writeFile(LOCAL_FILE, JSON.stringify({ posts }, null, 2), 'utf8');
-}
-
-async function readBlobs(): Promise<JournalPost[] | null> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    const data = await store.get(BLOB_KEY, { type: 'json' });
-    if (data && Array.isArray((data as JournalStoreFile).posts)) {
-      return (data as JournalStoreFile).posts;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeBlobs(posts: JournalPost[]): Promise<boolean> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    await store.setJSON(BLOB_KEY, { posts });
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function seedPosts(): JournalPost[] {
@@ -95,12 +49,8 @@ function refreshUneditedSeedPosts(existing: JournalPost[]): { posts: JournalPost
 async function loadPosts(): Promise<JournalPost[]> {
   let loaded: JournalPost[] = [];
   try {
-    const fromBlobs = await readBlobs();
-    if (fromBlobs && fromBlobs.length > 0) loaded = fromBlobs;
-    else {
-      const fromDisk = await readLocalFile();
-      if (fromDisk && fromDisk.length > 0) loaded = fromDisk;
-    }
+    const data = await readJsonStore<JournalStoreFile>('journal');
+    if (data && Array.isArray(data.posts) && data.posts.length > 0) loaded = data.posts;
   } catch (error) {
     console.error('Journal store read failed; using built-in stories.', error);
   }
@@ -114,14 +64,7 @@ async function loadPosts(): Promise<JournalPost[]> {
 }
 
 async function persist(posts: JournalPost[]): Promise<void> {
-  const sorted = sortPosts(posts);
-  const blobOk = await writeBlobs(sorted);
-  if (blobOk) return;
-  try {
-    await writeLocalFile(sorted);
-  } catch (error) {
-    console.error('Journal store persist failed.', error);
-  }
+  await writeJsonStore('journal', { posts: sortPosts(posts) });
 }
 
 function enqueueWrite<T>(work: () => Promise<T>): Promise<T> {

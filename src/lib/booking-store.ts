@@ -1,11 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import type { BookingRecord } from './booking';
-
-const BLOB_STORE = 'cosy-bookings';
-const BLOB_KEY = 'bookings-v1.json';
-const LOCAL_DIR = path.join(process.cwd(), '.data');
-const LOCAL_FILE = path.join(LOCAL_DIR, 'bookings.json');
+import { readJsonStore, writeJsonStore } from './cloud-kv';
 
 interface BookingStoreFile {
   bookings: BookingRecord[];
@@ -24,55 +18,11 @@ export function isDemoBookingRef(ref: string): boolean {
   return /^CC-DEMO\d+/i.test(ref.trim());
 }
 
-async function readLocalFile(): Promise<BookingRecord[] | null> {
-  try {
-    const raw = await readFile(LOCAL_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as BookingStoreFile;
-    return Array.isArray(parsed.bookings) ? parsed.bookings : null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeLocalFile(bookings: BookingRecord[]): Promise<void> {
-  await mkdir(LOCAL_DIR, { recursive: true });
-  await writeFile(LOCAL_FILE, JSON.stringify({ bookings }, null, 2), 'utf8');
-}
-
-async function readBlobs(): Promise<BookingRecord[] | null> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    const data = await store.get(BLOB_KEY, { type: 'json' });
-    if (data && Array.isArray((data as BookingStoreFile).bookings)) {
-      return (data as BookingStoreFile).bookings;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeBlobs(bookings: BookingRecord[]): Promise<boolean> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    await store.setJSON(BLOB_KEY, { bookings });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function loadBookings(): Promise<BookingRecord[]> {
   let loaded: BookingRecord[] = [];
   try {
-    const fromBlobs = await readBlobs();
-    if (fromBlobs) loaded = fromBlobs;
-    else {
-      const fromDisk = await readLocalFile();
-      if (fromDisk) loaded = fromDisk;
-    }
+    const data = await readJsonStore<BookingStoreFile>('bookings');
+    if (data && Array.isArray(data.bookings)) loaded = data.bookings;
   } catch (error) {
     console.error('Booking store read failed.', error);
   }
@@ -88,13 +38,7 @@ async function loadBookings(): Promise<BookingRecord[]> {
 
 async function persist(bookings: BookingRecord[]): Promise<void> {
   const sorted = sortBookings(bookings);
-  const blobOk = await writeBlobs(sorted);
-  if (blobOk) return;
-  try {
-    await writeLocalFile(sorted);
-  } catch (error) {
-    console.error('Booking store persist failed.', error);
-  }
+  await writeJsonStore('bookings', { bookings: sorted });
 }
 
 function enqueueWrite<T>(work: () => Promise<T>): Promise<T> {

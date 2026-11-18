@@ -41,7 +41,7 @@ function resendKey(): string {
 }
 
 function adminInbox(): string {
-  return readSecretEnv('ADMIN_NOTIFICATION_EMAIL') || 'bookings@cosycanvas.co.uk';
+  return readSecretEnv('ADMIN_NOTIFICATION_EMAIL') || 'bookings@cosycanvasco.com';
 }
 
 export async function sendHtmlEmail(options: {
@@ -52,7 +52,7 @@ export async function sendHtmlEmail(options: {
   attachments?: { filename: string; content: Buffer | Uint8Array; contentType?: string }[];
 }): Promise<{ success: boolean; mocked?: boolean; error?: string }> {
   const apiKey = resendKey();
-  const from = options.from || 'The Cosy Canvas Co. <bookings@cosycanvas.co.uk>';
+  const from = options.from || 'The Cosy Canvas Co. <bookings@cosycanvasco.com>';
   const attachments = options.attachments?.map((file) => ({
     filename: file.filename,
     content: Buffer.from(file.content),
@@ -146,7 +146,7 @@ export async function sendAdminNewBookingAlert(booking: BookingDetails | Booking
   `;
 
   return sendHtmlEmail({
-    from: 'Cosy Canvas System <bookings@cosycanvas.co.uk>',
+    from: 'Cosy Canvas System <bookings@cosycanvasco.com>',
     to: adminEmail,
     subject: `[NEW BOOKING] ${booking.bookingRef} - ${booking.customerName} (${booking.checkinDate})`,
     html: adminEmailHtml,

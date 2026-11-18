@@ -1,11 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import { randomUUID } from 'node:crypto';
-
-const BLOB_STORE = 'cosy-bookings';
-const BLOB_KEY = 'guest-crm-v1.json';
-const LOCAL_DIR = path.join(process.cwd(), '.data');
-const LOCAL_FILE = path.join(LOCAL_DIR, 'guest-crm.json');
+import { readJsonStore, writeJsonStore } from './cloud-kv';
 
 export interface GuestDiscount {
   id: string;
@@ -73,52 +67,10 @@ function emptyProfile(email: string): GuestProfile {
   };
 }
 
-async function readLocalFile(): Promise<GuestProfile[] | null> {
-  try {
-    const raw = await readFile(LOCAL_FILE, 'utf8');
-    const parsed = JSON.parse(raw) as GuestStoreFile;
-    return Array.isArray(parsed.profiles) ? parsed.profiles : null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeLocalFile(profiles: GuestProfile[]): Promise<void> {
-  await mkdir(LOCAL_DIR, { recursive: true });
-  await writeFile(LOCAL_FILE, JSON.stringify({ profiles }, null, 2), 'utf8');
-}
-
-async function readBlobs(): Promise<GuestProfile[] | null> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    const data = await store.get(BLOB_KEY, { type: 'json' });
-    if (data && Array.isArray((data as GuestStoreFile).profiles)) {
-      return (data as GuestStoreFile).profiles;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-async function writeBlobs(profiles: GuestProfile[]): Promise<boolean> {
-  try {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore(BLOB_STORE);
-    await store.setJSON(BLOB_KEY, { profiles });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 async function loadProfiles(): Promise<GuestProfile[]> {
   try {
-    const fromBlobs = await readBlobs();
-    if (fromBlobs) return fromBlobs;
-    const fromDisk = await readLocalFile();
-    if (fromDisk) return fromDisk;
+    const data = await readJsonStore<GuestStoreFile>('guests');
+    if (data && Array.isArray(data.profiles)) return data.profiles;
   } catch (error) {
     console.error('[guest-store] read failed', error);
   }
@@ -126,13 +78,7 @@ async function loadProfiles(): Promise<GuestProfile[]> {
 }
 
 async function persist(profiles: GuestProfile[]): Promise<void> {
-  const blobOk = await writeBlobs(profiles);
-  if (blobOk) return;
-  try {
-    await writeLocalFile(profiles);
-  } catch (error) {
-    console.error('[guest-store] persist failed', error);
-  }
+  await writeJsonStore('guests', { profiles });
 }
 
 function enqueueWrite<T>(work: () => Promise<T>): Promise<T> {

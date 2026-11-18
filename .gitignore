@@ -29,5 +29,8 @@ pnpm-debug.log*
 # Local Netlify folder
 .netlify
 
+# Cloudflare Wrangler local state
+.wrangler/
+
 # Local copy of the original WordPress site
 old-website-archive/

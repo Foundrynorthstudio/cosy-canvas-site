@@ -4,7 +4,7 @@ import { deriveBookingStatus } from './booking';
 export const RAT_RACE_EVENT_URL = 'https://www.ratrace.com/events/scotland-coast-to-coast/';
 
 /** Flip to true once Rat Race organisers (Dave) approve paid canvas bookings. */
-export const RAT_RACE_PAYMENTS_ENABLED = false;
+export const RAT_RACE_PAYMENTS_ENABLED = true;
 
 export const RAT_RACE_PAYMENTS_PAUSED_MESSAGE =
   'Paid Rat Race bookings are paused until we have organiser approval. You can still preview packages and pricing on this page.';
@@ -62,6 +62,8 @@ export const RAT_RACE_TENT_META: Record<
     extraGuestPrice: number;
     limited?: boolean;
     summary: string;
+    /** Short price line for packages / booking radios — includes what’s covered vs capacity. */
+    priceBlurb: string;
     beddingTier: string;
   }
 > = {
@@ -76,6 +78,7 @@ export const RAT_RACE_TENT_META: Record<
     extraGuestPrice: 40,
     summary:
       'Raised air bed (air mattress on an air frame), sleeping bag, pillow, night stand and chair per guest.',
+    priceBlurb: '£245 covers 3 guests. Extra guests £40 each — sleeps up to 5.',
     beddingTier: 'Raised air bed, sleeping bag, pillow, night stand, chair',
   },
   deluxe: {
@@ -89,6 +92,7 @@ export const RAT_RACE_TENT_META: Record<
     extraGuestPrice: 60,
     summary:
       'Proper single bed per guest with mattress topper, duvet, pillows and fresh linen, plus bedside tables, rug and lighting.',
+    priceBlurb: '£320 for 2 guests. Third guest £60 — sleeps up to 3.',
     beddingTier: 'Proper single bed, mattress topper, duvet, pillows, linen',
   },
   group: {
@@ -101,7 +105,8 @@ export const RAT_RACE_TENT_META: Record<
     baseGuests: 6,
     extraGuestPrice: 0,
     limited: true,
-    summary: '6M Cosy set-up for up to 6 guests. Limited availability (max 3).',
+    summary: '6M Cosy set-up. Only three on the field.',
+    priceBlurb: '£395 — sleeps up to 6.',
     beddingTier: 'Raised air bed Cosy set-up (Group tent)',
   },
 };
@@ -290,8 +295,13 @@ export function ratRaceSecurityCheckinNote(tents: number, amount: number): strin
   return `${mix}. We take it on a card reader at Saturday check-in.`;
 }
 
+const RAT_RACE_EVENT_SLUGS = new Set([
+  RAT_RACE_2027.slug,
+  'rat-race', // legacy / mistaken Stripe metadata from early live tests
+]);
+
 export function isRatRaceBooking(booking: { eventSlug?: string }): boolean {
-  return booking.eventSlug === RAT_RACE_2027.slug;
+  return Boolean(booking.eventSlug && RAT_RACE_EVENT_SLUGS.has(booking.eventSlug));
 }
 
 export interface RatRaceQuoteLine {
@@ -356,7 +366,8 @@ export interface RatRacePayMonthly {
 }
 
 const INSTALMENT_UPFRONT_MONTHS = 2;
-const INSTALMENT_MONTHLY_COUNT = 10;
+/** Remaining months after the upfront slice — kept short so the last charge lands before Rat Race Saturday. */
+const INSTALMENT_MONTHLY_COUNT = 6;
 
 function roundMoney(value: number): number {
   return Number(value.toFixed(2));
@@ -393,7 +404,8 @@ export function buildPayMonthlyPlan(total: number, checkinDate: string): RatRace
   if (lastMonthly > lastAllowed) {
     return {
       available: false,
-      reason: 'Monthly Pay Up needs about 10 months before the Saturday night. Pay the stay instead.',
+      reason:
+        'Pay Up is two months of the stay today, then six interest-free months on a Stripe subscription — Klarna energy, not Klarna. Book earlier so the last charge lands before Saturday night. Pay the stay instead.',
       upfrontMonths: INSTALMENT_UPFRONT_MONTHS,
       monthlyCount: INSTALMENT_MONTHLY_COUNT,
       monthlyAmount: 0,
@@ -536,7 +548,7 @@ export function quoteRatRace(input: {
     securityCheckinNote: ratRaceSecurityCheckinNote(counts.tents, securityDeposit),
     totalDueToday: depositAmount,
     conciergeNote:
-      'Morrisons Fort William. Add it to the booking, we send order instructions, you send the list back, then a Stripe payment link. Basket plus 10%, with the 10% capped at £15. Not in the Rat Race fee.',
+      'Optional Morrisons Fort William click & collect in the tent at check-in. Tick it on the booking, we email how to build the order, you send the list back, then pay on a Stripe link. Basket plus 10% (capped at £15). Not part of the tent fee.',
     payMonthly: buildPayMonthlyPlan(stayTotal, RAT_RACE_2027.checkinDate),
     paymentPlan: 'deposit' as const,
     inventory,

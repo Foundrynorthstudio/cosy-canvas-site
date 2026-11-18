@@ -13,8 +13,9 @@ import {
   RAT_RACE_TENT_META,
   ratRaceInventoryFromBookings,
 } from '../../lib/rat-race';
+import { getStripePublishableKeyAsync } from '../../lib/stripe-client';
 
-const publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+const publishableKey = await getStripePublishableKeyAsync();
 const inventory = ratRaceInventoryFromBookings(await getAllBookings());
 const initialQuote = quoteRatRace({
   tents: [{ kind: 'cosy', guests: 2 }],
@@ -102,10 +103,10 @@ const group = RAT_RACE_TENT_META.group;
         <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-3">The night</p>
         <h2 class="font-display text-3xl font-black text-[#111111] mb-4">Saturday night under canvas</h2>
         <p class="text-stone-600 leading-relaxed mb-4">
-          Sleep under canvas in the Scottish Highlands. The local shinty pitch is the perfect place to pitch for the night — a Rat Race village on the Glengarry Shinty Club field. The setup is warm, cosy and ready for your arrival.
+          We pitch on the Glengarry Shinty Club field for Rat Race Coast to Coast. You check in Saturday; we are onsite Friday through Sunday.
         </p>
         <p class="text-stone-600 leading-relaxed mb-4">
-          These shots are this year’s beds on that field. If you want the shop waiting too, Morrisons Fort William click and collect can be in the tent at check-in.
+          Photos below are from this year’s field. Optional Morrisons Fort William click &amp; collect can be waiting in the tent at check-in.
         </p>
         <ul class="text-sm text-stone-700 space-y-2 mb-6">
           <li class="flex gap-2"><i class="fa-solid fa-flag-checkered text-[#7D6E23] mt-0.5"></i> Enter the race on the <a class="underline font-semibold" href={RAT_RACE_EVENT_URL} target="_blank" rel="noopener noreferrer">official Rat Race page</a></li>
@@ -124,7 +125,7 @@ const group = RAT_RACE_TENT_META.group;
           <p class="text-[11px] uppercase tracking-wider font-bold text-[#111111]/60 mb-1">5M Cosy · from £{cosy.basePrice}</p>
           <h3 class="font-display text-xl font-black text-[#111111] mb-2">Cosy</h3>
           <p class="text-sm text-[#111111]/80">{cosy.summary}</p>
-          <p class="text-xs text-[#111111]/70 mt-3">Up to 3 guests included · +£{cosy.extraGuestPrice} each extra · max {cosy.maxGuests}</p>
+          <p class="text-xs text-[#111111]/70 mt-3">{cosy.priceBlurb}</p>
         </article>
         <article class="rounded-3xl bg-white border-2 border-[#F7BA1E] overflow-hidden flex flex-col flex-1 min-h-0">
           <img src={RAT_RACE_2027.photos.deluxeBedsClose} alt="Close-up of Deluxe beds and night stands" class="w-full h-40 lg:h-auto lg:flex-1 object-cover min-h-[160px]" />
@@ -132,7 +133,7 @@ const group = RAT_RACE_TENT_META.group;
             <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">5M Deluxe · from £{deluxe.basePrice}</p>
             <h3 class="font-display text-xl font-black mb-2">Deluxe</h3>
             <p class="text-sm text-stone-600">{deluxe.summary}</p>
-            <p class="text-xs text-stone-500 mt-3">£{deluxe.basePrice} for 2 guests · +£{deluxe.extraGuestPrice} for a 3rd · max {deluxe.maxGuests}</p>
+            <p class="text-xs text-stone-500 mt-3">{deluxe.priceBlurb}</p>
           </div>
         </article>
       </div>
@@ -144,7 +145,7 @@ const group = RAT_RACE_TENT_META.group;
       <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Packages</p>
       <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Choose your tent, then add guests</h2>
       <p class="text-stone-700 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-medium">
-        All Cosy and Deluxe tents are 5M — the same fleet as our other 2027 events. Need more people? Add another tent. Up to {RAT_RACE_TENT_CAP} tents on the field; max {RAT_RACE_GROUP_CAP} Group tents.
+        Cosy and Deluxe are 5M tents. Group is 6M. Need more beds than one tent holds? Add another. Cap is {RAT_RACE_TENT_CAP} tents on the field, including up to {RAT_RACE_GROUP_CAP} Group tents.
       </p>
 
       <div class="grid md:grid-cols-3 gap-4">
@@ -152,23 +153,24 @@ const group = RAT_RACE_TENT_META.group;
           <p class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-1">5M</p>
           <h3 class="font-display text-xl font-black text-[#111111]">Cosy · £{cosy.basePrice}</h3>
           <p class="text-sm text-stone-600 mt-2">{cosy.summary}</p>
-          <p class="text-xs text-stone-500 mt-3">Up to 3 included · +£{cosy.extraGuestPrice} extra · max {cosy.maxGuests}</p>
+          <p class="text-xs text-stone-500 mt-3">{cosy.priceBlurb}</p>
         </article>
         <article class="rounded-3xl border-2 border-[#F7BA1E] bg-white p-5">
           <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">5M</p>
           <h3 class="font-display text-xl font-black text-[#111111]">Deluxe · £{deluxe.basePrice}</h3>
           <p class="text-sm text-stone-600 mt-2">{deluxe.summary}</p>
-          <p class="text-xs text-stone-500 mt-3">2 guests · +£{deluxe.extraGuestPrice} for a 3rd · max {deluxe.maxGuests}</p>
+          <p class="text-xs text-stone-500 mt-3">{deluxe.priceBlurb}</p>
         </article>
         <article class={`rounded-3xl border p-5 ${inventory.groupSoldOut ? 'border-stone-200 bg-stone-100 opacity-70' : 'border-stone-200 bg-white'}`}>
           <div class="flex items-center justify-between gap-2 mb-1">
             <p class="text-[11px] uppercase tracking-wider font-bold text-stone-500">6M</p>
-            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">Limited availability</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">Limited</span>
           </div>
           <h3 class="font-display text-xl font-black text-[#111111]">Group tent · £{group.basePrice}</h3>
           <p class="text-sm text-stone-600 mt-2">{group.summary}</p>
           <p class="text-xs text-stone-500 mt-3">
-            {inventory.groupSoldOut ? 'Sold out' : `${inventory.remainingGroup} of ${RAT_RACE_GROUP_CAP} left`} · Cosy set-up · max {group.maxGuests} guests
+            {group.priceBlurb}
+            {inventory.groupSoldOut ? ' Sold out.' : ` ${inventory.remainingGroup} of ${RAT_RACE_GROUP_CAP} left.`}
           </p>
         </article>
       </div>
@@ -178,10 +180,10 @@ const group = RAT_RACE_TENT_META.group;
   <section id="book-rat-race" class="py-16 bg-[#FAF7EE]">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start">
       <div>
-        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Mini booking engine</p>
-        <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Build your village</h2>
+        <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Booking</p>
+        <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Book your tent(s)</h2>
         <p class="text-stone-600 text-sm leading-relaxed mb-4">
-          Pick Cosy, Deluxe or the Group tent, set guests (we won’t let you go over the max — add another tent instead), and stack as many tents as you need in one booking. Setup included. £200 security deposit a tent on a card reader at Saturday check-in. Pay 50% now, or Pay Up (2 months now, 10 after) on Stripe — Klarna energy, not Klarna.
+          Choose Cosy, Deluxe or Group, set guests, and add more tents if you need them. Setup is included. Pay 50% now (balance the week before), or Pay Up — two months upfront, then six monthly payments. £200 refundable security deposit per tent is taken on a card reader at Saturday check-in.
         </p>
         <p class="text-sm text-stone-700 rounded-2xl border border-amber-200 bg-amber-50 p-4 mb-6">
           {RAT_RACE_CAMPING_PASS_NOTE}
@@ -191,7 +193,7 @@ const group = RAT_RACE_TENT_META.group;
           <div class="p-6 space-y-3">
             <p class="font-display font-black text-[#111111]">Morrisons concierge</p>
             <p>
-              Add it to the booking and we’ll send instructions on how to build your order. Send it back to us and we’ll process it for payment with a Stripe link. You’ll pay the basket plus 10%, with that 10% capped at £15.
+              Want food and drink waiting in the tent when you check in? Tick Morrisons on the booking and we’ll email how to build a click &amp; collect order at Morrisons in Fort William. Send the list back; we pay for it and charge you on a Stripe link — basket total plus 10% (capped at £15). Not included in the tent fee.
             </p>
           </div>
         </div>
@@ -221,21 +223,21 @@ const group = RAT_RACE_TENT_META.group;
             <input type="radio" name="rr-package" value="cosy" checked class="mt-1" />
             <span>
               <span class="block font-display font-black">5M Cosy · £{cosy.basePrice}</span>
-              <span class="text-xs text-stone-500">Up to 3 guests · +£{cosy.extraGuestPrice} extra · max {cosy.maxGuests}</span>
+              <span class="text-xs text-stone-500">{cosy.priceBlurb}</span>
             </span>
           </label>
           <label class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
             <input type="radio" name="rr-package" value="deluxe" class="mt-1" />
             <span>
               <span class="block font-display font-black">5M Deluxe · £{deluxe.basePrice}</span>
-              <span class="text-xs text-stone-500">2 guests · +£{deluxe.extraGuestPrice} for a 3rd · max {deluxe.maxGuests}</span>
+              <span class="text-xs text-stone-500">{deluxe.priceBlurb}</span>
             </span>
           </label>
           <label class={`flex gap-3 rounded-2xl border-2 p-4 ${inventory.groupSoldOut ? 'border-stone-200 opacity-50 cursor-not-allowed' : 'border-stone-200 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]'}`}>
             <input type="radio" name="rr-package" value="group" class="mt-1" disabled={inventory.groupSoldOut} />
             <span>
               <span class="block font-display font-black">6M Group · £{group.basePrice} <span class="text-[10px] uppercase tracking-wider text-amber-800">Limited</span></span>
-              <span class="text-xs text-stone-500">Up to 6 guests · Cosy set-up · {inventory.groupSoldOut ? 'Sold out' : `${inventory.remainingGroup} left`}</span>
+              <span class="text-xs text-stone-500">{group.priceBlurb}{inventory.groupSoldOut ? ' Sold out.' : ` ${inventory.remainingGroup} left.`}</span>
             </span>
           </label>
         </fieldset>
@@ -309,9 +311,9 @@ const group = RAT_RACE_TENT_META.group;
             <label id="rr-pay-up-label" class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
               <input type="radio" name="rr-pay-plan" value="instalment" class="mt-1" id="rr-pay-instalment" />
               <span>
-                <span class="block font-display font-black">Pay Up · 2 months now, 10 after</span>
+                <span class="block font-display font-black">Pay Up · 2 months now, 6 after</span>
                 <span class="text-xs text-stone-500" id="rr-pay-up-copy">
-                  Two months of the stay today, then ten interest-free months on the same card. Stripe runs the subscription — Klarna energy, not Klarna.
+                  Two months of the stay today, then six interest-free months on the same card. Stripe runs the subscription — Klarna energy, not Klarna.
                 </span>
               </span>
             </label>

@@ -2,6 +2,42 @@ import type Stripe from 'stripe';
 import { bookingFromStripeSession } from './booking-from-stripe';
 import { sendOnboardingEmails } from './booking-emails';
 import { getBookingByRef, getBookingBySubscriptionId, upsertBooking } from './booking-store';
+import { instalmentSubscriptionSchedule } from './rat-race';
+import { getStripeAsync } from './stripe-client';
+
+/**
+ * Cap Pay Up subscriptions after the planned instalment count.
+ * Called from webhook and success-page capture so cancel_at is set even if one path fails.
+ */
+export async function ensurePayUpSubscriptionEnds(
+  session: Stripe.Checkout.Session,
+): Promise<void> {
+  if (session.mode !== 'subscription') return;
+  const meta = session.metadata || {};
+  if (meta.paymentPlan !== 'instalment') return;
+
+  const subscriptionId =
+    typeof session.subscription === 'string'
+      ? session.subscription
+      : session.subscription?.id;
+  if (!subscriptionId) return;
+
+  const stripe = await getStripeAsync();
+  if (!stripe) return;
+
+  const fromMeta = Number(meta.instalmentCancelAt);
+  const cancelAt =
+    Number.isFinite(fromMeta) && fromMeta > 0
+      ? Math.floor(fromMeta)
+      : instalmentSubscriptionSchedule(
+          session.created ? new Date(session.created * 1000) : new Date(),
+        ).cancelAtUnix;
+
+  const sub = await stripe.subscriptions.retrieve(subscriptionId);
+  if (sub.cancel_at === cancelAt) return;
+
+  await stripe.subscriptions.update(subscriptionId, { cancel_at: cancelAt });
+}
 
 export async function capturePaidBooking(session: Stripe.Checkout.Session, origin = '') {
   const meta = session.metadata || {};
@@ -35,6 +71,13 @@ export async function capturePaidBooking(session: Stripe.Checkout.Session, origi
   if (!record) return null;
 
   const saved = await upsertBooking(record);
+
+  try {
+    await ensurePayUpSubscriptionEnds(session);
+  } catch (error) {
+    console.error('[Capture] Failed to set Pay Up cancel_at', error);
+  }
+
   const emails = await sendOnboardingEmails(saved, origin);
   return upsertBooking({ ...saved, emails });
 }
