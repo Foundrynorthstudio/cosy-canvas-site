@@ -75,12 +75,12 @@ export const RAT_RACE_TENT_META: Record<
     sizeLabel: '5M',
     sizeMetres: 5,
     minGuests: 1,
-    maxGuests: 3,
+    maxGuests: 4,
     basePrice: 295,
     baseGuests: 2,
     extraGuestPrice: 50,
     summary: 'A raised bed, sleeping bag, pillow and camping chair for every guest. Pitched and ready when you arrive.',
-    priceBlurb: '£295 for up to 2 guests. Third guest £50, sleeps up to 3.',
+    priceBlurb: '£295 for up to 2 guests. Extra guests £50 each, sleeps up to 4.',
     beddingTier: SHARED_BEDDING,
   },
   group: {
@@ -100,7 +100,7 @@ export const RAT_RACE_TENT_META: Record<
 };
 
 export const RAT_RACE_BELL_GUEST_LIMIT_MESSAGE =
-  'Up to 3 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
+  'Up to 4 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
 
 export function isRatRaceTentKind(value: unknown): value is RatRaceTentKind {
   return value === 'bell' || value === 'group';

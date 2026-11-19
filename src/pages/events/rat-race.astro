@@ -150,7 +150,7 @@ const group = RAT_RACE_TENT_META.group;
       <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Packages</p>
       <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Choose your tent, then add guests</h2>
       <p class="text-stone-700 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-medium">
-        Pick your tent, then add guests. Up to 3 people? Book a 5M tent. 4 to 6? Book a Group tent. Bigger group? Add another tent. Only {RAT_RACE_TENT_CAP} tents on the field, including up to {RAT_RACE_GROUP_CAP} Group tents.
+        Pick your tent, then add guests. Up to 4 people? Book a 5M tent. 4 to 6? Book a Group tent. Bigger group? Add another tent. Only {RAT_RACE_TENT_CAP} tents on the field, including up to {RAT_RACE_GROUP_CAP} Group tents.
       </p>
 
       <div class="grid md:grid-cols-2 gap-4">
@@ -241,10 +241,10 @@ const group = RAT_RACE_TENT_META.group;
           <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-guests">Guests in this tent</label>
           <div class="flex items-center gap-3">
             <button type="button" id="rr-guests-minus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">−</button>
-            <input id="rr-guests" type="number" min="1" max="3" value="2" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
+            <input id="rr-guests" type="number" min="1" max="4" value="2" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
             <button type="button" id="rr-guests-plus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">+</button>
           </div>
-          <p id="rr-guest-cap" class="text-[11px] text-stone-500 mt-2">£295 for up to 2 guests. Third guest £50, sleeps up to 3.</p>
+          <p id="rr-guest-cap" class="text-[11px] text-stone-500 mt-2">£295 for up to 2 guests. Extra guests £50 each, sleeps up to 4.</p>
         </div>
 
         <button
@@ -392,7 +392,7 @@ const group = RAT_RACE_TENT_META.group;
   let quote = JSON.parse(quoteEl.getAttribute('data-initial') || '{}');
   let stripeCheckout = null;
   const BELL_GUEST_LIMIT_MESSAGE =
-    'Up to 3 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
+    'Up to 4 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
   /** @type {{ kind: string, guests: number }[]} */
   let basket = [{ kind: 'bell', guests: 2 }];
 
