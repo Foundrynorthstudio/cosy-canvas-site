@@ -23,6 +23,7 @@ function checkoutMetadata(
     customerAddress: string;
     requestNotes: string;
     concierge: boolean;
+    cancellationTermsAgreedAt: string;
   },
 ): Record<string, string> {
   return {
@@ -56,6 +57,7 @@ function checkoutMetadata(
     instalmentCount: String(quote.payMonthly.monthlyCount),
     eventSlug: RAT_RACE_2027.slug,
     conciergeRequested: extras.concierge ? 'true' : 'false',
+    cancellationTermsAgreedAt: extras.cancellationTermsAgreedAt,
     organiserCommissionRate: String(quote.organiserCommissionRate),
     organiserCommissionAmount: String(quote.organiserCommissionAmount),
     tents5: String(quote.tents5),
@@ -80,6 +82,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       guests,
       packageKind,
       conciergeRequested,
+      cancellationTermsAgreed,
       customerName,
       customerEmail,
       customerPhone,
@@ -94,6 +97,15 @@ export const POST: APIRoute = async ({ request, url }) => {
         { status: 400, headers: { 'Content-Type': 'application/json' } },
       );
     }
+
+    if (cancellationTermsAgreed !== true) {
+      return new Response(
+        JSON.stringify({ error: 'Please confirm you have read and agree to the cancellation terms.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const cancellationTermsAgreedAt = new Date().toISOString();
 
     const inventory = ratRaceInventoryFromBookings(await getAllBookings());
     const plan = requestedPlan === 'instalment' ? 'instalment' : 'deposit';
@@ -145,6 +157,7 @@ export const POST: APIRoute = async ({ request, url }) => {
       customerAddress: customerAddress || '',
       requestNotes,
       concierge,
+      cancellationTermsAgreedAt,
     };
 
     const stripeSecretKey = await getStripeSecretKeyAsync();

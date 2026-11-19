@@ -45,6 +45,16 @@ const pitchW3wUrl = logistics.pitchW3w
 const lineItems = buildBookingLineItems(booking);
 const selectedAddons = lineItems.filter((item) => item.kind === 'addon');
 const mailSettings = await getMailSettings();
+const cancellationAgreedLabel = booking.cancellationTermsAgreedAt
+  ? new Date(booking.cancellationTermsAgreedAt).toLocaleString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short',
+    })
+  : '';
 ---
 
 <StudioLayout title={`${booking.bookingRef} · Bookings`}>
@@ -76,6 +86,13 @@ const mailSettings = await getMailSettings();
         <p class="text-[#F7BA1E] font-mono text-[11px] uppercase tracking-[0.2em]">Booking summary</p>
         <h2 class="font-display text-2xl font-black">What they booked</h2>
         <p class="text-stone-500 text-sm mt-1">{booking.guests} guests · {booking.nights} nights · {booking.campsiteLocation}</p>
+        {isRatRaceBooking(booking) && (
+          <p class="text-sm mt-2 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900 px-3 py-2">
+            {cancellationAgreedLabel
+              ? <>Cancellation terms agreed <strong>{cancellationAgreedLabel}</strong></>
+              : <>Cancellation terms agreement <strong>not recorded</strong> on this booking</>}
+          </p>
+        )}
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {

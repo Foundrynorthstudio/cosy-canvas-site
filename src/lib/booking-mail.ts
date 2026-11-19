@@ -148,7 +148,7 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 {{#cardHoldSecurity}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} security deposit is held against damage or missing kit and is refunded after the post-stay check.</p>{{/cardHoldSecurity}}
 <h3 style="color:#111;">What we bring</h3>
 {{#ratRace}}
-<p>Heavy-duty canvas, pitched and ready. Inside: a raised bed, sleeping bag, pillow and camping chair for every guest ({{beddingTier}}).</p>
+<p>Heavy-duty canvas, pitched and ready. {{beddingTier}}</p>
 {{/ratRace}}
 {{#cardHoldSecurity}}
 <p>Heavy-duty canvas, lanterns, and the extras you selected. Hotel-grade bedding is included only if you chose a bedding package ({{beddingTier}}).</p>

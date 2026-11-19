@@ -58,6 +58,8 @@ export interface BookingRecord {
   kitOps?: KitInspection;
   eventSlug?: string;
   conciergeRequested?: boolean;
+  /** ISO timestamp when the guest agreed to Rat Race cancellation terms at checkout. */
+  cancellationTermsAgreedAt?: string;
   partnerSiteKey?: string;
 }
 

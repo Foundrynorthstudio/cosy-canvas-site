@@ -49,8 +49,8 @@ export interface RatRaceTentLineInput {
   guests: number;
 }
 
-const SHARED_BEDDING =
-  'Raised bed, sleeping bag, pillow and camping chair per guest';
+const SHARED_INCLUDED =
+  'A raised bed, sleeping bag, pillow and camping chair for every guest, plus a table, crockery and cutlery in every tent.';
 
 export const RAT_RACE_TENT_META: Record<
   RatRaceTentKind,
@@ -79,9 +79,9 @@ export const RAT_RACE_TENT_META: Record<
     basePrice: 295,
     baseGuests: 2,
     extraGuestPrice: 50,
-    summary: 'A raised bed, sleeping bag, pillow and camping chair for every guest. Pitched and ready when you arrive.',
+    summary: SHARED_INCLUDED,
     priceBlurb: '£295 for up to 2 guests. Extra guests £50 each, sleeps up to 4.',
-    beddingTier: SHARED_BEDDING,
+    beddingTier: SHARED_INCLUDED,
   },
   group: {
     label: 'Group tent',
@@ -93,9 +93,9 @@ export const RAT_RACE_TENT_META: Record<
     baseGuests: 6,
     extraGuestPrice: 0,
     limited: true,
-    summary: 'Same set-up as the 5M, with room for the whole crew. Only three on the field.',
+    summary: SHARED_INCLUDED,
     priceBlurb: '£495 flat for 4 to 6 guests.',
-    beddingTier: SHARED_BEDDING,
+    beddingTier: SHARED_INCLUDED,
   },
 };
 

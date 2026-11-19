@@ -110,6 +110,17 @@ export function buildKitManifest(booking: KitSource): {
         { sku: 'camping-chair', label: 'Camping chair', qty: String(guests) },
       ],
     });
+    groups.push({
+      id: 'dining',
+      title: 'Table & dining',
+      icon: 'fa-utensils',
+      packed: true,
+      lines: [
+        { sku: 'table', label: 'Table', qty: tentQty },
+        { sku: 'crockery', label: 'Crockery', qty: String(guests) },
+        { sku: 'cutlery', label: 'Cutlery', qty: String(guests) },
+      ],
+    });
   }
 
   if (kitchen) {

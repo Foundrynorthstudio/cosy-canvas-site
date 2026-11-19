@@ -31,6 +31,7 @@ const group = RAT_RACE_TENT_META.group;
   description={`Saturday-night 5M Bell tent (£${bell.basePrice}) and limited 6M Group tent (£${group.basePrice}) for Rat Race Coast to Coast, 11 September 2027. Morrisons Fort William concierge extra.`}
   image={RAT_RACE_2027.tile}
   keywords="rat race coast to coast camping, rat race glamping 2027, fort william bell tent hire, event camping scotland"
+  hideWeatherGuarantee={true}
   breadcrumbItems={[
     { name: 'Home', url: siteUrl },
     { name: 'Events', url: `${siteUrl}/events` },
@@ -321,6 +322,19 @@ const group = RAT_RACE_TENT_META.group;
           </div>
         )}
 
+        <div id="rr-cancellation-terms" class="rounded-2xl border border-stone-200 bg-stone-50 p-4 text-sm text-stone-700 space-y-2">
+          <h3 class="font-display font-black text-[#111111] text-base">Cancellation terms</h3>
+          <ul class="list-disc pl-5 space-y-1.5 text-xs leading-relaxed">
+            <li>Cancel 8 weeks or more before the event (by 17 July 2027): full refund of what you've paid.</li>
+            <li>Cancel 6 to 8 weeks before (17 July to 31 July 2027): 50% of the total booking price is refunded, or kept if you've paid less than that.</li>
+            <li>Cancel less than 6 weeks before (after 31 July 2027): no refund.</li>
+            <li>Can't make it? You can pass your booking to someone else at no cost – just tell us their name before the event.</li>
+            <li>If Rat Race cancel the event, or we can't provide your tent, you'll get a full refund.</li>
+            <li>Pay Up: if you cancel, any remaining instalments stop, and the terms above apply to the total booking price.</li>
+            <li>The £200 security deposit is separate and is taken at check-in.</li>
+          </ul>
+        </div>
+
         <button
           type="button"
           id="rr-open-checkout"
@@ -362,6 +376,10 @@ const group = RAT_RACE_TENT_META.group;
           <input id="rr-address-postcode" name="postal-code" autocomplete="postal-code" placeholder="Postcode" class="w-full rounded-2xl border border-stone-300 p-3 text-sm uppercase" />
         </div>
         <textarea id="rr-notes" rows="3" autocomplete="off" placeholder="Crew notes, allergies, shopping-list timing" class="w-full rounded-2xl border border-stone-300 p-3 text-sm"></textarea>
+        <label class="flex gap-3 items-start text-sm text-stone-700 rounded-2xl border border-stone-200 bg-stone-50 p-3">
+          <input id="rr-cancellation-agree" type="checkbox" class="mt-1" required />
+          <span>I've read and agree to the cancellation terms.</span>
+        </label>
         <button type="submit" id="rr-pay" class="w-full rounded-full bg-[#111111] text-[#F7BA1E] font-display font-extrabold text-xs uppercase tracking-wider py-3">
           Continue to Stripe
         </button>
@@ -613,6 +631,12 @@ const group = RAT_RACE_TENT_META.group;
       errorEl.classList.remove('hidden');
       return;
     }
+    const termsAgreed = document.getElementById('rr-cancellation-agree')?.checked;
+    if (!termsAgreed) {
+      errorEl.textContent = 'Please confirm you have read and agree to the cancellation terms.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
     const payBtn = document.getElementById('rr-pay');
     payBtn.disabled = true;
     try {
@@ -622,6 +646,7 @@ const group = RAT_RACE_TENT_META.group;
         body: JSON.stringify({
           tents: basket,
           conciergeRequested: document.getElementById('rr-concierge').checked,
+          cancellationTermsAgreed: true,
           customerName: name,
           customerEmail: email,
           customerPhone: phone,
