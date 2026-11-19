@@ -18,18 +18,17 @@ import { getStripePublishableKeyAsync } from '../../lib/stripe-client';
 const publishableKey = await getStripePublishableKeyAsync();
 const inventory = ratRaceInventoryFromBookings(await getAllBookings());
 const initialQuote = quoteRatRace({
-  tents: [{ kind: 'cosy', guests: 2 }],
+  tents: [{ kind: 'bell', guests: 2 }],
   inventory,
 });
 const siteUrl = Astro.site ? Astro.site.origin : 'https://cosycanvasco.com';
-const cosy = RAT_RACE_TENT_META.cosy;
-const deluxe = RAT_RACE_TENT_META.deluxe;
+const bell = RAT_RACE_TENT_META.bell;
 const group = RAT_RACE_TENT_META.group;
 ---
 
 <Layout
-  title="Rat Race Coast to Coast Glamping 2027 | Cosy & Deluxe Saturday Night | The Cosy Canvas Co."
-  description={`Saturday-night 5M Cosy (£${cosy.basePrice}) and Deluxe (£${deluxe.basePrice}) bell tents for Rat Race Coast to Coast, 11 September 2027. Limited 6M Group tents (£${group.basePrice}). Morrisons Fort William concierge extra.`}
+  title="Rat Race Coast to Coast Glamping 2027 | 5M Bell & 6M Group | The Cosy Canvas Co."
+  description={`Saturday-night 5M Bell tent (£${bell.basePrice}) and limited 6M Group tent (£${group.basePrice}) for Rat Race Coast to Coast, 11 September 2027. Morrisons Fort William concierge extra.`}
   image={RAT_RACE_2027.tile}
   keywords="rat race coast to coast camping, rat race glamping 2027, fort william bell tent hire, event camping scotland"
   breadcrumbItems={[
@@ -60,7 +59,7 @@ const group = RAT_RACE_TENT_META.group;
         <p class="text-stone-300 text-sm md:text-base mt-3 max-w-xl font-light leading-relaxed">
           Event date: <strong class="text-white font-medium">{RAT_RACE_2027.eventDatesLabel}</strong>.
           You sleep <strong class="text-white font-medium">{RAT_RACE_2027.guestNightLabel}</strong>.
-          {RAT_RACE_2027.opsLabel}. 5M Cosy from £{cosy.basePrice} · 5M Deluxe from £{deluxe.basePrice} · limited 6M Group £{group.basePrice}.
+          {RAT_RACE_2027.opsLabel}. 5M Bell tent from £{bell.basePrice} · limited 6M Group £{group.basePrice}.
         </p>
         <div class="flex flex-wrap gap-3 mt-6">
           <a
@@ -92,7 +91,7 @@ const group = RAT_RACE_TENT_META.group;
   <div class="bg-[#111111]">
     <img
       src={RAT_RACE_2027.photos.deluxeFive}
-      alt="Deluxe 5M tent beds ready on the event field"
+      alt="5M bell tent ready on the event field"
       class="w-full max-h-56 md:max-h-72 object-cover object-center"
     />
   </div>
@@ -116,24 +115,30 @@ const group = RAT_RACE_TENT_META.group;
         </ul>
         <img
           src={RAT_RACE_2027.photos.deluxeBeds}
-          alt="Deluxe interior beds ready for Saturday night"
+          alt="Bell tent interior ready for Saturday night"
           class="w-full rounded-3xl object-cover aspect-[4/3] lg:aspect-auto lg:flex-1 lg:min-h-[280px] border border-stone-200"
         />
       </article>
       <div class="flex flex-col gap-4 h-full">
         <article class="rounded-3xl bg-[#F7BA1E] border border-[#F7BA1E] p-6 shrink-0">
-          <p class="text-[11px] uppercase tracking-wider font-bold text-[#111111]/60 mb-1">5M Cosy · from £{cosy.basePrice}</p>
-          <h3 class="font-display text-xl font-black text-[#111111] mb-2">Cosy</h3>
-          <p class="text-sm text-[#111111]/80">{cosy.summary}</p>
-          <p class="text-xs text-[#111111]/70 mt-3">{cosy.priceBlurb}</p>
+          <p class="text-[11px] uppercase tracking-wider font-bold text-[#111111]/60 mb-1">5M</p>
+          <h3 class="font-display text-xl font-black text-[#111111] mb-2">Bell tent · £{bell.basePrice}</h3>
+          <p class="text-sm text-[#111111]/80">{bell.summary}</p>
+          <p class="text-xs text-[#111111]/70 mt-3">{bell.priceBlurb}</p>
         </article>
-        <article class="rounded-3xl bg-white border-2 border-[#F7BA1E] overflow-hidden flex flex-col flex-1 min-h-0">
-          <img src={RAT_RACE_2027.photos.deluxeBedsClose} alt="Close-up of Deluxe beds and night stands" class="w-full h-40 lg:h-auto lg:flex-1 object-cover min-h-[160px]" />
+        <article class={`rounded-3xl bg-white border-2 border-[#F7BA1E] overflow-hidden flex flex-col flex-1 min-h-0 ${inventory.groupSoldOut ? 'opacity-70' : ''}`}>
+          <img src={RAT_RACE_2027.photos.deluxeBedsClose} alt="Raised beds ready inside a Cosy Canvas tent" class="w-full h-40 lg:h-auto lg:flex-1 object-cover min-h-[160px]" />
           <div class="p-6">
-            <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">5M Deluxe · from £{deluxe.basePrice}</p>
-            <h3 class="font-display text-xl font-black mb-2">Deluxe</h3>
-            <p class="text-sm text-stone-600">{deluxe.summary}</p>
-            <p class="text-xs text-stone-500 mt-3">{deluxe.priceBlurb}</p>
+            <div class="flex items-center justify-between gap-2 mb-1">
+              <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E]">6M</p>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">Limited</span>
+            </div>
+            <h3 class="font-display text-xl font-black mb-2">Group tent · £{group.basePrice}</h3>
+            <p class="text-sm text-stone-600">{group.summary}</p>
+            <p class="text-xs text-stone-500 mt-3">
+              {group.priceBlurb}
+              {inventory.groupSoldOut ? ' Sold out.' : ` ${inventory.remainingGroup} of ${RAT_RACE_GROUP_CAP} left.`}
+            </p>
           </div>
         </article>
       </div>
@@ -145,21 +150,18 @@ const group = RAT_RACE_TENT_META.group;
       <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Packages</p>
       <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Choose your tent, then add guests</h2>
       <p class="text-stone-700 text-base md:text-lg leading-relaxed max-w-3xl mb-8 font-medium">
-        Cosy and Deluxe are 5M tents. Group is 6M. Need more beds than one tent holds? Add another. Cap is {RAT_RACE_TENT_CAP} tents on the field, including up to {RAT_RACE_GROUP_CAP} Group tents.
+        Pick your tent, then add guests. Up to 3 people? Book a 5M tent. 4 to 6? Book a Group tent. Bigger group? Add another tent. Only {RAT_RACE_TENT_CAP} tents on the field, including up to {RAT_RACE_GROUP_CAP} Group tents.
       </p>
 
-      <div class="grid md:grid-cols-3 gap-4">
-        <article class="rounded-3xl border border-stone-200 bg-[#FAF7EE] p-5">
+      <div class="grid md:grid-cols-2 gap-4">
+        <article class={`rounded-3xl border border-stone-200 bg-[#FAF7EE] p-5 ${inventory.bellSoldOut ? 'opacity-70' : ''}`}>
           <p class="text-[11px] uppercase tracking-wider font-bold text-stone-500 mb-1">5M</p>
-          <h3 class="font-display text-xl font-black text-[#111111]">Cosy · £{cosy.basePrice}</h3>
-          <p class="text-sm text-stone-600 mt-2">{cosy.summary}</p>
-          <p class="text-xs text-stone-500 mt-3">{cosy.priceBlurb}</p>
-        </article>
-        <article class="rounded-3xl border-2 border-[#F7BA1E] bg-white p-5">
-          <p class="text-[11px] uppercase tracking-wider font-bold text-[#D4A51E] mb-1">5M</p>
-          <h3 class="font-display text-xl font-black text-[#111111]">Deluxe · £{deluxe.basePrice}</h3>
-          <p class="text-sm text-stone-600 mt-2">{deluxe.summary}</p>
-          <p class="text-xs text-stone-500 mt-3">{deluxe.priceBlurb}</p>
+          <h3 class="font-display text-xl font-black text-[#111111]">Bell tent · £{bell.basePrice}</h3>
+          <p class="text-sm text-stone-600 mt-2">{bell.summary}</p>
+          <p class="text-xs text-stone-500 mt-3">
+            {bell.priceBlurb}
+            {inventory.bellSoldOut ? ' Sold out.' : ''}
+          </p>
         </article>
         <article class={`rounded-3xl border p-5 ${inventory.groupSoldOut ? 'border-stone-200 bg-stone-100 opacity-70' : 'border-stone-200 bg-white'}`}>
           <div class="flex items-center justify-between gap-2 mb-1">
@@ -183,7 +185,7 @@ const group = RAT_RACE_TENT_META.group;
         <p class="text-[#7D6E23] font-mono text-[11px] uppercase tracking-widest font-bold mb-2">Booking</p>
         <h2 class="font-display text-3xl font-black text-[#111111] mb-3">Book your tent(s)</h2>
         <p class="text-stone-600 text-sm leading-relaxed mb-4">
-          Choose Cosy, Deluxe or Group, set guests, and add more tents if you need them. Setup is included. Pay 50% now (balance the week before), or Pay Up — two months upfront, then six monthly payments. £200 refundable security deposit per tent is taken on a card reader at Saturday check-in.
+          Choose a 5M Bell or 6M Group tent, set guests, and add more tents if you need them. Setup is included. Pay 50% now (balance the week before), or Pay Up — two months upfront, then six monthly payments. £200 refundable security deposit per tent is taken on a card reader at Saturday check-in.
         </p>
         <p class="text-sm text-stone-700 rounded-2xl border border-amber-200 bg-amber-50 p-4 mb-6">
           {RAT_RACE_CAMPING_PASS_NOTE}
@@ -213,31 +215,24 @@ const group = RAT_RACE_TENT_META.group;
         ) : (
           <p class="text-xs text-stone-500">
             {inventory.remainingTents} of {RAT_RACE_TENT_CAP} tents left
-            {inventory.groupSoldOut ? ' · Group tents sold out' : ` · ${inventory.remainingGroup} Group left`}
+            {inventory.groupSoldOut ? ' · Group tents sold out' : ` · ${inventory.remainingGroup} of ${RAT_RACE_GROUP_CAP} Group left`}
           </p>
         )}
 
         <fieldset class="space-y-2">
           <legend class="text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2">Tent type</legend>
-          <label class="flex gap-3 rounded-2xl border-2 border-[#F7BA1E] bg-[#FAF7EE] p-4 cursor-pointer has-[:checked]:border-[#F7BA1E]">
-            <input type="radio" name="rr-package" value="cosy" checked class="mt-1" />
+          <label class={`flex gap-3 rounded-2xl border-2 p-4 ${inventory.bellSoldOut ? 'border-stone-200 opacity-50 cursor-not-allowed' : 'border-[#F7BA1E] bg-[#FAF7EE] cursor-pointer has-[:checked]:border-[#F7BA1E]'}`}>
+            <input type="radio" name="rr-package" value="bell" checked class="mt-1" disabled={inventory.bellSoldOut} />
             <span>
-              <span class="block font-display font-black">5M Cosy · £{cosy.basePrice}</span>
-              <span class="text-xs text-stone-500">{cosy.priceBlurb}</span>
-            </span>
-          </label>
-          <label class="flex gap-3 rounded-2xl border-2 border-stone-200 p-4 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]">
-            <input type="radio" name="rr-package" value="deluxe" class="mt-1" />
-            <span>
-              <span class="block font-display font-black">5M Deluxe · £{deluxe.basePrice}</span>
-              <span class="text-xs text-stone-500">{deluxe.priceBlurb}</span>
+              <span class="block font-display font-black">5M Bell tent · £{bell.basePrice}{inventory.bellSoldOut ? ' · Sold out' : ''}</span>
+              <span class="text-xs text-stone-500">{bell.priceBlurb}</span>
             </span>
           </label>
           <label class={`flex gap-3 rounded-2xl border-2 p-4 ${inventory.groupSoldOut ? 'border-stone-200 opacity-50 cursor-not-allowed' : 'border-stone-200 cursor-pointer has-[:checked]:border-[#F7BA1E] has-[:checked]:bg-[#FAF7EE]'}`}>
             <input type="radio" name="rr-package" value="group" class="mt-1" disabled={inventory.groupSoldOut} />
             <span>
-              <span class="block font-display font-black">6M Group · £{group.basePrice} <span class="text-[10px] uppercase tracking-wider text-amber-800">Limited</span></span>
-              <span class="text-xs text-stone-500">{group.priceBlurb}{inventory.groupSoldOut ? ' Sold out.' : ` ${inventory.remainingGroup} left.`}</span>
+              <span class="block font-display font-black">6M Group tent · £{group.basePrice} <span class="text-[10px] uppercase tracking-wider text-amber-800">Limited</span>{inventory.groupSoldOut ? ' · Sold out' : ''}</span>
+              <span class="text-xs text-stone-500">{group.priceBlurb}{inventory.groupSoldOut ? '' : ` ${inventory.remainingGroup} of ${RAT_RACE_GROUP_CAP} left.`}</span>
             </span>
           </label>
         </fieldset>
@@ -246,10 +241,10 @@ const group = RAT_RACE_TENT_META.group;
           <label class="block text-xs font-display font-black uppercase tracking-wide text-stone-800 mb-2" for="rr-guests">Guests in this tent</label>
           <div class="flex items-center gap-3">
             <button type="button" id="rr-guests-minus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">−</button>
-            <input id="rr-guests" type="number" min="1" max="5" value="2" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
+            <input id="rr-guests" type="number" min="1" max="3" value="2" class="w-full bg-stone-50 border border-stone-300 rounded-2xl p-3 text-center font-display font-black text-xl" />
             <button type="button" id="rr-guests-plus" class="w-11 h-11 rounded-2xl border border-stone-300 font-bold text-lg hover:bg-stone-50">+</button>
           </div>
-          <p id="rr-guest-cap" class="text-[11px] text-stone-500 mt-2">Max 5 for Cosy. Need more people? Add another tent.</p>
+          <p id="rr-guest-cap" class="text-[11px] text-stone-500 mt-2">£295 for up to 2 guests. Third guest £50, sleeps up to 3.</p>
         </div>
 
         <button
@@ -396,33 +391,44 @@ const group = RAT_RACE_TENT_META.group;
   const stockError = document.getElementById('rr-stock-error');
   let quote = JSON.parse(quoteEl.getAttribute('data-initial') || '{}');
   let stripeCheckout = null;
+  const BELL_GUEST_LIMIT_MESSAGE =
+    'Up to 3 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
   /** @type {{ kind: string, guests: number }[]} */
-  let basket = [{ kind: 'cosy', guests: 2 }];
+  let basket = [{ kind: 'bell', guests: 2 }];
 
   function packageKind() {
-    return document.querySelector('input[name="rr-package"]:checked')?.value || 'cosy';
+    return document.querySelector('input[name="rr-package"]:checked')?.value || 'bell';
   }
   function paymentPlan() {
     return document.querySelector('input[name="rr-pay-plan"]:checked')?.value || 'deposit';
   }
   function metaFor(kind) {
-    return tentMeta[kind] || tentMeta.cosy;
+    return tentMeta[kind] || tentMeta.bell;
   }
   function clampGuests(kind, n) {
     const meta = metaFor(kind);
     const value = Math.round(Number(n) || meta.minGuests);
     return Math.min(meta.maxGuests, Math.max(meta.minGuests, value));
   }
-  function syncGuestStepper() {
+  function syncGuestStepper(options = {}) {
     const kind = packageKind();
     const meta = metaFor(kind);
-    const guests = clampGuests(kind, guestsInput.value);
+    const raw = Math.round(Number(guestsInput.value) || meta.minGuests);
+    const guests = clampGuests(kind, raw);
     guestsInput.min = String(meta.minGuests);
     guestsInput.max = String(meta.maxGuests);
     guestsInput.value = String(guests);
     const cap = document.getElementById('rr-guest-cap');
     if (cap) {
-      cap.textContent = `Max ${meta.maxGuests} for ${meta.label}. Need more people? Add another tent.`;
+      if (kind === 'bell' && options.overLimit) {
+        cap.textContent = BELL_GUEST_LIMIT_MESSAGE;
+        cap.classList.remove('text-stone-500');
+        cap.classList.add('text-amber-800');
+      } else {
+        cap.textContent = meta.priceBlurb;
+        cap.classList.add('text-stone-500');
+        cap.classList.remove('text-amber-800');
+      }
     }
   }
   function moneyLabel(price) {
@@ -525,11 +531,25 @@ const group = RAT_RACE_TENT_META.group;
 
   document.getElementById('rr-guests-minus').addEventListener('click', () => {
     guestsInput.value = String(clampGuests(packageKind(), Number(guestsInput.value) - 1));
+    syncGuestStepper();
   });
   document.getElementById('rr-guests-plus').addEventListener('click', () => {
-    guestsInput.value = String(clampGuests(packageKind(), Number(guestsInput.value) + 1));
+    const kind = packageKind();
+    const meta = metaFor(kind);
+    const next = Number(guestsInput.value) + 1;
+    if (kind === 'bell' && next > meta.maxGuests) {
+      syncGuestStepper({ overLimit: true });
+      return;
+    }
+    guestsInput.value = String(clampGuests(kind, next));
+    syncGuestStepper();
   });
-  guestsInput.addEventListener('change', () => syncGuestStepper());
+  guestsInput.addEventListener('change', () => {
+    const kind = packageKind();
+    const meta = metaFor(kind);
+    const raw = Math.round(Number(guestsInput.value) || meta.minGuests);
+    syncGuestStepper({ overLimit: kind === 'bell' && raw > meta.maxGuests });
+  });
   document.querySelectorAll('input[name="rr-package"]').forEach((el) => {
     el.addEventListener('change', () => syncGuestStepper());
   });
@@ -539,6 +559,7 @@ const group = RAT_RACE_TENT_META.group;
   document.getElementById('rr-add-tent').addEventListener('click', () => {
     if (inventoryBoot.soldOut) return;
     const kind = packageKind();
+    if (kind === 'bell' && inventoryBoot.bellSoldOut) return;
     if (kind === 'group' && inventoryBoot.groupSoldOut) return;
     basket.push({ kind, guests: clampGuests(kind, guestsInput.value) });
     refreshQuote();

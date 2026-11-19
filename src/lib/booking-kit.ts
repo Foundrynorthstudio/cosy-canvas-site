@@ -26,8 +26,9 @@ function hasAddon(booking: KitSource, ...needles: string[]): boolean {
   return needles.some((needle) => hay.includes(needle.toLowerCase()));
 }
 
-function beddingKind(tier: string): 'none' | 'essentials' | 'cosy' {
+function beddingKind(tier: string): 'none' | 'essentials' | 'cosy' | 'ratRace' {
   const value = tier.toLowerCase();
+  if (value.includes('sleeping bag') || value.includes('raised bed')) return 'ratRace';
   if (value.includes('cosy')) return 'cosy';
   if (value.includes('essential')) return 'essentials';
   return 'none';
@@ -94,6 +95,19 @@ export function buildKitManifest(booking: KitSource): {
         { sku: 'mattress', label: 'Raised air-frame mattress', qty: String(guests) },
         { sku: 'linen', label: 'Hotel linen & duvet sets', qty: String(guests) },
         { sku: 'pillows', label: 'Pillows', qty: String(guests * 2) },
+      ],
+    });
+  } else if (bedding === 'ratRace') {
+    groups.push({
+      id: 'sleep',
+      title: 'Rat Race sleep kit',
+      icon: 'fa-bed',
+      packed: true,
+      lines: [
+        { sku: 'raised-bed', label: 'Raised bed', qty: String(guests) },
+        { sku: 'sleeping-bag', label: 'Sleeping bag', qty: String(guests) },
+        { sku: 'pillow', label: 'Pillow', qty: String(guests) },
+        { sku: 'camping-chair', label: 'Camping chair', qty: String(guests) },
       ],
     });
   }

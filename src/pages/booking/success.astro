@@ -43,11 +43,11 @@ if (isPreview) {
   } catch {
     tents = undefined;
   }
-  const packageParam = Astro.url.searchParams.get("package") || "cosy";
+  const packageParam = Astro.url.searchParams.get("package") || "bell";
   booking = buildRatRacePreviewBooking({
     tents,
     guests: Number(Astro.url.searchParams.get("guests") || 2),
-    packageKind: isRatRaceTentKind(packageParam) ? packageParam : "cosy",
+    packageKind: isRatRaceTentKind(packageParam) ? packageParam : "bell",
     concierge: Astro.url.searchParams.get("concierge") === "1",
     paymentPlan,
   });

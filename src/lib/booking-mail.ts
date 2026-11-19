@@ -129,9 +129,9 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 {{lineItemsHtml}}
 <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">What we are packing</h3>
 {{kitHtml}}
-<h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Payment</h3>
-<p>Stay total {{stayTotal}} · Deposit paid {{depositPaid}} · Paid today {{paidToday}}<br/>{{#ratRace}}Security at Saturday check-in {{securityDeposit}}{{/ratRace}}{{#cardHoldSecurity}}Security hold {{securityDeposit}}{{/cardHoldSecurity}}{{#instalment}} · Pay Up remaining {{remainingBalance}} in {{instalmentCount}} Stripe months of {{instalmentMonthly}}, last charge {{balanceDueDate}}{{/instalment}}{{#lumpBalance}} · Balance {{remainingBalance}} due {{balanceDueDate}}{{/lumpBalance}}</p>
-{{#ratRace}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} refundable deposit is £200 a tent. We take it on a card reader at Saturday check-in.</p>{{/ratRace}}
+<h3 style="font-size:14px;text-transform:uppercase;letter-spacing:0.5px;color:#111;border-bottom:1px solid #f0eee6;padding-bottom:6px;">Payment received</h3>
+<p><strong>Paid today {{paidToday}}</strong><br/>Stay total {{stayTotal}} · Deposit {{depositPaid}}{{#instalment}} · Pay Up remaining {{remainingBalance}} in {{instalmentCount}} Stripe months of {{instalmentMonthly}}, last charge {{balanceDueDate}}{{/instalment}}{{#lumpBalance}} · Balance {{remainingBalance}} due {{balanceDueDate}}{{/lumpBalance}}</p>
+{{#ratRace}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} refundable deposit is £200 a tent. We take it on a card reader at Saturday check-in — it is not charged in Stripe today.</p>{{/ratRace}}
 {{#cardHoldSecurity}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} security deposit is held against damage or missing kit and is refunded after the post-stay check.</p>{{/cardHoldSecurity}}`,
   },
   welcome: {
@@ -142,8 +142,17 @@ export const DEFAULT_TEMPLATES: Record<MailType, MailTemplate> = {
 <h3 style="color:#111;">Your stay</h3>
 <p>{{checkinDate}} → {{checkoutDate}} · {{guests}} guests · {{tentType}}<br/>{{campsiteLocation}}<br/>{{fulfillment}}</p>
 <p><strong>Add-ons:</strong> {{addons}}</p>
+<h3 style="color:#111;">Payment received</h3>
+<p><strong>Paid today {{paidToday}}</strong><br/>Stay total {{stayTotal}} · Deposit {{depositPaid}}{{#instalment}} · Pay Up remaining {{remainingBalance}} in {{instalmentCount}} Stripe months of {{instalmentMonthly}}, last charge {{balanceDueDate}}{{/instalment}}{{#lumpBalance}} · Balance {{remainingBalance}} due {{balanceDueDate}}{{/lumpBalance}}</p>
+{{#ratRace}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} refundable deposit is £200 a tent. We take it on a card reader at Saturday check-in — it is not charged in Stripe today.</p>{{/ratRace}}
+{{#cardHoldSecurity}}<p style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;font-size:12px;color:#166534;">The {{securityDeposit}} security deposit is held against damage or missing kit and is refunded after the post-stay check.</p>{{/cardHoldSecurity}}
 <h3 style="color:#111;">What we bring</h3>
+{{#ratRace}}
+<p>Heavy-duty canvas, pitched and ready. Inside: a raised bed, sleeping bag, pillow and camping chair for every guest ({{beddingTier}}).</p>
+{{/ratRace}}
+{{#cardHoldSecurity}}
 <p>Heavy-duty canvas, lanterns, and the extras you selected. Hotel-grade bedding is included only if you chose a bedding package ({{beddingTier}}).</p>
+{{/cardHoldSecurity}}
 <h3 style="color:#111;">What to pack</h3>
 <ul>
   <li>Layered clothing, a waterproof shell, and easy-on shoes for the tent door</li>
@@ -383,6 +392,16 @@ export function mergeMailSettings(input?: Partial<MailSettings> | null): MailSet
     rules[type] = { ...DEFAULT_RULES[type], ...(input?.rules?.[type] || {}) };
     if (/Polmont/i.test(templates[type].body)) {
       templates[type] = { ...templates[type], body: DEFAULT_TEMPLATES[type].body };
+    }
+    // Refresh guest templates that pre-date the Payment received block / Rat Race bedding copy.
+    if (
+      (type === 'confirmation' || type === 'welcome') &&
+      !/Payment received/i.test(templates[type].body)
+    ) {
+      templates[type] = { ...templates[type], body: DEFAULT_TEMPLATES[type].body };
+    }
+    if (type === 'welcome' && /Hotel-grade bedding/i.test(templates[type].body) && !/\{\{#ratRace\}\}/.test(templates[type].body)) {
+      templates[type] = { ...templates[type], body: DEFAULT_TEMPLATES.welcome.body };
     }
     if (type === 'kitHandover' && /kitHandoverHtml|security deposit|replacement price/i.test(templates[type].body)) {
       templates[type] = DEFAULT_TEMPLATES.kitHandover;

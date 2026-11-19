@@ -42,12 +42,15 @@ export const RAT_RACE_TENT_CAP = 20;
 export const RAT_RACE_GROUP_CAP = 3;
 export const SECURITY_PER_TENT = 200;
 
-export type RatRaceTentKind = 'cosy' | 'deluxe' | 'group';
+export type RatRaceTentKind = 'bell' | 'group';
 
 export interface RatRaceTentLineInput {
   kind: RatRaceTentKind;
   guests: number;
 }
+
+const SHARED_BEDDING =
+  'Raised bed, sleeping bag, pillow and camping chair per guest';
 
 export const RAT_RACE_TENT_META: Record<
   RatRaceTentKind,
@@ -67,63 +70,57 @@ export const RAT_RACE_TENT_META: Record<
     beddingTier: string;
   }
 > = {
-  cosy: {
-    label: 'Cosy',
+  bell: {
+    label: 'Bell tent',
     sizeLabel: '5M',
     sizeMetres: 5,
     minGuests: 1,
-    maxGuests: 5,
-    basePrice: 245,
-    baseGuests: 3,
-    extraGuestPrice: 40,
-    summary:
-      'Raised air bed (air mattress on an air frame), sleeping bag, pillow, night stand and chair per guest.',
-    priceBlurb: '£245 covers 3 guests. Extra guests £40 each — sleeps up to 5.',
-    beddingTier: 'Raised air bed, sleeping bag, pillow, night stand, chair',
-  },
-  deluxe: {
-    label: 'Deluxe',
-    sizeLabel: '5M',
-    sizeMetres: 5,
-    minGuests: 2,
     maxGuests: 3,
-    basePrice: 320,
+    basePrice: 295,
     baseGuests: 2,
-    extraGuestPrice: 60,
-    summary:
-      'Proper single bed per guest with mattress topper, duvet, pillows and fresh linen, plus bedside tables, rug and lighting.',
-    priceBlurb: '£320 for 2 guests. Third guest £60 — sleeps up to 3.',
-    beddingTier: 'Proper single bed, mattress topper, duvet, pillows, linen',
+    extraGuestPrice: 50,
+    summary: 'A raised bed, sleeping bag, pillow and camping chair for every guest. Pitched and ready when you arrive.',
+    priceBlurb: '£295 for up to 2 guests. Third guest £50, sleeps up to 3.',
+    beddingTier: SHARED_BEDDING,
   },
   group: {
     label: 'Group tent',
     sizeLabel: '6M',
     sizeMetres: 6,
-    minGuests: 1,
+    minGuests: 4,
     maxGuests: 6,
-    basePrice: 395,
+    basePrice: 495,
     baseGuests: 6,
     extraGuestPrice: 0,
     limited: true,
-    summary: '6M Cosy set-up. Only three on the field.',
-    priceBlurb: '£395 — sleeps up to 6.',
-    beddingTier: 'Raised air bed Cosy set-up (Group tent)',
+    summary: 'Same set-up as the 5M, with room for the whole crew. Only three on the field.',
+    priceBlurb: '£495 flat for 4 to 6 guests.',
+    beddingTier: SHARED_BEDDING,
   },
 };
 
+export const RAT_RACE_BELL_GUEST_LIMIT_MESSAGE =
+  'Up to 3 per 5M tent. Choose a Group tent for 4 to 6, or add another tent.';
+
 export function isRatRaceTentKind(value: unknown): value is RatRaceTentKind {
-  return value === 'cosy' || value === 'deluxe' || value === 'group';
+  return value === 'bell' || value === 'group';
 }
 
 /** Accepts current kinds plus legacy package aliases. */
 export function isRatRacePackage(value: unknown): boolean {
-  return isRatRaceTentKind(value) || value === 'budget' || value === 'medium';
+  return (
+    isRatRaceTentKind(value) ||
+    value === 'cosy' ||
+    value === 'deluxe' ||
+    value === 'budget' ||
+    value === 'medium'
+  );
 }
 
 export function normaliseRatRaceTentKind(value: unknown): RatRaceTentKind {
-  if (value === 'deluxe' || value === 'medium') return 'deluxe';
   if (value === 'group') return 'group';
-  return 'cosy';
+  // Legacy Cosy / Deluxe / package aliases all map to the 5M Bell tent.
+  return 'bell';
 }
 
 export function clampTentGuests(kind: RatRaceTentKind, guests: number): number {
@@ -161,7 +158,7 @@ export function parseRatRaceTentLines(raw: unknown): RatRaceTentLineInput[] {
 }
 
 export function tentMixLabel(lines: { kind: RatRaceTentKind; guests: number }[]): string {
-  const counts: Record<RatRaceTentKind, number> = { cosy: 0, deluxe: 0, group: 0 };
+  const counts: Record<RatRaceTentKind, number> = { bell: 0, group: 0 };
   for (const line of lines) counts[line.kind] += 1;
   const bits = (Object.keys(counts) as RatRaceTentKind[])
     .filter((kind) => counts[kind] > 0)
@@ -199,7 +196,9 @@ export function parseRatRaceTentTypeCounts(tentType: string): {
   tents6: number;
   groupTents: number;
 } {
-  const multi = [...String(tentType).matchAll(/(\d+)\s*[×x]\s*(\d)\s*M\s*(Cosy|Deluxe|Group[^·+]*)?/gi)];
+  const multi = [
+    ...String(tentType).matchAll(/(\d+)\s*[×x]\s*(\d)\s*M\s*(Bell[^·+]*|Cosy|Deluxe|Group[^·+]*)?/gi),
+  ];
   if (multi.length) {
     let tents5 = 0;
     let tents6 = 0;
@@ -240,6 +239,7 @@ export function ratRaceInventoryFromBookings(bookings: BookingRecord[]): {
   remainingTents: number;
   remainingGroup: number;
   soldOut: boolean;
+  bellSoldOut: boolean;
   groupSoldOut: boolean;
 } {
   let bookedTents = 0;
@@ -252,13 +252,16 @@ export function ratRaceInventoryFromBookings(bookings: BookingRecord[]): {
   }
   const remainingTents = Math.max(0, RAT_RACE_TENT_CAP - bookedTents);
   const remainingGroup = Math.max(0, RAT_RACE_GROUP_CAP - bookedGroup);
+  const soldOut = remainingTents <= 0;
+  const groupSoldOut = remainingGroup <= 0 || soldOut;
   return {
     bookedTents,
     bookedGroup,
     remainingTents,
     remainingGroup,
-    soldOut: remainingTents <= 0,
-    groupSoldOut: remainingGroup <= 0,
+    soldOut,
+    bellSoldOut: soldOut,
+    groupSoldOut,
   };
 }
 
@@ -273,7 +276,7 @@ export function inventoryAllowsLines(
       ok: false,
       error: inventory.soldOut
         ? 'Sold out — all 20 tents are booked.'
-        : `Only ${inventory.remainingTents} tent${inventory.remainingTents === 1 ? '' : 's'} left across Cosy, Deluxe and Group.`,
+        : `Only ${inventory.remainingTents} tent${inventory.remainingTents === 1 ? '' : 's'} left across 5M Bell and 6M Group.`,
     };
   }
   if (counts.groupTents > inventory.remainingGroup) {
@@ -477,7 +480,7 @@ export function quoteRatRace(input: {
   const stayTotal = canvasPrice;
   const organiserCommissionAmount = roundMoney(canvasPrice * RAT_RACE_2027.organiserCommissionRate);
   const primary = priced[0];
-  const packageKind = primary?.kind ?? 'cosy';
+  const packageKind = primary?.kind ?? 'bell';
   const meta = RAT_RACE_TENT_META[packageKind];
   const tentType = tentMixLabel(normalised);
 
@@ -596,7 +599,9 @@ export function buildRatRacePreviewBooking(options?: {
 } {
   const quote = pricedForPaymentPlan(
     quoteRatRace({
-      tents: options?.tents ?? [{ kind: options?.packageKind ?? 'cosy', guests: options?.guests ?? 2 }],
+      tents: options?.tents ?? [
+        { kind: options?.packageKind ?? 'bell', guests: options?.guests ?? 2 },
+      ],
     }),
     options?.paymentPlan === 'instalment' ? 'instalment' : 'deposit',
   );
